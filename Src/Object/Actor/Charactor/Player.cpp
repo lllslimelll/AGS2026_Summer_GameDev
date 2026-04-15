@@ -131,7 +131,7 @@ void Player::ProcessJump(void)
 	{
 		// ジャンプ量の計算
 		float jumpSpeed = POW_JUMP_INIT * scnMng_.GetDeltaTime();
-		jumpPow_ = VScale(AsoUtility::DIR_U, jumpSpeed);
+		jumpPow_ = VScale(upDir, jumpSpeed);
 		stepJump_ = 0.0f;
 		isJump_ = true;
 
@@ -149,7 +149,7 @@ void Player::ProcessJump(void)
 		{
 			// ジャンプ量の計算
 			float jumpSpeed = POW_JUMP_KEEP * scnMng_.GetDeltaTime();
-			jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, jumpSpeed));
+			jumpPow_ = VAdd(jumpPow_, VScale(upDir, jumpSpeed));
 		}
 	}
 	else
