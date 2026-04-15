@@ -63,6 +63,22 @@ void Player::ProcessMove(void)
 
 	if (!AsoUtility::EqualsVZero(dir))
 	{
+		// 上方向を取得
+		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+
+		// カメラの回転を取得
+		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
+
+		// 3. カメラから見た移動方向を算出
+		VECTOR worldDir = Quaternion::PosAxis(cameraRot, dir);
+
+		// 表面に添わせる
+		float dot = VDot(worldDir, upDir);
+		moveDir_ = VNorm(VSub(worldDir, VScale(upDir, dot)));
+
+		// 移動速度を反映
+		moveSpeed_ = (isDash) ? SPEED_DASH : SPEED_MOVE;
+		movePow_ = VScale(moveDir_, moveSpeed_);
 
 		// 移動スピード
 		moveSpeed_ = SPEED_MOVE;
@@ -88,15 +104,12 @@ void Player::ProcessMove(void)
 				animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
 			}
 		}
-
-		// Y軸のみのカメラ角度を取得
-		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRotY();
 		 
-		// 移動方向をカメラに合わせる
-		moveDir_ = Quaternion::PosAxis(cameraRot, dir);
+		//// 移動方向をカメラに合わせる
+		//moveDir_ = Quaternion::PosAxis(cameraRot, dir);
 
-		// 移動速度を反映
-		movePow_ = VScale(moveDir_, moveSpeed_);
+		//// 移動速度を反映
+		//movePow_ = VScale(moveDir_, moveSpeed_);
 	}
 	else
 	{
