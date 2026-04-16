@@ -249,76 +249,80 @@ MATRIX Quaternion::ToMatrix(void) const
     return ToMatrix(Quaternion(w, x, y, z));
 }
 
-Quaternion Quaternion::LookRotation(const VECTOR& dir)
+Quaternion Quaternion::LookRotation(const VECTOR& forward)
 {
     VECTOR up = { 0.0f, 1.0f, 0.0f };
-    return LookRotation(dir, up);
+    return LookRotation(forward, up);
 }
 
-Quaternion Quaternion::LookRotation(const VECTOR& dir, const VECTOR& up)
+Quaternion Quaternion::LookRotation(const VECTOR& forward, const VECTOR& up)
 {
 
-    VECTOR norDir = AsoUtility::VNormalize(dir);
-    VECTOR right = AsoUtility::VNormalize(VCross(up, norDir));
-    VECTOR crossUp = VCross(norDir, right);
-    auto m00 = right.x;
-    auto m01 = right.y;
-    auto m02 = right.z;
-    auto m10 = crossUp.x;
-    auto m11 = crossUp.y;
-    auto m12 = crossUp.z;
-    auto m20 = norDir.x;
-    auto m21 = norDir.y;
-    auto m22 = norDir.z;
+    // 1. 正規化
+    VECTOR z = VNorm(forward);
+    VECTOR u = VNorm(up);
 
+    // 2. upとforwardが完全に平行な場合の保護（通常は起きないが念のため）
+    if (fabs(VDot(u, z)) > 0.999f)
+    {
+        u = { 0.0f, 1.0f, 0.0f }; // 一旦Y軸を上にする
+        if (fabs(VDot(u, z)) > 0.999f)
+        {
+            u = { 1.0f, 0.0f, 0.0f }; // それでもダメならX軸を上にする
+        }
+    }
 
+    // 3. 直交する完全な3軸（XYZ）のベクトルを作る
+    VECTOR x = VNorm(VCross(u, z));
+    VECTOR y = VNorm(VCross(z, x));
+
+    // 4. 回転行列の要素を変数に展開
+    float m00 = x.x, m01 = y.x, m02 = z.x;
+    float m10 = x.y, m11 = y.y, m12 = z.y;
+    float m20 = x.z, m21 = y.z, m22 = z.z;
+
+    // 5. 行列からクォータニオンへ（どんな角度・逆さま状態でも絶対にバグらないアルゴリズム）
     float num8 = (m00 + m11) + m22;
-    auto quaternion = Quaternion();
+    Quaternion q;
+
     if (num8 > 0.0f)
     {
-        double num = sqrt(num8 + 1.0);
-        quaternion.w = num * 0.5;
-        num = 0.5 / num;
-        quaternion.x = ((double)m12 - m21) * num;
-        quaternion.y = ((double)m20 - m02) * num;
-        quaternion.z = ((double)m01 - m10) * num;
-        return quaternion.Normalized();
+        float num = sqrtf(num8 + 1.0f);
+        q.w = num * 0.5f;
+        num = 0.5f / num;
+        q.x = (m21 - m12) * num;
+        q.y = (m02 - m20) * num;
+        q.z = (m10 - m01) * num;
     }
-    if ((m00 >= m11) && (m00 >= m22))
+    else if ((m00 >= m11) && (m00 >= m22))
     {
-        // xとwが逆？
-        //auto num7 = sqrt(((1.0f + m00) - m11) - m22);
-        //auto num4 = 0.5f / num7;
-        //quaternion.x = 0.5f * num7;
-        //quaternion.y = (m01 + m10) * num4;
-        //quaternion.z = (m02 + m20) * num4;
-        //quaternion.w = (m12 - m21) * num4;
-        //return quaternion.Normalized();
-        auto num7 = sqrt(((1.0f + m00) - m11) - m22);
-        auto num4 = 0.5f / num7;
-        quaternion.x = ((double)m12 - m21) * num4;
-        quaternion.y = ((double)m01 + m10) * num4;
-        quaternion.z = ((double)m02 + m20) * num4;
-        quaternion.w = 0.5 * num7;
-        return quaternion.Normalized();
+        float num7 = sqrtf(((1.0f + m00) - m11) - m22);
+        float num4 = 0.5f / num7;
+        q.x = 0.5f * num7;
+        q.y = (m10 + m01) * num4;
+        q.z = (m02 + m20) * num4;
+        q.w = (m21 - m12) * num4;
     }
-    if (m11 > m22)
+    else if (m11 >= m22)
     {
-        auto num6 = sqrt(((1.0f + m11) - m00) - m22);
-        auto num3 = 0.5f / num6;
-        quaternion.x = ((double)m10 + m01) * num3;
-        quaternion.y = 0.5 * num6;
-        quaternion.z = ((double)m21 + m12) * num3;
-        quaternion.w = ((double)m20 - m02) * num3;
-        return quaternion.Normalized();
+        float num6 = sqrtf(((1.0f + m11) - m00) - m22);
+        float num3 = 0.5f / num6;
+        q.x = (m10 + m01) * num3;
+        q.y = 0.5f * num6;
+        q.z = (m21 + m12) * num3;
+        q.w = (m02 - m20) * num3;
     }
-    auto num5 = sqrt(((1.0f + m22) - m00) - m11);
-    auto num2 = 0.5f / num5;
-    quaternion.x = ((double)m20 + m02) * num2;
-    quaternion.y = ((double)m21 + m12) * num2;
-    quaternion.z = 0.5 * num5;
-    quaternion.w = ((double)m01 - m10) * num2;
-    return quaternion.Normalized();
+    else
+    {
+        float num5 = sqrtf(((1.0f + m22) - m00) - m11);
+        float num2 = 0.5f / num5;
+        q.x = (m02 + m20) * num2;
+        q.y = (m21 + m12) * num2;
+        q.z = 0.5f * num5;
+        q.w = (m10 - m01) * num2;
+    }
+
+    return q;
 
 }
 

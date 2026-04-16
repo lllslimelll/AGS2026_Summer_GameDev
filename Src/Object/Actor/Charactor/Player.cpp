@@ -107,8 +107,9 @@ void Player::ProcessMove(void)
 			}
 			else
 			{
-				// ダッシュ速度
+				// 歩行速度
 				moveSpeed_ = SPEED_MOVE;
+
 				// 走るアニメーション再生
 				animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
 			}
@@ -148,7 +149,7 @@ void Player::ProcessJump(void)
 			InputManager::JOYPAD_BTN::DOWN);
 	// ジャンプキーが押されているか
 	bool isHitKeyNew = ins.IsNew(KEY_INPUT_BACKSLASH)
-		|| ins.IsPadBtnTrgDown(
+		|| ins.IsPadBtnNew(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DOWN);
 

@@ -195,7 +195,6 @@ void Camera::SyncFollow(void)
 	VECTOR upDir = VNorm(VSub(playerPos, MOON_CENTER_POS));
 
 	// 3. プレイヤーの「前」と「真上」から、カメラの基準となる回転を作る
-	// ★修正ポイント：playerRot を直接掛け算するのをやめました！（無限ループ防止）
 	Quaternion baseRot = Quaternion::LookRotation(followTransform_->GetForward(), upDir);
 
 	// 4. マウスやスティックの操作分(angles_)の回転を作る

@@ -58,7 +58,7 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/JumpRising.mv1");
 	resourcesMap_.emplace(SRC::JUMP_RISING, res);
 
-	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/Moon.mv1");
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/Moon1.mv1");
 	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
 
 	res = new RES(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");

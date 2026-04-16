@@ -45,8 +45,8 @@ public:
 	MATRIX ToMatrix(void) const;
 
 	// ベクトルからクォータニオンに変換
-	static Quaternion LookRotation(const VECTOR& dir);
-	static Quaternion LookRotation(const VECTOR& dir, const VECTOR& up);
+	static Quaternion LookRotation(const VECTOR& forward);
+	static Quaternion LookRotation(const VECTOR& forward, const VECTOR& up);
 
 	// 行列からクォータニオンに変換
 	static Quaternion GetRotation(const MATRIX& mat);

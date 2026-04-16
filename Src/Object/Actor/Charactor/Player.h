@@ -61,7 +61,7 @@ private:
 	{ 0.0f, 160.f, 0.0f };
 	// 衝突判定用カプセル下部球体（ジャンプ時）
 	static constexpr VECTOR COL_CAPSULE_DOWN_JUMP_LOCAL_POS =
-	{ 0.0f, 80.0f, 0.0f };
+	{ 0.0f, 160.0f, 0.0f };
 
 	// ジャンプ力
 	static constexpr float POW_JUMP_INIT = 3500.0f;
