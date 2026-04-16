@@ -48,7 +48,7 @@ VECTOR ColliderLine::GetPosEnd(void) const
 
 bool ColliderLine::PushBackUp(
 	const ColliderModel* colliderModel, Transform& transform,
-	float pushDistance, bool isExclude, bool isTarget) const
+	VECTOR upDir, float pushDistance, bool isExclude, bool isTarget) const
 {
 	bool isJump = false;
 
@@ -66,11 +66,8 @@ bool ColliderLine::PushBackUp(
 		if (isTarget && !colliderModel->IsTargetFrame(hit.FrameIndex)) continue;
 
 		// Õ“Ë’n“_‚©‚çA­‚µã‚ÉˆÚ“®
-		if (transform.pos.y < hit.HitPosition.y)
-		{
-			transform.pos =
-				VAdd(hit.HitPosition, VScale(AsoUtility::DIR_U, 2.0f));
-		}
+		transform.pos =
+			VAdd(hit.HitPosition, VScale(hit.Normal, 2.0f));
 
 		isJump = true;
 	}

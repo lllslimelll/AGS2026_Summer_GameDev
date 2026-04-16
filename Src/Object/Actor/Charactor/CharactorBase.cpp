@@ -11,6 +11,7 @@
 CharactorBase::CharactorBase(void)
 	:
 	ActorBase(),
+	faceDir_(AsoUtility::DIR_F),
 	moveDir_(AsoUtility::VECTOR_ZERO),
 	moveSpeed_(),
 	movePow_(AsoUtility::VECTOR_ZERO),
@@ -89,19 +90,24 @@ void CharactorBase::UpdateProcessPost(void)
 
 void CharactorBase::DelayRotate(void)
 {
-	// 移動方向から回転に変換する
-	Quaternion goalRot = Quaternion::LookRotation(moveDir_);
+	// 上方向
+	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
-	// 回転の補間
-	transform_.quaRot =
-		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
+	// 移動方向から回転に変換する
+	Quaternion goalRot = Quaternion::LookRotation(faceDir_, upDir);
+
+	//// 回転の補間
+	//transform_.quaRot =
+	//	Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
+
+	// 直接回転
+	transform_.quaRot = goalRot;
 }
 
 void CharactorBase::CalcGravityPow(void)
 {
-	VECTOR moonCenter = AsoUtility::VECTOR_ZERO;
 	// 重力方向
-	VECTOR dirGravity = VNorm(VSub(moonCenter, transform_.pos));
+	VECTOR dirGravity = VNorm(VSub(MOON_CENTER_POS, transform_.pos));
 
 	// 重力の強さ
 	float gravityPow = Application::GetInstance().GetGravityPow() * scnMng_.GetDeltaTime();
@@ -112,7 +118,7 @@ void CharactorBase::CalcGravityPow(void)
 
 	if (jumpPow_.y < MAX_FALL_SPEED)
 	{
-		jumpPow_.y = MAX_FALL_SPEED;
+		//jumpPow_.y = MAX_FALL_SPEED;
 	}
 }
 
@@ -157,12 +163,18 @@ void CharactorBase::CollisionGravity(void)
 
 		if (colliderModel == nullptr) continue;
 
+		// 上方向
+		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+
 		// 上昇中は衝突判定を発生させない
-		if (jumpPow_.y > 0.0f) continue;
+		// Y軸ではなく、UP方向への速度成分（内積）で上昇中か判断
+		float upSpeed = VDot(upDir, jumpPow_);
+		if (upSpeed > 0.0f) continue;
 
 		// 衝突したポリゴンの上に押し戻す
 		bool isHit = colliderLine_->PushBackUp(
 			colliderModel, transform_,
+			upDir,  // 上方向
 			2.0f,	// 押し戻し距離
 			true,	// ブラックリスト使用許可
 			false	// ホワイトリスト使用許可

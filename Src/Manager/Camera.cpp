@@ -167,25 +167,58 @@ void Camera::SetDefault(void)
 void Camera::SyncFollow(void)
 {
 
-	// 同期先の位置
-	VECTOR pos = followTransform_->pos;
+	//// 同期先の位置
+	//VECTOR pos = followTransform_->pos;
 
-	// Y軸
-	rotY_ = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y);
+	//// Y軸
+	//rotY_ = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y);
 
-	// Y軸 + X軸
-	transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
+	//// Y軸 + X軸
+	//transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
 
-	VECTOR localPos;
+	//VECTOR localPos;
 
-	// 注視点
-	localPos = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
-	targetPos_ = VAdd(pos, localPos);
+	//// 注視点
+	//localPos = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
+	//targetPos_ = VAdd(pos, localPos);
 
-	// カメラ位置
-	localPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
-	transform_.pos = VAdd(pos, localPos);
+	//// カメラ位置
+	//localPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
+	//transform_.pos = VAdd(pos, localPos);
 
+
+	// 1. プレイヤーの現在の座標を取得
+	VECTOR playerPos = followTransform_->pos;
+
+	// 2. 星の中心からプレイヤーへの方向を、カメラにとっての「真上(Up)」とする
+	// ※MOON_CENTER_POS が定義されていればそちらを使ってください
+	VECTOR upDir = VNorm(VSub(playerPos, MOON_CENTER_POS));
+
+	// 3. プレイヤーの「前」と「真上」から、カメラの基準となる回転を作る
+	// ★修正ポイント：playerRot を直接掛け算するのをやめました！（無限ループ防止）
+	Quaternion baseRot = Quaternion::LookRotation(followTransform_->GetForward(), upDir);
+
+	// 4. マウスやスティックの操作分(angles_)の回転を作る
+	Quaternion rotY = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y); // 左右
+	Quaternion rotX = Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X); // 上下
+
+	// 5. 基準の回転に、操作分の回転を重ねて最終的な向きを決定
+	transform_.quaRot = baseRot.Mult(rotY).Mult(rotX);
+
+	// 6. 「後ろ・上」のオフセット位置を計算
+	VECTOR cameraOffset = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
+	transform_.pos = VAdd(playerPos, cameraOffset);
+
+	// 7. 注視点（どこを見るか）を計算
+	VECTOR targetOffset = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
+	targetPos_ = VAdd(playerPos, targetOffset);
+
+	// ==========================================
+	// ★ 超重要：勝手に回り続けるのを防ぐ「魔法の1行」
+	// 左右の回転はプレイヤーの体が回ることで吸収されるため、
+	// カメラ側のオフセットはここで 0 にリセットします。
+	// ==========================================
+	angles_.y = 0.0f;
 }
 
 void Camera::ProcessRot(bool isLimit)
@@ -193,8 +226,8 @@ void Camera::ProcessRot(bool isLimit)
 
 	if (GetJoypadNum() == 0)
 	{
-		// 方向回転によるXYZの移動(キーボード)
-		RotKeyboard(isLimit);
+		// 方向回転によるXYZの移動(マウス)
+		RotMouse(isLimit);
 	}
 	else
 	{
@@ -287,8 +320,8 @@ void Camera::SetBeforeDrawFollow(void)
 	Collision();
 
 	// カメラ位置の線形補完
-	transform_.pos =
-		AsoUtility::Lerp(prePos_, transform_.pos, 0.25f);
+	/*transform_.pos =
+		AsoUtility::Lerp(prePos_, transform_.pos, 0.25f);*/
 
 }
 
@@ -393,6 +426,40 @@ void Camera::RotKeyboard(bool isLimit)
 
 }
 
+void Camera::RotMouse(bool isLimit)
+{
+	// マウスの感度（この数値をいじってカメラの回転速度を調整します）
+	const float SENSITIVITY = 0.00005f;
+
+	// 画面のサイズを取得して、中心の座標を計算
+	int screenW, screenH;
+	GetDrawScreenSize(&screenW, &screenH);
+	int centerX = screenW / 2;
+	int centerY = screenH / 2;
+
+	// 現在のマウス座標を取得
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+
+	// 画面中心からの移動量を計算
+	int deltaX = mouseX - centerX;
+	int deltaY = mouseY - centerY;
+
+	// 移動量に感度を掛けて、カメラの角度に足し込む
+	angles_.y += deltaX * SENSITIVITY; // 左右回転
+	angles_.x += deltaY * SENSITIVITY; // 上下回転
+
+	// 角度制限（上下を見すぎないようにする）
+	if (isLimit)
+	{
+		if (angles_.x < -LIMIT_X_DW_RAD) angles_.x = -LIMIT_X_DW_RAD;
+		if (angles_.x > LIMIT_X_UP_RAD) angles_.x = LIMIT_X_UP_RAD;
+	}
+
+	// マウスカーソルを画面の中心に戻す（端にぶつからないようにするため）
+	SetMousePoint(centerX, centerY);
+}
+
 void Camera::RotGamePad(bool isLimit)
 {
 
@@ -409,7 +476,7 @@ void Camera::RotGamePad(bool isLimit)
 	angles_.y += dir.x * ROT_POW_RAD;
 
 	// 右スティック上下の傾き
-	angles_.x += dir.z * ROT_POW_RAD;
+	angles_.x -= dir.z * ROT_POW_RAD;
 	
 	// 角度制限
 	if (isLimit && angles_.x < -LIMIT_X_DW_RAD)

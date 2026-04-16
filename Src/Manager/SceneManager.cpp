@@ -82,6 +82,8 @@ void SceneManager::Init3D(void)
 	SetFogColor(5, 5, 5);
 	SetFogStartEnd(10000.0f, 20000.0f);
 
+	// マウスカーソルを非表示にする
+	SetMouseDispFlag(FALSE);
 }
 
 void SceneManager::Update(void)

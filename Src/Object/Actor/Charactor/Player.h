@@ -17,6 +17,9 @@ public:
 
 	~Player(void) override;
 
+	// 描画
+	void Draw(void) override;
+
 protected:
 
 	// リソースロード

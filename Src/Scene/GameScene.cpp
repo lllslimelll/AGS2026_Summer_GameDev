@@ -76,14 +76,12 @@ void GameScene::Update(void)
 
 void GameScene::Draw(void)
 {
-
+	skyDome_->Draw();
+	stage_->Draw();
 	player_->Draw();
 	enemyManager_->Draw();
-	stage_->Draw();
 	// ‰e•`‰æ
 	DrawShadow();
-
-	skyDome_->Draw();
 }
 
 void GameScene::Release(void)

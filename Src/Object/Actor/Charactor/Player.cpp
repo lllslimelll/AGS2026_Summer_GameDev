@@ -53,7 +53,7 @@ void Player::ProcessMove(void)
 		// アナログキーの入力値から方向を取得
 		dir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
 
-		// 右Shiftでダッシュ
+		// Rでダッシュ
 		if (ins.IsPadBtnNew(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::R_TRIGGER)) {
@@ -63,28 +63,35 @@ void Player::ProcessMove(void)
 
 	if (!AsoUtility::EqualsVZero(dir))
 	{
-		// 上方向を取得
+		// 上方向を取得（地面の法線方向）
 		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
 		// カメラの回転を取得
 		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
 
-		// 3. カメラから見た移動方向を算出
-		VECTOR worldDir = Quaternion::PosAxis(cameraRot, dir);
+		// カメラの「前」と「右」をベクトルとして取り出す
+		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
+		VECTOR camRight = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_R);
 
-		// 表面に添わせる
-		float dot = VDot(worldDir, upDir);
-		moveDir_ = VNorm(VSub(worldDir, VScale(upDir, dot)));
+		// 星の表面に沿わせる
+		float dotF = VDot(camForward, upDir);
+		VECTOR surfaceForward = VNorm(VSub(camForward, VScale(upDir, dotF)));
 
-		// 移動速度を反映
-		moveSpeed_ = (isDash) ? SPEED_DASH : SPEED_MOVE;
-		movePow_ = VScale(moveDir_, moveSpeed_);
+		float dotR = VDot(camRight, upDir);
+		VECTOR surfaceRight = VNorm(VSub(camRight, VScale(upDir, dotR)));
 
-		// 移動スピード
-		moveSpeed_ = SPEED_MOVE;
-		if (isDash)
+		// キャラの向く方向をカメラの前方に固定
+		faceDir_ = surfaceForward;
+
+		// dirに合わせて移動ベクトルを合成
+		VECTOR moveVec = AsoUtility::VECTOR_ZERO;
+		moveVec = VAdd(moveVec, VScale(surfaceForward, dir.z)); // 左右の移動を加算
+		moveVec = VAdd(moveVec, VScale(surfaceRight, dir.x));	// 前後の移動を加算
+
+		// 移動ベクトルの正規化
+		if(AsoUtility::SqrMagnitudeF(moveVec) > 0.0001f)
 		{
-			moveSpeed_ = SPEED_MOVE;
+			moveDir_ = VNorm(moveVec);
 		}
 
 		// ジャンプ中はアニメーションを変えない
@@ -100,19 +107,25 @@ void Player::ProcessMove(void)
 			}
 			else
 			{
+				// ダッシュ速度
+				moveSpeed_ = SPEED_MOVE;
 				// 走るアニメーション再生
 				animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
 			}
 		}
-		 
-		//// 移動方向をカメラに合わせる
-		//moveDir_ = Quaternion::PosAxis(cameraRot, dir);
 
-		//// 移動速度を反映
-		//movePow_ = VScale(moveDir_, moveSpeed_);
+		// 移動速度を反映
+		movePow_ = VScale(moveDir_, moveSpeed_);
 	}
 	else
 	{
+		// 入力がない時も、常にカメラの方向を向かせ続ける場合
+		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
+		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
+		float dotF = VDot(camForward, upDir);
+		faceDir_ = VNorm(VSub(camForward, VScale(upDir, dotF)));
+
 		// ジャンプ中はアニメーションを変えない
 		if (!isJump_)
 		{
@@ -186,6 +199,19 @@ void Player::UpdateProcess(void)
 
 void Player::UpdateProcessPost(void)
 {
+}
+
+void Player::Draw(void)
+{
+	// 基底クラスの描画
+	CharactorBase::Draw();
+
+	// デバッグ表示
+	DrawFormatString(0, 0, GetColor(255, 255, 255),
+		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
+		transform_.pos.x,
+		transform_.pos.y,
+		transform_.pos.z);
 }
 
 // 衝突判定用の調整

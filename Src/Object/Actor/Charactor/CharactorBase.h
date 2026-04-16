@@ -33,6 +33,9 @@ protected:
 	// アニメーション
 	AnimationController* animController_;
 
+	// カメラの前方向（キャラの前方向）
+	VECTOR faceDir_;
+
 	// 移動方向
 	VECTOR moveDir_;
 

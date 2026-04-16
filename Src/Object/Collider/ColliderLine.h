@@ -38,7 +38,7 @@ public:
 	// Õ“Ë‚µ‚½ƒ|ƒŠƒSƒ“‚Ìã‚É‰Ÿ‚µ–ß‚·
 	bool PushBackUp(
 		const ColliderModel* colliderModel, Transform& transform,
-		float pushDistance,
+		VECTOR upDir, float pushDistance,
 		bool isExclude = false, bool isTarget = false) const;
 
 protected:

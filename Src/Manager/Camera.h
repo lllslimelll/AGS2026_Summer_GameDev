@@ -162,6 +162,9 @@ private:
 	// カメラ回転(キーボード)
 	void RotKeyboard(bool isLimit);
 
+	// カメラ回転(マウス)
+	void RotMouse(bool isLimit);
+
 	// カメラ回転(ゲームパッド)
 	void RotGamePad(bool isLimit);
 
