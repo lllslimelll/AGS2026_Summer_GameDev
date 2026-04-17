@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Project\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Project\\Src\\Object\\Actor\\SkyDome.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Object\\Actor\\SkyDome.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Project\\Src\\Object\\Actor\\Charactor\\Player.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Object\\Actor\\Charactor\\Player.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -79,10 +83,6 @@
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Manager\\Camera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Project\\Src\\Object\\Actor\\SkyDome.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Object\\Actor\\SkyDome.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Project\\Src\\Manager\\Camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Manager\\Camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -114,37 +114,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Player.cpp",
-              "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\Charactor\\Player.cpp",
-              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Player.cpp",
-              "ToolTip": "C:\\Project\\Src\\Object\\Actor\\Charactor\\Player.cpp",
-              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\Player.cpp",
-              "ViewState": "AgIAAJEAAAAAAAAAAAAlwJ8AAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-15T04:36:52.055Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "CharactorBase.h",
-              "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\Charactor\\CharactorBase.h",
-              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\CharactorBase.h",
-              "ToolTip": "C:\\Project\\Src\\Object\\Actor\\Charactor\\CharactorBase.h",
-              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\CharactorBase.h",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAAFAAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-15T04:36:50.48Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Player.h",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\Charactor\\Player.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Player.h",
@@ -157,7 +131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "ColliderLine.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Collider\\ColliderLine.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderLine.cpp",
@@ -165,12 +139,11 @@
               "RelativeToolTip": "Src\\Object\\Collider\\ColliderLine.cpp",
               "ViewState": "AgIAAC8AAAAAAAAAAAAlwEMAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-16T04:28:22.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-16T04:28:22.144Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Application.h",
               "DocumentMoniker": "C:\\Project\\Src\\Application.h",
               "RelativeDocumentMoniker": "Src\\Application.h",
@@ -178,12 +151,11 @@
               "RelativeToolTip": "Src\\Application.h",
               "ViewState": "AgIAADsAAAAAAAAAAAAlwBIAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-16T03:45:40.566Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-16T03:45:40.566Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "ActorBase.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\ActorBase.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\ActorBase.cpp",
@@ -191,12 +163,11 @@
               "RelativeToolTip": "Src\\Object\\Actor\\ActorBase.cpp",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAACcAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-15T04:36:48.303Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-15T04:36:48.303Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "ColliderCapsule.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Collider\\ColliderCapsule.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderCapsule.cpp",
@@ -204,12 +175,11 @@
               "RelativeToolTip": "Src\\Object\\Collider\\ColliderCapsule.cpp",
               "ViewState": "AgIAAA4AAAAAAAAAAAD4vyEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-16T04:34:15.888Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-16T04:34:15.888Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "ColliderSphere.h",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Collider\\ColliderSphere.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderSphere.h",
@@ -217,12 +187,11 @@
               "RelativeToolTip": "Src\\Object\\Collider\\ColliderSphere.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-17T05:06:52.632Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-17T05:06:52.632Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "ColliderSphere.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Collider\\ColliderSphere.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderSphere.cpp",
@@ -230,12 +199,11 @@
               "RelativeToolTip": "Src\\Object\\Collider\\ColliderSphere.cpp",
               "ViewState": "AgIAABsAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-17T05:06:44.09Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-17T05:06:44.09Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "ColliderLine.h",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Collider\\ColliderLine.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderLine.h",
@@ -243,12 +211,11 @@
               "RelativeToolTip": "Src\\Object\\Collider\\ColliderLine.h",
               "ViewState": "AgIAABYAAAAAAAAAAAAlwCYAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-16T04:28:06.156Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-16T04:28:06.156Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "CharactorBase.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
@@ -256,12 +223,11 @@
               "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
               "ViewState": "AgIAAGMAAAAAAAAAAAAlwHAAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-15T04:36:49.954Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-15T04:36:49.954Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "SceneManager.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Manager\\SceneManager.cpp",
               "RelativeDocumentMoniker": "Src\\Manager\\SceneManager.cpp",
@@ -269,12 +235,48 @@
               "RelativeToolTip": "Src\\Manager\\SceneManager.cpp",
               "ViewState": "AgIAAK0AAAAAAAAAAAAlwLwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-16T06:21:18.141Z",
+              "WhenOpened": "2026-04-16T06:21:18.141Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SkyDome.cpp",
+              "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\SkyDome.cpp",
+              "RelativeDocumentMoniker": "Src\\Object\\Actor\\SkyDome.cpp",
+              "ToolTip": "C:\\Project\\Src\\Object\\Actor\\SkyDome.cpp*",
+              "RelativeToolTip": "Src\\Object\\Actor\\SkyDome.cpp*",
+              "ViewState": "AgIAACQAAAAAAAAAAAAAAD4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-04-16T16:49:07.695Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
+              "Title": "CharactorBase.h",
+              "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\Charactor\\CharactorBase.h",
+              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\CharactorBase.h",
+              "ToolTip": "C:\\Project\\Src\\Object\\Actor\\Charactor\\CharactorBase.h",
+              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\CharactorBase.h",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAFAAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-04-15T04:36:50.48Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Player.cpp",
+              "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\Charactor\\Player.cpp",
+              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Player.cpp",
+              "ToolTip": "C:\\Project\\Src\\Object\\Actor\\Charactor\\Player.cpp",
+              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\Player.cpp",
+              "ViewState": "AgIAAJEAAAAAAAAAAAAlwJ8AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-04-15T04:36:52.055Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "SceneManager.h",
               "DocumentMoniker": "C:\\Project\\Src\\Manager\\SceneManager.h",
               "RelativeDocumentMoniker": "Src\\Manager\\SceneManager.h",
@@ -282,12 +284,11 @@
               "RelativeToolTip": "Src\\Manager\\SceneManager.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-17T06:04:05.688Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-17T06:04:05.688Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "ColliderCapsule.h",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Collider\\ColliderCapsule.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderCapsule.h",
@@ -295,12 +296,11 @@
               "RelativeToolTip": "Src\\Object\\Collider\\ColliderCapsule.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-17T05:06:33.038Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-17T05:06:33.038Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "ActorBase.h",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\ActorBase.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\ActorBase.h",
@@ -308,12 +308,11 @@
               "RelativeToolTip": "Src\\Object\\Actor\\ActorBase.h",
               "ViewState": "AgIAAC4AAAAAAAAAAAAlwDMAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-16T03:49:07.496Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-16T03:49:07.496Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "ColliderModel.h",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Collider\\ColliderModel.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderModel.h",
@@ -321,8 +320,7 @@
               "RelativeToolTip": "Src\\Object\\Collider\\ColliderModel.h",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-17T05:06:42.409Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-17T05:06:42.409Z"
             },
             {
               "$type": "Document",
@@ -338,7 +336,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "Stage.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\Stage.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Stage.cpp",
@@ -346,12 +344,11 @@
               "RelativeToolTip": "Src\\Object\\Actor\\Stage.cpp",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-17T04:41:31.477Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-17T04:41:31.477Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "GameScene.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Scene\\GameScene.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\GameScene.cpp",
@@ -359,20 +356,7 @@
               "RelativeToolTip": "Src\\Scene\\GameScene.cpp",
               "ViewState": "AgIAABgAAAAAAAAAAAAAACwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-16T03:54:28.254Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "SkyDome.cpp",
-              "DocumentMoniker": "C:\\Project\\Src\\Object\\Actor\\SkyDome.cpp",
-              "RelativeDocumentMoniker": "Src\\Object\\Actor\\SkyDome.cpp",
-              "ToolTip": "C:\\Project\\Src\\Object\\Actor\\SkyDome.cpp",
-              "RelativeToolTip": "Src\\Object\\Actor\\SkyDome.cpp",
-              "ViewState": "AQIAADAAAAAAAAAAAAAAAD4AAAADAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-04-16T16:49:07.695Z"
+              "WhenOpened": "2026-04-16T03:54:28.254Z"
             },
             {
               "$type": "Document",
@@ -388,7 +372,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "Camera.h",
               "DocumentMoniker": "C:\\Project\\Src\\Manager\\Camera.h",
               "RelativeDocumentMoniker": "Src\\Manager\\Camera.h",
@@ -396,8 +380,7 @@
               "RelativeToolTip": "Src\\Manager\\Camera.h",
               "ViewState": "AgIAAAwAAAAAAAAAAAAkwBAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-04-16T06:15:52.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-16T06:15:52.307Z"
             },
             {
               "$type": "Document",

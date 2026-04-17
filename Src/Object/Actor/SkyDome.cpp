@@ -33,9 +33,9 @@ void SkyDome::Update(void)
 
 
 	// 空をY軸に毎フレーム0.05°ずつ回転を追加
-	transform_.quaRotLocal = Quaternion::Mult(
+	/*transform_.quaRotLocal = Quaternion::Mult(
 		transform_.quaRotLocal,
-		Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.05f), AsoUtility::AXIS_Y));
+		Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.05f), AsoUtility::AXIS_Y));*/
 
 	transform_.Update();
 }
@@ -60,7 +60,7 @@ void SkyDome::InitTransform(void)
 
 	transform_.quaRot = Quaternion::Identity();
 	// Y軸を180度
-	//transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
+	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
 
 	// 座標
 	transform_.pos = AsoUtility::VECTOR_ZERO;
