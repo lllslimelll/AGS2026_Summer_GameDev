@@ -67,7 +67,7 @@ bool ColliderLine::PushBackUp(
 
 		// Õ“Ë’n“_‚©‚çA­‚µã‚ÉˆÚ“®
 		transform.pos =
-			VAdd(hit.HitPosition, VScale(hit.Normal, 2.0f));
+			VAdd(hit.HitPosition, VScale(upDir, pushDistance));
 
 		isJump = true;
 	}

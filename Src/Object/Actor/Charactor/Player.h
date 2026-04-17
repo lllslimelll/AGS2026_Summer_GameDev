@@ -61,19 +61,19 @@ private:
 	{ 0.0f, 160.f, 0.0f };
 	// 衝突判定用カプセル下部球体（ジャンプ時）
 	static constexpr VECTOR COL_CAPSULE_DOWN_JUMP_LOCAL_POS =
-	{ 0.0f, 160.0f, 0.0f };
+	{ 0.0f, 80.0f, 0.0f };
 
 	// ジャンプ力
-	static constexpr float POW_JUMP_INIT = 3500.0f;
+	static constexpr float POW_JUMP_INIT = 2000.0f;
 	// 持続ジャンプ力
-	static constexpr float POW_JUMP_KEEP = 450.0f;
+	static constexpr float POW_JUMP_KEEP = 250.0f;
 	// ジャンプ受付時間
 	static constexpr float TIME_JUMP_INPUT = 0.5f;
 
 	// 衝突判定用カプセル上部球体
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
 	// 衝突判定用カプセル下部球体
-	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 30.0f, 0.0f };
+	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 50.0f, 0.0f };
 
 	// 衝突判定用カプセル
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
