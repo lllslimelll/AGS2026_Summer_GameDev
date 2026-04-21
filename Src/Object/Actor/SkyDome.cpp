@@ -60,7 +60,7 @@ void SkyDome::InitTransform(void)
 
 	transform_.quaRot = Quaternion::Identity();
 	// Yé≤Ç180ìx
-	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
+	//transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
 
 	// ç¿ïW
 	transform_.pos = AsoUtility::VECTOR_ZERO;
