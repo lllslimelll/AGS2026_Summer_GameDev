@@ -56,6 +56,8 @@ protected:
 	// ƒ‚ƒfƒ‹§Œä‚ÌŠî–{î•ñ
 	Transform transform_;
 
+	VECTOR baseForward_;
+
 	// ©g‚ÌÕ“Ëî•ñ
 	std::map<int, ColliderBase*> ownColliders_;
 

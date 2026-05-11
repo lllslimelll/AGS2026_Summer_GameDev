@@ -90,18 +90,21 @@ void CharactorBase::UpdateProcessPost(void)
 
 void CharactorBase::DelayRotate(void)
 {
+	// ˆÚ“®•ûŒü‚ªƒ[ƒ‚È‚ç‰½‚à‚µ‚È‚¢i¡‚ÌŒü‚«‚ğˆÛj
+	if (AsoUtility::EqualsVZero(moveDir_)) return;
+
 	// ã•ûŒü
 	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
 	// ˆÚ“®•ûŒü‚©‚ç‰ñ“]‚É•ÏŠ·‚·‚é
-	Quaternion goalRot = Quaternion::LookRotation(faceDir_, upDir);
+	Quaternion goalRot = Quaternion::LookRotation(moveDir_, upDir);
 
-	//// ‰ñ“]‚Ì•âŠÔ
-	//transform_.quaRot =
-	//	Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
+	// ‰ñ“]‚Ì•âŠÔ
+	transform_.quaRot =
+		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
 
 	// ’¼Ú‰ñ“]
-	transform_.quaRot = goalRot;
+	//transform_.quaRot = goalRot;
 }
 
 void CharactorBase::CalcGravityPow(void)

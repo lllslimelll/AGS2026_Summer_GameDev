@@ -67,6 +67,7 @@ void Camera::SetBeforeDraw(void)
 
 void Camera::DrawDebug(void)
 {
+	DrawSphere3D(targetPos_, 20.0f, 16, 0xff0000, 0xff0000, false);
 }
 
 void Camera::Release(void)
@@ -162,6 +163,9 @@ void Camera::SetDefault(void)
 	// 注視点
 	targetPos_ = AsoUtility::VECTOR_ZERO;
 
+	// カメラの前方方向
+	baseForward_ = AsoUtility::DIR_F;
+
 }
 
 void Camera::SyncFollow(void)
@@ -186,38 +190,35 @@ void Camera::SyncFollow(void)
 	//localPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
 	//transform_.pos = VAdd(pos, localPos);
 
-
 	// 1. プレイヤーの現在の座標を取得
 	VECTOR playerPos = followTransform_->pos;
 
-	// 2. 星の中心からプレイヤーへの方向を、カメラにとっての「真上(Up)」とする
-	// ※MOON_CENTER_POS が定義されていればそちらを使ってください
+	// 2. 星の中心からプレイヤーへの方向を、カメラにとっての上方向とする
 	VECTOR upDir = VNorm(VSub(playerPos, MOON_CENTER_POS));
 
-	// 3. プレイヤーの「前」と「真上」から、カメラの基準となる回転を作る
-	Quaternion baseRot = Quaternion::LookRotation(followTransform_->GetForward(), upDir);
+	// 3. カメラの「仮想的な正面（北）」を星の表面に沿わせる
+	// 球体のどこに歩いていっても基準となる「正面」が滑らかに追従する
+	float dot = VDot(baseForward_, upDir);
+	baseForward_ = VNorm(VSub(baseForward_, VScale(upDir, dot)));
 
-	// 4. マウスやスティックの操作分(angles_)の回転を作る
-	Quaternion rotY = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y); // 左右
-	Quaternion rotX = Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X); // 上下
+	// 4. マウスやスティックの左右操作(angles_.y)を使って、baseForward_ を「真上」を軸に回転させる
+	Quaternion rotY = Quaternion::AngleAxis(angles_.y, upDir);
+	VECTOR camForward = rotY.PosAxis(baseForward_);
 
-	// 5. 基準の回転に、操作分の回転を重ねて最終的な向きを決定
-	transform_.quaRot = baseRot.Mult(rotY).Mult(rotX);
+	// 5. 決定した「正面」と「真上」から、カメラの基準となる回転を作る
+	Quaternion baseRot = Quaternion::LookRotation(camForward, upDir);
 
-	// 6. 「後ろ・上」のオフセット位置を計算
+	// 6. 上下操作(angles_.x)をローカルのX軸回転として追加
+	Quaternion rotX = Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X);
+	transform_.quaRot = baseRot.Mult(rotX);
+
+	// 7. 「後ろ・上」のオフセット位置を計算
 	VECTOR cameraOffset = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
 	transform_.pos = VAdd(playerPos, cameraOffset);
 
-	// 7. 注視点（どこを見るか）を計算
+	// 8. 注視点（どこを見るか）を計算
 	VECTOR targetOffset = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
 	targetPos_ = VAdd(playerPos, targetOffset);
-
-	// ==========================================
-	// ★ 超重要：勝手に回り続けるのを防ぐ「魔法の1行」
-	// 左右の回転はプレイヤーの体が回ることで吸収されるため、
-	// カメラ側のオフセットはここで 0 にリセットします。
-	// ==========================================
-	angles_.y = 0.0f;
 }
 
 void Camera::ProcessRot(bool isLimit)
