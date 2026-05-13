@@ -63,6 +63,37 @@ void Player::ProcessMove(void)
 
 	if (!AsoUtility::EqualsVZero(dir))
 	{
+		// 上方向を取得（地面の法線方向）
+		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+
+		// カメラの回転を取得
+		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
+
+		// カメラの「前」と「右」をベクトルとして取り出す
+		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
+		VECTOR camRight = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_R);
+
+		// 星の表面に沿わせる
+		float dotF = VDot(camForward, upDir);
+		VECTOR surfaceForward = VNorm(VSub(camForward, VScale(upDir, dotF)));
+
+		float dotR = VDot(camRight, upDir);
+		VECTOR surfaceRight = VNorm(VSub(camRight, VScale(upDir, dotR)));
+
+		// キャラの向く方向をカメラの前方に固定
+		faceDir_ = surfaceForward;
+
+		// dirに合わせて移動ベクトルを合成
+		VECTOR moveVec = AsoUtility::VECTOR_ZERO;
+		moveVec = VAdd(moveVec, VScale(surfaceForward, dir.z)); // 左右の移動を加算
+		moveVec = VAdd(moveVec, VScale(surfaceRight, dir.x));	// 前後の移動を加算
+
+		// 移動ベクトルの正規化
+		if(AsoUtility::SqrMagnitudeF(moveVec) > 0.0001f)
+		{
+			moveDir_ = VNorm(moveVec);
+		}
+
 		// ジャンプ中はアニメーションを変えない
 		if (!isJump_)
 		{
@@ -82,37 +113,20 @@ void Player::ProcessMove(void)
 				// 走るアニメーション再生
 				animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
 			}
-
 		}
-
-		// 上方向を取得（地面の法線方向）
-		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-
-		// カメラの回転を取得
-		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
-
-		// カメラの「前」と「右」をベクトルとして取り出す
-		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
-		VECTOR camRight = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_R);
-
-		// 星の表面に沿わせる
-		float dotF = VDot(camForward, upDir);
-		VECTOR surfaceForward = VNorm(VSub(camForward, VScale(upDir, dotF)));
-
-		float dotR = VDot(camRight, upDir);
-		VECTOR surfaceRight = VNorm(VSub(camRight, VScale(upDir, dotR)));
-
-		// 移動方向をカメラに合わせる
-		moveDir_ = VAdd(VScale(surfaceForward, dir.z), VScale(surfaceRight, dir.x)); // 前後左右の移動を加算
-
-		// 移動ベクトルの正規化
-		moveDir_ = VNorm(moveDir_);
 
 		// 移動速度を反映
 		movePow_ = VScale(moveDir_, moveSpeed_);
 	}
 	else
 	{
+		// 入力がない時も、常にカメラの方向を向かせ続ける場合
+		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
+		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
+		float dotF = VDot(camForward, upDir);
+		faceDir_ = VNorm(VSub(camForward, VScale(upDir, dotF)));
+
 		// ジャンプ中はアニメーションを変えない
 		if (!isJump_)
 		{
