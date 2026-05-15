@@ -24,6 +24,8 @@ public:
 		CAMERA,
 		ENEMY,
 		VIEW_RANGE,
+		ITEM,
+		ROKET,
 	};
 
 	// コンストラクタ
