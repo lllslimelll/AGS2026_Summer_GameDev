@@ -6,16 +6,17 @@
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyManager.h"
 #include "../Object/Actor/Stage.h"
+#include "../Object/Actor/Item/ItemManager.h"
 #include "../Object/Actor/SkyDome.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
 	:
 	stage_(nullptr),
+	itemMng_(nullptr),
 	player_(nullptr),
 	enemyManager_(nullptr),
 	skyDome_(nullptr),
-	allActor_(),
 	SceneBase()
 {
 }
@@ -28,7 +29,9 @@ void GameScene::Init(void)
 {
 	stage_ = new Stage();
 
-	player_ = new Player();
+	itemMng_ = new ItemManager();
+
+	player_ = new Player(itemMng_);
 
 	enemyManager_ = new EnemyManager(player_);
 
@@ -40,6 +43,9 @@ void GameScene::Init(void)
 	const ColliderBase* stageCollider =
 		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 
+	// アイテム
+	itemMng_->Init();
+
 	player_->Init();
 	player_->AddHitCollider(stageCollider);	// ステージモデルのコライダー登録
 
@@ -49,7 +55,7 @@ void GameScene::Init(void)
 		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
 
 	skyDome_->Init();
-
+	
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->ChangeMode(Camera::MODE::FOLLOW);
@@ -68,6 +74,7 @@ void GameScene::Update(void)
 
 	// 更新
 	stage_->Update();
+	itemMng_->Update();
 	player_->Update();
 	enemyManager_->Update();
 	skyDome_->Update();
@@ -78,6 +85,7 @@ void GameScene::Draw(void)
 {
 	skyDome_->Draw();
 	stage_->Draw();
+	itemMng_->Draw();
 	player_->Draw();
 	enemyManager_->Draw();
 	// 影描画
@@ -88,6 +96,9 @@ void GameScene::Release(void)
 {
 	stage_->Release();
 	delete stage_;
+
+	itemMng_->Release();
+	delete itemMng_;
 
 	player_->Release();
 	delete player_;

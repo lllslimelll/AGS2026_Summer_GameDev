@@ -4,6 +4,7 @@
 class ActorBase;
 class SkyDome;
 class Stage;
+class ItemManager;
 class Player;
 class EnemyManager;
 
@@ -32,13 +33,13 @@ public:
 	void Release(void) override;
 
 private:
-	// 全てのアクター
-	std::vector<ActorBase*> allActor_;
 
 	// スカイドーム
 	SkyDome* skyDome_;
 	// ステージ
 	Stage* stage_;
+	// アイテム
+	ItemManager* itemMng_;
 	// プレイヤー
 	Player* player_;
 	// 敵

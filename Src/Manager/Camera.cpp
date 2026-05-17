@@ -191,7 +191,6 @@ void Camera::SyncFollow(void)
 	VECTOR playerPos = followTransform_->pos;
 
 	// 2. 星の中心からプレイヤーへの方向を、カメラにとっての「真上(Up)」とする
-	// ※MOON_CENTER_POS が定義されていればそちらを使ってください
 	VECTOR upDir = VNorm(VSub(playerPos, MOON_CENTER_POS));
 
 	// 3. プレイヤーの「前」と「真上」から、カメラの基準となる回転を作る

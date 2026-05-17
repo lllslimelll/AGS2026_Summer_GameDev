@@ -3,6 +3,8 @@
 #include "../../../Manager/Camera.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
+#include "../Item/ItemManager.h"
+#include "../item/Item.h"
 #include "../../Common/Transform.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../Collider/ColliderLine.h"
@@ -10,14 +12,69 @@
 #include "Player.h"
 
 
-Player::Player(void)
+Player::Player(ItemManager* itemMng)
 	:
-	CharactorBase()
+	CharactorBase(),
+	itemMgr_(itemMng)
 {
 }
 
 Player::~Player(void)
 {
+}
+
+void Player::UpdateItem(void)
+{
+	// 照準アイテムの更新
+	UpdateAimedItem();
+
+	// 拾う処理
+	ProcessPickUp();
+
+	// 投擲処理
+	ProcessThrow();
+}
+
+void Player::UpdateAimedItem(void)
+{
+	// 照準に当たっているアイテムを取得
+	// RANGE_PICKUP の長さのレイが届く範囲 = 拾える範囲
+	Item* newAimed = itemMgr_->GetAimedItem(
+		scnMng_.GetCamera()->GetPos(),
+		scnMng_.GetCamera()->GetForward(),
+		Item::RANGE_PICKUP
+	);
+
+	// 前フレームと変わった場合のみ SetAimed を呼ぶ
+	if (newAimed != aimedItem_)
+	{
+		// 前フレームのアイテムのエイムを解除
+		if (aimedItem_ != nullptr)
+		{
+			aimedItem_->SetAimed(false);
+		}
+
+		// 新しいアイテムにエイムをセット
+		if (newAimed != nullptr)
+		{
+			newAimed->SetAimed(true);
+		}
+
+		aimedItem_ = newAimed;
+	}
+}
+
+void Player::ProcessPickUp(void)
+{
+}
+
+void Player::ProcessThrow(void)
+{
+}
+
+bool Player::TryAddInventory(Item* item)
+{
+	return false;
 }
 
 void Player::ProcessMove(void)
@@ -193,6 +250,9 @@ void Player::UpdateProcess(void)
 
 	// ジャンプ処理
 	ProcessJump();
+
+	// アイテム更新
+	UpdateItem();
 
 	// 衝突判定用の調整
 	CollisionReserve();

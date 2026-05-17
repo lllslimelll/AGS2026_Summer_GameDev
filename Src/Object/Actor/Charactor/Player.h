@@ -1,5 +1,9 @@
 #pragma once
+#include <array>
 #include "CharactorBase.h"
+
+class ItemManager;  
+class Item;
 
 class Player : public CharactorBase
 {
@@ -13,7 +17,7 @@ public:
 		JUMP,
 	};
 
-	Player(void);
+	Player(ItemManager* itemMng);
 
 	~Player(void) override;
 
@@ -77,6 +81,34 @@ private:
 
 	// 衝突判定用カプセル
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
+
+	// インベントリ
+	static constexpr int INVENTORY_MAX = 5;
+
+	// アイテム管理（拾得・投擲）
+	ItemManager* itemMgr_;
+
+	// 現在照準に当たっているアイテム
+	Item* aimedItem_;
+
+	std::array<Item*, INVENTORY_MAX> inventory_;
+
+	// 現在選択中のインベントリスロット
+	int selectedSlot_;
+
+	// アイテム関連更新
+	void UpdateItem(void);
+
+	// 照準に当たっているアイテムを取得して isAimed_ を更新
+	void UpdateAimedItem(void);
+
+	// 拾う処理
+	void ProcessPickUp(void);
+	// 投擲処理
+	void ProcessThrow(void);
+
+	// インベントリに追加（満杯なら false を返す）
+	bool TryAddInventory(Item* item);
 
 	// 移動処理
 	void ProcessMove(void);
