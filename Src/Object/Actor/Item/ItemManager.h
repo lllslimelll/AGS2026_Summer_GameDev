@@ -27,6 +27,9 @@ public:
 	// 解放
 	void Release(void);
 
+	// アイテム生成
+	Item* Create(const Item::GRADE grade, const VECTOR& pos);
+
 	// 衝突対象となるコライダを登録
 	// EnemyManagerと同じ流儀：Init()後に呼ぶ
 	void AddHitCollider(const ColliderBase* collider);

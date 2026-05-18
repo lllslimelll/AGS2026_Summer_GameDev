@@ -32,15 +32,15 @@ public:
 	static constexpr float VIEW_FAR = 20000.0f;
 
 	// 追従位置からカメラ位置までの相対座標
-	static constexpr VECTOR FOLLOW_CAMERA_LOCAL_POS = { 0.0f, 50.0f, -400.0f };
-	//static constexpr VECTOR FOLLOW_CAMERA_LOCAL_POS = { 0.0f, 150.0f, 0.0f };
+	//static constexpr VECTOR FOLLOW_CAMERA_LOCAL_POS = { 0.0f, 50.0f, -400.0f };
+	static constexpr VECTOR FOLLOW_CAMERA_LOCAL_POS = { 0.0f, 120.0f, 50.0f };
 
 	// 追従位置から注視点までの相対座標
-	static constexpr VECTOR FOLLOW_TARGET_LOCAL_POS = { 0.0f, 0.0f, 500.0f };
+	static constexpr VECTOR FOLLOW_TARGET_LOCAL_POS = { 0.0f, 120.0f, 500.0f };
 
 	// カメラのX回転上限度角
-	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);
-	static constexpr float LIMIT_X_DW_RAD = 10.0f * (DX_PI_F / 180.0f);
+	static constexpr float LIMIT_X_UP_RAD = 80.0f * (DX_PI_F / 180.0f);
+	static constexpr float LIMIT_X_DW_RAD = 80.0f * (DX_PI_F / 180.0f);
 	
 	// カメラモード
 	enum class MODE

@@ -35,7 +35,7 @@ public:
 	static constexpr int VALUE_HIGH = 1000;
 
 	// コンストラクタ
-	Item();
+	Item(GRADE grade, const VECTOR& pos);
 	~Item(); // デストラクタ
 
 	// 更新
@@ -55,24 +55,23 @@ public:
 	GRADE GetGrade(void) const; // グレード
 	STATE GetState(void) const; // 状態
 
+	bool IsAimedBy(const VECTOR& rayOrigin,
+					const VECTOR& rayEnd) const;
+
 	// アイテム取得可能か
 	void SetAimed(bool aimed);
 protected:
 
 	// リソースロード
-	virtual void InitLoad(void) override;
-
+	void InitLoad(void) override;
 	// 大きさ、回転、座標の初期化
-	virtual void InitTransform(void) override;
-
+	void InitTransform(void) override;
 	// 衝突判定の初期化
-	virtual void InitCollider(void) override;
-
+	void InitCollider(void) override;
 	// アニメーションの初期化
-	virtual void InitAnimation(void) override;
-
+	void InitAnimation(void) override;
 	// 初期化後の個別処理
-	virtual void InitPost(void) override;
+	void InitPost(void) override;
 
 private:
 
@@ -81,6 +80,9 @@ private:
 
 	// 現在の価値
 	int value_;
+
+	// 初期位置
+	const VECTOR defaultPos_;
 
 	// 状態
 	STATE state_;

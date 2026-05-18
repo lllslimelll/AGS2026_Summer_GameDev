@@ -47,6 +47,19 @@ void ItemManager::Release(void)
 	hitColliders_.clear();
 }
 
+Item* ItemManager::Create(const Item::GRADE grade, const VECTOR& pos)
+{
+	Item* item = new Item(grade, pos);
+
+    if(item != nullptr)
+            {
+        // アイテムの初期化
+        item->Init();
+        items_.emplace_back(item);
+	}
+	return item;
+}
+
 void ItemManager::AddHitCollider(const ColliderBase* collider)
 {
 	// GetAimedItemの遮蔽チェック用コライダを追加
@@ -64,57 +77,27 @@ Item* ItemManager::GetAimedItem(
     const VECTOR& rayDir,      // カメラ前方（正規化済み）
     float rayLength) const     // レイの長さ＝拾える最大距離
 {
-    VECTOR rayEnd = VAdd(rayOrigin, VScale(rayDir, rayLength));
+	VECTOR rayEnd = VAdd(rayOrigin, VScale(rayDir, rayLength));
 
-    Item* aimed = nullptr;
-    float  nearest = rayLength;
+	Item* aimed = nullptr;
+	float  nearest = rayLength;
 
-    for (auto item : items_)
-    {
-        // ドロップ状態のみ対象
-        if (item->GetState() != Item::STATE::DROPPED) continue;
+	for (auto item : items_)
+	{
+		// アイテムがレイに当たってるか確認
+		if (!item->IsAimedBy(rayOrigin, rayEnd)) continue;
 
-        VECTOR itemPos = item->GetTransform().pos;
-
-        // --- 条件① レイとアイテムのスフィア交差 ---
-        bool hit = AsoUtility::IsHitSphereCapsule(
-            itemPos, 30.0f, //座標・半径
-            rayOrigin, rayEnd,
-            0.0f  // 半径0 = 線分として扱う
-        );
-        if (!hit) continue;
-
-        // --- 条件② ステージに遮られていないか ---
-        // ①をパスしたものだけに適用（重い処理を後に置く）
-        bool blocked = false;
-        for (const auto& c : hitColliders_)
-        {
-            if (c->GetShape() != ColliderBase::SHAPE::MODEL) continue;
-
-            const ColliderModel* model =
-                static_cast<const ColliderModel*>(c);
-
-            MV1_COLL_RESULT_POLY result =
-                model->GetNearestHitPolyLine(rayOrigin, itemPos);
-
-            if (result.HitFlag > 0)
-            {
-                blocked = true;
-                break;
-            }
-        }
-        if (blocked) continue;
-
-        // --- 両条件クリア：最も近いものを採用 ---
-        float dist = VSize(VSub(itemPos, rayOrigin));
-        if (aimed == nullptr || dist < nearest)
-        {
-            aimed = item;
-            nearest = dist;
-        }
-    }
-
-    return aimed;
+		// アイテムとカメラの距離を計算
+		float dist = VSize(VSub(item->GetTransform().pos, rayOrigin));
+		
+		if (aimed == nullptr || dist < nearest)
+		{
+			aimed = item;
+			nearest = dist;
+		}
+	}
+	// アイテムを返す
+	return aimed;
 }
 
 const std::vector<Item*>& ItemManager::GetAllItems(void) const
@@ -124,4 +107,5 @@ const std::vector<Item*>& ItemManager::GetAllItems(void) const
 
 void ItemManager::LoadCsvData(void)
 {
+    Create(Item::GRADE::HIGH, {300.0f, 2360.0f, 0.0f});
 }

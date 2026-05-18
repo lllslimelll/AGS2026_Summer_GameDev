@@ -45,6 +45,7 @@ void GameScene::Init(void)
 
 	// アイテム
 	itemMng_->Init();
+	itemMng_->AddHitCollider(stageCollider);
 
 	player_->Init();
 	player_->AddHitCollider(stageCollider);	// ステージモデルのコライダー登録
