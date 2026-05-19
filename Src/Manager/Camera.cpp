@@ -62,11 +62,12 @@ void Camera::SetBeforeDraw(void)
 
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();
-
 }
 
 void Camera::DrawDebug(void)
 {
+	DrawFormatString(0, 200, GetColor(255, 255, 255),
+		"Camera Pos: (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 void Camera::Release(void)
@@ -193,6 +194,9 @@ void Camera::SyncFollow(void)
 	// 2. 星の中心からプレイヤーへの方向を、カメラにとっての「真上(Up)」とする
 	VECTOR upDir = VNorm(VSub(playerPos, MOON_CENTER_POS));
 
+	// 回転の基準点を頭の位置にずらす
+	VECTOR headPos = VAdd(playerPos, VScale(upDir, 120.0f));
+
 	// 3. プレイヤーの「前」と「真上」から、カメラの基準となる回転を作る
 	Quaternion baseRot = Quaternion::LookRotation(followTransform_->GetForward(), upDir);
 
@@ -205,11 +209,11 @@ void Camera::SyncFollow(void)
 
 	// 6. 「後ろ・上」のオフセット位置を計算
 	VECTOR cameraOffset = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
-	transform_.pos = VAdd(playerPos, cameraOffset);
+	transform_.pos = VAdd(headPos, cameraOffset);
 
 	// 7. 注視点（どこを見るか）を計算
 	VECTOR targetOffset = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
-	targetPos_ = VAdd(playerPos, targetOffset);
+	targetPos_ = VAdd(headPos, targetOffset);
 
 	// ==========================================
 	// ★ 超重要：勝手に回り続けるのを防ぐ「魔法の1行」
@@ -320,7 +324,6 @@ void Camera::SetBeforeDrawFollow(void)
 	// カメラ位置の線形補完
 	/*transform_.pos =
 		AsoUtility::Lerp(prePos_, transform_.pos, 0.25f);*/
-
 }
 
 void Camera::Collision(void)
