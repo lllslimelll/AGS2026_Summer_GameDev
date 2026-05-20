@@ -301,6 +301,7 @@ void Player::CollisionReserve(void)
 			colLine->SetLocalPosEnd(COL_LINE_END_LOCAL_POS);
 		}
 	}
+	// inplaceアニメーションに変えたらここも削除！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 
 	// アニメーションごとのカプセル調整
 	if (animController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
