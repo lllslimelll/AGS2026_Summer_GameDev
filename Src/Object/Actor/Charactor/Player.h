@@ -68,9 +68,9 @@ private:
 	{ 0.0f, 80.0f, 0.0f };
 
 	// ジャンプ力
-	static constexpr float POW_JUMP_INIT = 2000.0f;
+	static constexpr float POW_JUMP_INIT = 1200.0f;
 	// 持続ジャンプ力
-	static constexpr float POW_JUMP_KEEP = 250.0f;
+	static constexpr float POW_JUMP_KEEP = 90.0f;
 	// ジャンプ受付時間
 	static constexpr float TIME_JUMP_INPUT = 0.5f;
 
@@ -90,7 +90,7 @@ private:
 
 	// 現在照準に当たっているアイテム
 	Item* aimedItem_;
-
+	// インベントリ
 	std::array<Item*, INVENTORY_MAX> inventory_;
 
 	// 現在選択中のインベントリスロット

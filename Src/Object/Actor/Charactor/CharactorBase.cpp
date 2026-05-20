@@ -15,6 +15,7 @@ CharactorBase::CharactorBase(void)
 	moveDir_(AsoUtility::VECTOR_ZERO),
 	moveSpeed_(),
 	movePow_(AsoUtility::VECTOR_ZERO),
+	isJump_(false),
 	animController_()
 {
 }
@@ -57,7 +58,7 @@ void CharactorBase::Draw(void)
 {
 	// 基底クラス描画処理
 	ActorBase::Draw();
-
+	DrawFormatString(0, 100, 0xffffff, "isjump:%d", isJump_);
 	// 丸影の描画
 	//DrawShadow();
 }
@@ -116,9 +117,14 @@ void CharactorBase::CalcGravityPow(void)
 	VECTOR gravity = VScale(dirGravity, gravityPow);
 	jumpPow_ = VAdd(jumpPow_, gravity);
 
-	if (jumpPow_.y < MAX_FALL_SPEED)
+	// ---- 追加: 球状重力に対応した終端速度クランプ ----
+   // 重力方向の速度成分（正値 = 落下方向）
+	float fallSpeed = VDot(jumpPow_, dirGravity);
+	if (fallSpeed > MAX_FALL_SPEED)
 	{
-		//jumpPow_.y = MAX_FALL_SPEED;
+		// 落下方向成分だけをクランプ、横方向は据え置く
+		VECTOR lateralVec = VSub(jumpPow_, VScale(dirGravity, fallSpeed));
+		jumpPow_ = VAdd(lateralVec, VScale(dirGravity, MAX_FALL_SPEED));
 	}
 }
 

@@ -14,9 +14,9 @@ public:
 	// 固定FPS
 	static constexpr int FRAME_RATE = 60;
 
-	// 重力
+	// 重力[cm/s?] (9.81 m/s?をcm換算)
 	static constexpr float GRAVITY = 9.81f * 100.0f;
-	static constexpr float GRAVITY_SCALE = 0.2f;
+	static constexpr float GRAVITY_SCALE = 1.0f / 6.0f;
 
 	// データパス関連
 	//-------------------------------------------

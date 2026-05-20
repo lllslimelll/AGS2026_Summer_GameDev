@@ -21,7 +21,7 @@ public:
 	};
 
 	// 拾える距離
-	static constexpr float RANGE_PICKUP = 120.0f;
+	static constexpr float RANGE_PICKUP = 180.0f;
 
 	// ビルボード（金額表示）を表示する距離
 	static constexpr float RANGE_BILLBOARD = 500.0f;
