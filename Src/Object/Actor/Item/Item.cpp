@@ -6,15 +6,15 @@
 #include "../../Collider/ColliderModel.h"
 #include "Item.h"
 
-Item::Item(GRADE grade, const VECTOR& pos)
+Item::Item(const ItemData& data)
     :
     ActorBase(),
-	grade_(grade),
-	defaultPos_(pos),
-	state_(STATE::DROPPED),
+    type(data.type),
+    grade_(data.grade),
+    defaultPos_(data.defaultPos),
+    value_(data.value),
     isAimed_(false)
 {
-	transform_.pos = pos;
 }
 
 Item::~Item()
@@ -128,6 +128,19 @@ void Item::InitLoad(void)
 
 void Item::InitTransform(void)
 {
+    // モデルの基本設定
+    // 座標
+    transform_.pos = defaultPos_;
+
+    // 大きさ
+    transform_.scl = AsoUtility::VECTOR_ONE;
+
+    // モデル本来の向き
+    transform_.quaRot = Quaternion::Identity();
+    // ローカル回転
+    transform_.quaRotLocal = Quaternion::Euler({ 0.0f, DX_PI_F / 180.0f, 0.0f });
+
+    transform_.Update();
 }
 
 void Item::InitCollider(void)
@@ -140,32 +153,39 @@ void Item::InitAnimation(void)
 
 void Item::InitPost(void)
 {
+	// 初期状態は落ちている状態
+	state_ = STATE::DROPPED;
 }
 
 void Item::ChangeState(STATE state)
 {
-    if (state_ == state) return;
     state_ = state;
+    
+	// 各状態遷移処理
+    stateChanges_[state_]();
 
-    switch (state_)
-    {
-    case STATE::DROPPED: ChangeStateDropped(); break;
-    case STATE::HELD:    ChangeStateHeld();    break;
-    case STATE::FLYING:  ChangeStateFlying();  break;
-    default: break;
-    }
+    //switch (state_)
+    //{
+    //case STATE::DROPPED: ChangeDropped(); break;
+    //case STATE::HELD:    ChangeHeld();    break;
+    //case STATE::Throw:  ChangeThrow();  break;
+    //default: break;
+    //}
 }
 
-void Item::ChangeStateDropped(void)
+void Item::ChangeDropped(void)
 {
+    stateUpdate_ = std::bind(&Item::UpdateDropped, this);
 }
 
-void Item::ChangeStateHeld(void)
+void Item::ChangeHeld(void)
 {
+    stateUpdate_ = std::bind(&Item::UpdateHeld, this);
 }
 
-void Item::ChangeStateFlying(void)
+void Item::ChangeThrow(void)
 {
+    stateUpdate_ = std::bind(&Item::UpdateThrow, this);
 }
 
 void Item::UpdateDropped(void)
@@ -176,7 +196,7 @@ void Item::UpdateHeld(void)
 {
 }
 
-void Item::UpdateFlying(void)
+void Item::UpdateThrow(void)
 {
 }
 

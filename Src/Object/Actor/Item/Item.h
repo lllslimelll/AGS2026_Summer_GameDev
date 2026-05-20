@@ -1,10 +1,17 @@
 #pragma once
+#include <functional>
 #include <DxLib.h>
 #include "../ActorBase.h"
 
 class Item : public ActorBase
 {
 public:
+
+	// 種別
+	enum class TYPE {
+		COIN, // コイン
+		GEM,  // 宝石
+	};
 
 	// 値段のグレード
 	enum class GRADE {
@@ -13,15 +20,25 @@ public:
 		HIGH
 	};
 
+	// アイテムデータ
+	struct ItemData{
+		int id;			   // 識別ID
+		Item::TYPE type;   // 種別
+		Item::GRADE grade; // グレード
+		int value;		   // 価値
+		VECTOR defaultPos;    // 初期座標
+	};
+
+	// 状態
 	enum class STATE {
 		NONE,
 		DROPPED, // 落ちている
 		HELD,   // インベントリ内
-		FLYING, // 投擲中
+		THROW, // 投擲
 	};
 
 	// 拾える距離
-	static constexpr float RANGE_PICKUP = 120.0f;
+	static constexpr float RANGE_PICKUP = 180.0f;
 
 	// ビルボード（金額表示）を表示する距離
 	static constexpr float RANGE_BILLBOARD = 500.0f;
@@ -35,7 +52,7 @@ public:
 	static constexpr int VALUE_HIGH = 1000;
 
 	// コンストラクタ
-	Item(GRADE grade, const VECTOR& pos);
+	Item(const ItemData& data);
 	~Item(); // デストラクタ
 
 	// 更新
@@ -55,11 +72,13 @@ public:
 	GRADE GetGrade(void) const; // グレード
 	STATE GetState(void) const; // 状態
 
+	// 照準に当たってるか
 	bool IsAimedBy(const VECTOR& rayOrigin,
 					const VECTOR& rayEnd) const;
 
 	// アイテム取得可能か
 	void SetAimed(bool aimed);
+
 protected:
 
 	// リソースロード
@@ -75,14 +94,14 @@ protected:
 
 private:
 
+	// 種別
+	TYPE type;
 	// グレード
 	GRADE grade_;
-
-	// 現在の価値
-	int value_;
-
 	// 初期位置
 	const VECTOR defaultPos_;
+	// 価値
+	int value_;
 
 	// 状態
 	STATE state_;
@@ -93,18 +112,21 @@ private:
 	// アイテムを拾える状態か
 	bool isAimed_;
 
+	// 状態管理
+	std::map<STATE, std::function<void(void)>> stateChanges_;
+	// 状態別更新
+	std::function<void(void)> stateUpdate_;
+
 	// 状態遷移
 	void ChangeState(STATE state);
-
-	// 遷移時の初期化処理
-	void ChangeStateDropped(void);
-	void ChangeStateHeld(void);
-	void ChangeStateFlying(void);
+	void ChangeDropped(void); // 落ちている状態
+	void ChangeHeld(void);    // インベントリ内状態
+	void ChangeThrow(void);  // 空中状態
 
 	// 状態別更新
-	void UpdateDropped(void);
+	void UpdateDropped(void); 
 	void UpdateHeld(void);
-	void UpdateFlying(void);
+	void UpdateThrow(void);
 
 	// 投擲中の弾道計算
 	void UpdateThrowMove(void);

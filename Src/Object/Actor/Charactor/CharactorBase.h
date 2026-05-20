@@ -60,7 +60,7 @@ protected:
 	int imgShadow_;
 
 	// Å‘å—‰º‘¬“x
-	static constexpr float MAX_FALL_SPEED = -30.0f;
+	static constexpr float MAX_FALL_SPEED = 5.0f;
 
 	// Õ“Ë‚Ì‰Ÿ‚µ–ß‚µs‰ñ”
 	static constexpr int CNT_TRY_COLLISION = 20;

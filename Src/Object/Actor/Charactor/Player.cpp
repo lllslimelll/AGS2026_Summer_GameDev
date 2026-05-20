@@ -152,7 +152,7 @@ void Player::ProcessMove(void)
 		}
 
 		// ジャンプ中はアニメーションを変えない
-		if (!isJump_)
+		//if (!isJump_)
 		{
 			if (isDash)
 			{
@@ -278,19 +278,19 @@ void Player::Draw(void)
 // 衝突判定用の調整
 void Player::CollisionReserve(void)
 {
-	// アニメーションごとの線分調整
-	if (animController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
-	{
-		// ジャンプ中は線分を伸ばす
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)) != 0)
-		{
-			ColliderLine* colLine = dynamic_cast<ColliderLine*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)));
-			colLine->SetLocalPosStart(COL_LINE_JUMP_START_LOCAL_POS);
-			colLine->SetLocalPosEnd(COL_LINE_JUMP_END_LOCAL_POS);
-		}
-	}
-	else
+	//// アニメーションごとの線分調整
+	//if (animController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
+	//{
+	//	// ジャンプ中は線分を伸ばす
+	//	if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)) != 0)
+	//	{
+	//		ColliderLine* colLine = dynamic_cast<ColliderLine*>(
+	//			ownColliders_.at(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)));
+	//		colLine->SetLocalPosStart(COL_LINE_JUMP_START_LOCAL_POS);
+	//		colLine->SetLocalPosEnd(COL_LINE_JUMP_END_LOCAL_POS);
+	//	}
+	//}
+	//else
 	{
 		// 通常時の線分に戻す
 		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)) != 0)
@@ -301,6 +301,7 @@ void Player::CollisionReserve(void)
 			colLine->SetLocalPosEnd(COL_LINE_END_LOCAL_POS);
 		}
 	}
+	// inplaceアニメーションに変えたらここも削除！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 
 	// アニメーションごとのカプセル調整
 	if (animController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))

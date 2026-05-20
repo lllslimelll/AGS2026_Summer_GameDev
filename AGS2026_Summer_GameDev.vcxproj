@@ -203,7 +203,14 @@
     <ClInclude Include="Src\Utility\MatrixUtility.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\Csv\EnemyData.csv" />
+    <None Include="Data\Csv\EnemyData.xlsx" />
+    <None Include="Data\Csv\ItemData.csv" />
+    <None Include="Data\Csv\ItemData.xlsx" />
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Data\Csv\PointSave.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

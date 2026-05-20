@@ -52,7 +52,7 @@ private:
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
 	// 衝突判定用線分終了
-	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
+	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -2.0f, 0.0f };
 
 	// 衝突判定用線分開始（ジャンプ時）
 	static constexpr VECTOR COL_LINE_JUMP_START_LOCAL_POS = { 0.0f, 130.f, 0.0f };
@@ -68,9 +68,9 @@ private:
 	{ 0.0f, 80.0f, 0.0f };
 
 	// ジャンプ力
-	static constexpr float POW_JUMP_INIT = 2000.0f;
+	static constexpr float POW_JUMP_INIT = 1200.0f;
 	// 持続ジャンプ力
-	static constexpr float POW_JUMP_KEEP = 250.0f;
+	static constexpr float POW_JUMP_KEEP = 90.0f;
 	// ジャンプ受付時間
 	static constexpr float TIME_JUMP_INPUT = 0.5f;
 
@@ -90,7 +90,7 @@ private:
 
 	// 現在照準に当たっているアイテム
 	Item* aimedItem_;
-
+	// インベントリ
 	std::array<Item*, INVENTORY_MAX> inventory_;
 
 	// 現在選択中のインベントリスロット

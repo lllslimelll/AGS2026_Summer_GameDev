@@ -187,7 +187,7 @@ void Camera::SyncFollow(void)
 	//localPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
 	//transform_.pos = VAdd(pos, localPos);
 
-
+	//VECTOR playerPos = MV1GetFramePosition(followTransform_->modelId, 6);
 	// 1. プレイヤーの現在の座標を取得
 	VECTOR playerPos = followTransform_->pos;
 

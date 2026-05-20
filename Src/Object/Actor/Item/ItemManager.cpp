@@ -23,14 +23,16 @@ void ItemManager::Init(void)
 
 void ItemManager::Update(void)
 {
-	for (auto& item : items_){
+	for (auto& item : items_)
+	{
 		item->Update();
 	}
 }
 
 void ItemManager::Draw(void)
 {
-	for (auto& item : items_) {
+	for (auto& item : items_)
+	{
 		item->Draw();
 	}
 }
@@ -47,16 +49,30 @@ void ItemManager::Release(void)
 	hitColliders_.clear();
 }
 
-Item* ItemManager::Create(const Item::GRADE grade, const VECTOR& pos)
+Item* ItemManager::Create(const Item::ItemData& data)
 {
-	Item* item = new Item(grade, pos);
+	Item* item = nullptr;
 
-    if(item != nullptr)
-            {
-        // アイテムの初期化
-        item->Init();
-        items_.emplace_back(item);
+	// 種別事にアイテム生成
+	switch (data.type)
+	{
+	case Item::TYPE::COIN:
+		item = new Item(data);
+		break;
+	case Item::TYPE::GEM:
+		item = new Item(data);
+		break;
+	default:
+		break;
 	}
+
+	if (item != nullptr)
+	{
+		item->Init(); // 初期化
+		items_.emplace_back(item); // アイテムリストに追加
+	}
+
+	// アイテムを返す
 	return item;
 }
 
@@ -107,5 +123,52 @@ const std::vector<Item*>& ItemManager::GetAllItems(void) const
 
 void ItemManager::LoadCsvData(void)
 {
-    Create(Item::GRADE::HIGH, {300.0f, 2360.0f, 0.0f});
+    // ファイルの読み込み
+	std::ifstream ifs = std::ifstream(Application::PATH_CSV + "ItemData.csv");
+	// エラー発生
+	if (!ifs) return;
+
+	// ファイルを1行ずつ読み込む
+	std::string line; // 1行の文字情報
+	std::vector<std::string> strSplit;  // 1行を1文字の動的配列に分割
+
+	bool isHeader = true;
+
+	while (getline(ifs, line)) 
+	{
+		if (isHeader) 
+		{
+			isHeader = false;
+			continue;
+		}
+
+		// 1行をカンマ区切りで分割
+		strSplit = AsoUtility::Split(line, ',');
+
+		Item* item = nullptr;
+
+		// 構造体に合わせて読み込みデータを格納
+		Item::ItemData data = Item::ItemData();
+		int idx = 0;
+		// ID
+		data.id = stoi(strSplit[idx++]);
+		// 種別
+		data.type = static_cast<Item::TYPE>(stoi(strSplit[idx++]));
+		// グレード
+		data.grade = static_cast<Item::GRADE>(stoi(strSplit[idx++]));
+		// 価値
+		data.value = stoi(strSplit[idx++]);
+		// 初期座標
+		data.defaultPos =
+		{
+			stof(strSplit[idx++]), // X
+			stof(strSplit[idx++]), // Y
+			stof(strSplit[idx++])  // Z
+		};
+
+		// アイテム生成
+		Create(data);
+	}
+
+	ifs.close();
 }

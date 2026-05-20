@@ -230,5 +230,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="Data\Csv\EnemyData.csv" />
+    <None Include="Data\Csv\EnemyData.xlsx" />
+    <None Include="Data\Csv\ItemData.csv" />
+    <None Include="Data\Csv\ItemData.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Data\Csv\PointSave.txt" />
   </ItemGroup>
 </Project>

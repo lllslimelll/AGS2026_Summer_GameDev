@@ -28,7 +28,7 @@ public:
 	void Release(void);
 
 	// アイテム生成
-	Item* Create(const Item::GRADE grade, const VECTOR& pos);
+	Item* Create(const Item::ItemData& data);
 
 	// 衝突対象となるコライダを登録
 	// EnemyManagerと同じ流儀：Init()後に呼ぶ
@@ -45,7 +45,7 @@ public:
 		float rayLength) const;
 
 	// 投擲中アイテムの一覧（EnemyManagerの命中判定に使う）
-	const std::vector<Item*>& GetFlyingItems(void) const;
+	const std::vector<Item*>& GetThrowingItems(void) const;
 
 	// 全アイテムの一覧
 	const std::vector<Item*>& GetAllItems(void) const;
@@ -65,6 +65,6 @@ private:
 	void LoadCsvData(void);
 
 	// 投擲中リストを毎フレーム更新
-	void UpdateFlyingList(void);
+	void UpdateThrowingList(void);
 };
 
