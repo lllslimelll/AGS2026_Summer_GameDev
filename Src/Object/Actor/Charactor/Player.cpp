@@ -66,6 +66,11 @@ void Player::UpdateAimedItem(void)
 
 void Player::ProcessPickUp(void)
 {
+	// Æ€‚É“–‚½‚Á‚Ä‚éƒAƒCƒeƒ€‚È‚©‚Á‚½‚çˆ—‚µ‚È‚¢
+	if (aimedItem_ == nullptr) return;
+
+	// “ü—Í‚ª‚ ‚Á‚½‚ç
+	if()
 }
 
 void Player::ProcessThrow(void)

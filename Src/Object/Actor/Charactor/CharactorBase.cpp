@@ -180,7 +180,7 @@ void CharactorBase::CollisionGravity(void)
 		// 衝突したポリゴンの上に押し戻す
 		bool isHit = colliderLine_->PushBackUp(
 			colliderModel, transform_,
-			upDir,  // 上方向
+			upDir,  // 上方向い
 			2.0f,	// 押し戻し距離
 			true,	// ブラックリスト使用許可
 			false	// ホワイトリスト使用許可

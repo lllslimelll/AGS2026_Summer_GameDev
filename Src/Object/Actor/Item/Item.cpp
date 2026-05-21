@@ -26,14 +26,11 @@ void Item::Update(void)
 	// 移動前座標を更新
 	//prevPos_ = transform_.pos;
 
-	// 各キャラクターごとの更新処理
+	// 更新処理
 	//UpdateProcess();
 
 	// 重力による移動量
 	//CalcGravityPow();
-
-	// 衝突判定前準備
-	//CollisionReserve();
 
 	// 衝突判定
 	//Collision();
@@ -41,10 +38,7 @@ void Item::Update(void)
 	// モデル制御更新
 	transform_.Update();
 
-	// アニメーション再生
-	//animController_->Update();
-
-	// 各キャラクターごとの更新後処理
+	// 更新後処理
 	//UpdateProcessPost();
 }
 
@@ -62,6 +56,7 @@ void Item::Draw(void)
 
 void Item::OnPickedUp(void)
 {
+    ChangeState(STATE::HELD);
 }
 
 void Item::OnThrow(const VECTOR& throwDir)
@@ -91,14 +86,14 @@ bool Item::IsAimedBy(const VECTOR& rayOrigin, const VECTOR& rayEnd) const
 {
     if (state_ != STATE::DROPPED) return false;
 
-    // ① スフィア判定
+    // スフィア判定
     bool hit = AsoUtility::IsHitSphereCapsule(
         transform_.pos, 30.0f,
         rayOrigin, rayEnd, 0.0f);
 
     if (!hit) return false;
 
-    // ② 遮蔽チェック
+    // 遮蔽チェック
     for (const auto& c : hitColliders_)
     {
         if (c->GetShape() != ColliderBase::SHAPE::MODEL)
@@ -123,14 +118,14 @@ void Item::SetAimed(bool aimed)
 
 void Item::InitLoad(void)
 {
-
+    //// モデル読み込み
+    //transform_.SetModel(resMng_.Dupulicate(			// 1個 = Load()  複数 = Depulicate()
+    //    ResourceManager::SRC::MAIN_STAGE).handleId_);
 }
 
 void Item::InitTransform(void)
 {
     // モデルの基本設定
-    // 座標
-    transform_.pos = defaultPos_;
 
     // 大きさ
     transform_.scl = AsoUtility::VECTOR_ONE;
@@ -139,6 +134,9 @@ void Item::InitTransform(void)
     transform_.quaRot = Quaternion::Identity();
     // ローカル回転
     transform_.quaRotLocal = Quaternion::Euler({ 0.0f, DX_PI_F / 180.0f, 0.0f });
+
+    // 座標
+    transform_.pos = defaultPos_;
 
     transform_.Update();
 }
