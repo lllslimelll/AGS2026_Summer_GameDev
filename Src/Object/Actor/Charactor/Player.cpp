@@ -69,8 +69,15 @@ void Player::ProcessPickUp(void)
 	// 照準に当たってるアイテムなかったら処理しない
 	if (aimedItem_ == nullptr) return;
 
+	auto& ins = InputManager::GetInstance();
+
 	// 入力があったら
-	if()
+	if(ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT))
+	{
+		//itemMgr->
+		//// アイテムを拾う処理
+		//TryAddInventory(aimedItem_);
+	}
 }
 
 void Player::ProcessThrow(void)
