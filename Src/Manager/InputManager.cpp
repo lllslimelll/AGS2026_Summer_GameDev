@@ -46,6 +46,12 @@ void InputManager::Init(void)
 
 	InputManager::GetInstance().Add(KEY_INPUT_BACKSLASH);
 
+	GetInstance().Add(KEY_INPUT_1);
+	GetInstance().Add(KEY_INPUT_2);
+	GetInstance().Add(KEY_INPUT_3);
+	GetInstance().Add(KEY_INPUT_4);
+	GetInstance().Add(KEY_INPUT_5);
+
 	InputManager::MouseInfo info;
 
 	// 左クリック
@@ -65,6 +71,8 @@ void InputManager::Init(void)
 	info.keyTrgDown = false;
 	info.keyTrgUp = false;
 	mouseInfos_.emplace(info.key, info);
+
+	mouseWheelRot_ = 0;
 
 }
 
@@ -98,6 +106,9 @@ void InputManager::Update(void)
 	SetJPadInState(JOYPAD_NO::PAD2);
 	SetJPadInState(JOYPAD_NO::PAD3);
 	SetJPadInState(JOYPAD_NO::PAD4);
+
+	// マウスホイールの回転量を取得
+	mouseWheelRot_ = GetMouseWheelRotVol();
 
 }
 
@@ -261,6 +272,11 @@ void InputManager::SetJPadInState(JOYPAD_NO jpNo)
 
 }
 
+int InputManager::GetMouseWheelRot(void) const
+{
+	return mouseWheelRot_;
+}
+
 InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 {
 
@@ -275,7 +291,6 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 	case InputManager::JOYPAD_TYPE::XBOX_360:
 	{
 	}
-		break;
 	case InputManager::JOYPAD_TYPE::XBOX_ONE:
 	{
 
@@ -305,6 +320,12 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 
 		idx = static_cast<int>(JOYPAD_BTN::L_TRIGGER);
 		ret.ButtonsNew[idx] = x.LeftTrigger; // L_TRIGGER
+
+		idx = static_cast<int>(JOYPAD_BTN::R_SHOULDER);
+		ret.ButtonsNew[idx] = d.Buttons[5]; // R_SHOULDER
+
+		idx = static_cast<int>(JOYPAD_BTN::L_SHOULDER);
+		ret.ButtonsNew[idx] = d.Buttons[4]; // L_SHOULDER
 
 		// 左スティック
 		ret.AKeyLX = d.X;

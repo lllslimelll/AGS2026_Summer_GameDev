@@ -15,78 +15,15 @@
 Player::Player(ItemManager* itemMng)
 	:
 	CharactorBase(),
-	itemMgr_(itemMng)
+	itemMgr_(itemMng),
+	aimedItem_(nullptr),
+	inventory_{},
+	selectedSlot_(0)
 {
 }
 
 Player::~Player(void)
 {
-}
-
-void Player::UpdateItem(void)
-{
-	// 照準アイテムの更新
-	UpdateAimedItem();
-
-	// 拾う処理
-	ProcessPickUp();
-
-	// 投擲処理
-	ProcessThrow();
-}
-
-void Player::UpdateAimedItem(void)
-{
-	// 照準に当たっているアイテムを取得
-	// RANGE_PICKUP の長さのレイが届く範囲 = 拾える範囲
-	Item* newAimed = itemMgr_->GetAimedItem(
-		scnMng_.GetCamera()->GetPos(),
-		scnMng_.GetCamera()->GetForward(),
-		Item::RANGE_PICKUP
-	);
-
-	// 前フレームと変わった場合のみ SetAimed を呼ぶ
-	if (newAimed != aimedItem_)
-	{
-		// 前フレームのアイテムのエイムを解除
-		if (aimedItem_ != nullptr)
-		{
-			aimedItem_->SetAimed(false);
-		}
-
-		// 新しいアイテムにエイムをセット
-		if (newAimed != nullptr)
-		{
-			newAimed->SetAimed(true);
-		}
-
-		aimedItem_ = newAimed;
-	}
-}
-
-void Player::ProcessPickUp(void)
-{
-	// 照準に当たってるアイテムなかったら処理しない
-	if (aimedItem_ == nullptr) return;
-
-	auto& ins = InputManager::GetInstance();
-
-	// 入力があったら
-	if(ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT))
-	{
-		//itemMgr->
-		//// アイテムを拾う処理
-		//TryAddInventory(aimedItem_);
-	}
-}
-
-void Player::ProcessThrow(void)
-{
-}
-
-bool Player::TryAddInventory(Item* item)
-{
-	return false;
 }
 
 void Player::ProcessMove(void)
@@ -125,7 +62,7 @@ void Player::ProcessMove(void)
 		// Rでダッシュ
 		if (ins.IsPadBtnNew(
 			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::R_TRIGGER)) {
+			InputManager::JOYPAD_BTN::L_TRIGGER)) {
 			isDash = true;
 		}
 	}
@@ -263,21 +200,187 @@ void Player::UpdateProcess(void)
 	// ジャンプ処理
 	ProcessJump();
 
-	// アイテム更新
-	UpdateItem();
-
 	// 衝突判定用の調整
 	CollisionReserve();
 }
 
 void Player::UpdateProcessPost(void)
 {
+	// アイテム更新
+	UpdateItem();
+
+	// 選択スロットの変更
+	ChangeSelectedSlot();
+}
+
+
+void Player::UpdateItem(void)
+{
+	// 照準アイテムの更新
+	UpdateAimedItem();
+
+	// 拾う処理
+	ProcessPickUp();
+
+	// 投擲処理
+	ProcessThrow();
+}
+
+void Player::UpdateAimedItem(void)
+{
+	// 照準に当たっているアイテムを取得
+	// RANGE_PICKUP の長さのレイが届く範囲 = 拾える範囲
+	Item* newAimed = itemMgr_->GetAimedItem(
+		scnMng_.GetCamera()->GetPos(),
+		scnMng_.GetCamera()->GetForward(),
+		Item::RANGE_PICKUP);
+
+	// 前フレームと変わった場合のみ SetAimed を呼ぶ
+	if (newAimed != aimedItem_)
+	{
+		// 前フレームのアイテムのエイムを解除
+		if (aimedItem_ != nullptr)
+		{
+			aimedItem_->SetAimed(false);
+		}
+
+		// 新しいアイテムにエイムをセット
+		if (newAimed != nullptr)
+		{
+			newAimed->SetAimed(true);
+		}
+
+		aimedItem_ = newAimed;
+	}
+}
+
+void Player::ProcessPickUp(void)
+{
+	// 拾える状態じゃなければ処理しない
+	if (!CanPickUp()) return;
+
+	auto& ins = InputManager::GetInstance();
+
+	// 入力があったら
+	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT))
+	{
+		// 拾う
+		aimedItem_->OnPickedUp();
+
+		// インベントリに追加
+		AddInventory(aimedItem_);
+	}
+}
+
+void Player::ProcessThrow(void)
+{
+}
+
+void Player::AddInventory(Item* item)
+{
+	// 取得したアイテムを空いているスロットに追加
+	for (int i = 0; i < INVENTORY_MAX; i++)
+	{
+		if (inventory_[i] == nullptr)
+		{
+			inventory_[i] = item;
+
+			item->GetTransform().Attach(
+				&transform_, { 0,120,0 });
+			
+			break;
+		}
+	}
+}
+
+void Player::ChangeSelectedSlot()
+{
+	// 旧選択アイテムをデタッチ
+	if (inventory_[selectedSlot_] != nullptr)
+	{
+		inventory_[selectedSlot_]->GetTransform().Detach();
+	}
+
+	auto& ins = InputManager::GetInstance();
+	
+	// RB/LB
+	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
+		InputManager::JOYPAD_BTN::R_SHOULDER))
+	{
+		selectedSlot_ = (selectedSlot_ + 1) % INVENTORY_MAX;
+	}
+	else if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
+		InputManager::JOYPAD_BTN::L_SHOULDER))
+	{
+		selectedSlot_ = (selectedSlot_ - 1 + INVENTORY_MAX) % INVENTORY_MAX;
+	}
+
+	// 12345キー
+	if (ins.IsTrgDown(KEY_INPUT_1)) { selectedSlot_ = 0; }
+	else if (ins.IsTrgDown(KEY_INPUT_2)) { selectedSlot_ = 1; }
+	else if (ins.IsTrgDown(KEY_INPUT_3)) { selectedSlot_ = 2; }
+	else if (ins.IsTrgDown(KEY_INPUT_4)) { selectedSlot_ = 3; }
+	else if (ins.IsTrgDown(KEY_INPUT_5)) { selectedSlot_ = 4; }
+
+	// マウスホイール
+	int wheel = ins.GetMouseWheelRot();
+	if (wheel > 0) { selectedSlot_ = (selectedSlot_ - 1 + INVENTORY_MAX) % INVENTORY_MAX; }
+	else if (wheel < 0) { selectedSlot_ = (selectedSlot_ + 1) % INVENTORY_MAX; }
+
+	// 新選択アイテムをアタッチ
+	if (inventory_[selectedSlot_] != nullptr)
+	{
+		inventory_[selectedSlot_]->GetTransform().Attach(
+			&transform_, { 0,120,0 });
+	}
+}
+
+bool Player::CanPickUp(void) const
+{
+	// 照準に当たってるアイテムなかったら or 
+	// アイテムがドロップ状態じゃなければ
+	if (aimedItem_ == nullptr ||
+		aimedItem_->GetState() != Item::STATE::DROPPED)
+	{
+		// 拾えない
+		return false;
+	}
+
+	// インベントリに空きがあるか
+	for (int i = 0; i < INVENTORY_MAX; i++)
+	{
+		// 空きがあれば
+		if (inventory_[i] == nullptr)
+		{
+			// 拾える
+			return true;
+		}
+	}
+
+	// 空きがなければ拾えない
+	return false;
 }
 
 void Player::Draw(void)
 {
 	// 基底クラスの描画
 	CharactorBase::Draw();
+
+	// インベントリ四角の描画(画像などは未実装)
+	for (int i = 0; i < INVENTORY_MAX; i++)
+	{
+		int x = 20 + i * 60;
+		int y = 620;
+		int size = 50;
+		// 選択中のスロットは赤い四角で囲む
+		if (i == selectedSlot_)
+		{
+			DrawBox(x - 5, y - 5, x + size + 5, y + size + 5, GetColor(255, 0, 0), false);
+		}
+		// スロットの四角を描画
+		DrawBox(x, y, x + size, y + size, GetColor(255, 255, 255), false);
+	}
+
 
 	// デバッグ表示
 	DrawFormatString(0, 0, GetColor(255, 255, 255),

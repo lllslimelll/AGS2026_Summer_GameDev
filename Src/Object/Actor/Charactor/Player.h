@@ -92,7 +92,6 @@ private:
 	Item* aimedItem_;
 	// インベントリ
 	std::array<Item*, INVENTORY_MAX> inventory_;
-
 	// 現在選択中のインベントリスロット
 	int selectedSlot_;
 
@@ -107,8 +106,12 @@ private:
 	// 投擲処理
 	void ProcessThrow(void);
 
-	// インベントリに追加（満杯なら false を返す）
-	bool TryAddInventory(Item* item);
+	// インベントリに追加
+	void AddInventory(Item* item);
+	// 選択中のインベントリスロットの変更
+	void ChangeSelectedSlot();
+	// インベントリが満杯か否か
+	bool CanPickUp(void) const;
 
 	// 移動処理
 	void ProcessMove(void);

@@ -9,12 +9,13 @@ Transform::Transform(void)
 	rot(AsoUtility::VECTOR_ZERO),
 	pos(AsoUtility::VECTOR_ZERO),
 	localPos(AsoUtility::VECTOR_ZERO),
+	localOffset_(AsoUtility::VECTOR_ZERO),
 	matScl(MGetIdent()),
 	matRot(MGetIdent()),
 	matPos(MGetIdent()),
 	quaRot(Quaternion()),
-	quaRotLocal(Quaternion())
-
+	quaRotLocal(Quaternion()),
+	parent_(nullptr)
 {
 }
 
@@ -24,6 +25,15 @@ Transform::~Transform(void)
 
 void Transform::Update(void)
 {
+	if (parent_ != nullptr)
+	{
+		// À•W’Ç]
+		VECTOR rotatedOffset = parent_->quaRot.PosAxis(localOffset_);
+		pos = VAdd(parent_->pos, rotatedOffset);
+
+		// ‰ñ“]’Ç]
+		quaRot = parent_->quaRot;
+	}
 
 	// ‘å‚«‚³
 	matScl = MGetScale(scl);
@@ -92,4 +102,16 @@ VECTOR Transform::GetDown(void) const
 VECTOR Transform::GetDir(const VECTOR& dir) const
 {
 	return quaRot.PosAxis(dir);
+}
+
+void Transform::Attach(Transform* parent, VECTOR offset)
+{
+	parent_ = parent;
+	localOffset_ = offset;
+}
+
+void Transform::Detach(void)
+{
+	parent_ = nullptr;
+	localOffset_ = AsoUtility::VECTOR_ZERO;
 }

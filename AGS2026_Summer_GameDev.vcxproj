@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Actor\Item\Item1.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\ItemManager.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\Item.cpp" />
     <ClCompile Include="Src\Application.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Actor\Item\Item1.h" />
     <ClInclude Include="Src\Object\Actor\Item\ItemManager.h" />
     <ClInclude Include="Src\Object\Actor\Item\Item.h" />
     <ClInclude Include="Src\Application.h" />

@@ -51,6 +51,8 @@ public:
 		DOWN,
 		R_TRIGGER,
 		L_TRIGGER,
+		R_SHOULDER,
+		L_SHOULDER,
 		MAX
 	};
 
@@ -128,6 +130,9 @@ public:
 	// アナログキーの入力値から方向(正規化済み)を取得
 	VECTOR GetDirectionXZAKey(int aKeyX, int aKeyY) const;
 
+	// マウスホイールの回転量を取得
+	int GetMouseWheelRot(void) const;
+
 private:
 
 	// キー情報
@@ -172,6 +177,8 @@ private:
 	
 	// マウスボタンの入力状態
 	int mouseInput_;
+	// ホイール回転量
+	int mouseWheelRot_;  
 
 	// パッド情報
 	JOYPAD_IN_STATE padInfos_[5];

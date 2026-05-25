@@ -25,7 +25,7 @@ EnemyRobot::~EnemyRobot(void)
 void EnemyRobot::InitLoad(void)
 {
 	// 基底クラスのリソースロード
-	CharactorBase::InitLoad();
+	//CharactorBase::InitLoad();
 
 	// モデルのロード
 	transform_.SetModel(

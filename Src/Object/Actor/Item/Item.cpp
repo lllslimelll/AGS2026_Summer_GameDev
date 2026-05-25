@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/SceneManager.h"
+#include "../../../Manager/Camera.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../Collider/ColliderBase.h"
 #include "../../Collider/ColliderModel.h"
@@ -29,6 +30,9 @@ void Item::Update(void)
 	// 更新処理
 	//UpdateProcess();
 
+	// 状態別更新
+	stateUpdate_();
+
 	// 重力による移動量
 	//CalcGravityPow();
 
@@ -44,23 +48,43 @@ void Item::Update(void)
 
 void Item::Draw(void)
 {
-	// 基底クラス描画処理
+   // 選択中のアイテムのみ描画
+   
+	
 	ActorBase::Draw();
 
 #ifdef _DEBUG
-    // 照準が当たっているときスフィアを緑、通常は赤で表示
-    int color = isAimed_ ? 0x00ff00 : 0xff0000;
-    DrawSphere3D(transform_.pos, 30.0f, 8, color, color, FALSE);
+   int color;
+
+    if (isAimed_)
+    {
+        // 照準中は赤で統一
+        color = 0xff0000;
+    }
+    else
+    {
+        // 種別ごとに色を変える
+        switch (type)
+        {
+        case TYPE::COIN: color = 0xffff00; break; // 黄色
+        case TYPE::GEM:  color = 0x00ffff; break; // 水色
+        default:         color = 0xff0000; break; // 赤（未定義）
+        }
+    }
+
+    DrawSphere3D(transform_.pos, 30.0f, 8, color, color, TRUE);
 #endif
 }
 
 void Item::OnPickedUp(void)
 {
+	// アイテムを持っている状態に遷移
     ChangeState(STATE::HELD);
 }
 
 void Item::OnThrow(const VECTOR& throwDir)
 {
+    ChangeState(STATE::THROW);
 }
 
 void Item::OnHitEnemy(void)
@@ -151,24 +175,25 @@ void Item::InitAnimation(void)
 
 void Item::InitPost(void)
 {
-	// 初期状態は落ちている状態
-	state_ = STATE::DROPPED;
+	// 状態遷移の処理登録
+    stateChanges_[STATE::DROPPED] = 
+        std::bind(&Item::ChangeDropped, this);
+    stateChanges_[STATE::HELD] =
+        std::bind(&Item::ChangeHeld, this);
+	stateChanges_[STATE::THROW] =
+        std::bind(&Item::ChangeThrow, this);
+
+    // 初期状態
+    ChangeState(STATE::DROPPED);
+
 }
 
 void Item::ChangeState(STATE state)
 {
     state_ = state;
     
-	// 各状態遷移処理
+	// 各状態遷移の処理
     stateChanges_[state_]();
-
-    //switch (state_)
-    //{
-    //case STATE::DROPPED: ChangeDropped(); break;
-    //case STATE::HELD:    ChangeHeld();    break;
-    //case STATE::Throw:  ChangeThrow();  break;
-    //default: break;
-    //}
 }
 
 void Item::ChangeDropped(void)
@@ -192,6 +217,8 @@ void Item::UpdateDropped(void)
 
 void Item::UpdateHeld(void)
 {
+	// アイテムを持っているプレイヤーの座標に追従させる
+	transform_.pos = VAdd(scnMng_.GetCamera()->GetTransform().pos, VGet(0.0f, 140.0f, 0.0f));
 }
 
 void Item::UpdateThrow(void)
