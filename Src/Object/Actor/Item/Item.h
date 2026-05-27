@@ -40,9 +40,6 @@ public:
 	// 拾える距離
 	static constexpr float RANGE_PICKUP = 180.0f;
 
-	// ビルボード（金額表示）を表示する距離
-	static constexpr float RANGE_BILLBOARD = 500.0f;
-
 	// 投擲時の初速
 	static constexpr float THROW_SPEED = 40.0f;
 
@@ -112,6 +109,10 @@ private:
 	// アイテムを拾える状態か
 	bool isAimed_;
 
+	// アイテム価値のビルボード画像
+	int valueBillImg_;
+
+
 	// 状態管理
 	std::map<STATE, std::function<void(void)>> stateChanges_;
 	// 状態別更新
@@ -127,6 +128,11 @@ private:
 	void UpdateDropped(void); 
 	void UpdateHeld(void);
 	void UpdateThrow(void);
+
+	// 状態別描画
+	void DrawDropped(void);
+	void DrawHeld(void);
+	void DrawThrow(void);
 
 	// 投擲中の弾道計算
 	void UpdateThrowMove(void);

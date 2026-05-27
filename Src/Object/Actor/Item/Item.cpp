@@ -14,6 +14,7 @@ Item::Item(const ItemData& data)
     grade_(data.grade),
     defaultPos_(data.defaultPos),
     value_(data.value),
+    valueBillImg_(-1),
     isAimed_(false)
 {
 }
@@ -145,6 +146,9 @@ void Item::InitLoad(void)
     //// モデル読み込み
     //transform_.SetModel(resMng_.Dupulicate(			// 1個 = Load()  複数 = Depulicate()
     //    ResourceManager::SRC::MAIN_STAGE).handleId_);
+
+	// アイテム価値のビルボード画像読み込み
+    valueBillImg_ = 
 }
 
 void Item::InitTransform(void)
@@ -222,6 +226,18 @@ void Item::UpdateHeld(void)
 }
 
 void Item::UpdateThrow(void)
+{
+}
+
+void Item::DrawDropped(void)
+{
+}
+
+void Item::DrawHeld(void)
+{
+}
+
+void Item::DrawThrow(void)
 {
 }
 

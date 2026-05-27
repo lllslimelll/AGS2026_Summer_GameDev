@@ -285,8 +285,8 @@ void Player::AddInventory(Item* item)
 		{
 			inventory_[i] = item;
 
-			item->GetTransform().Attach(
-				&transform_, { 0,120,0 });
+			//item->GetTransform().Attach(
+			//	&transform_, { 0,120,0 });
 			
 			break;
 		}
@@ -298,7 +298,7 @@ void Player::ChangeSelectedSlot()
 	// 旧選択アイテムをデタッチ
 	if (inventory_[selectedSlot_] != nullptr)
 	{
-		inventory_[selectedSlot_]->GetTransform().Detach();
+		//inventory_[selectedSlot_]->GetTransform().Detach();
 	}
 
 	auto& ins = InputManager::GetInstance();
@@ -330,8 +330,8 @@ void Player::ChangeSelectedSlot()
 	// 新選択アイテムをアタッチ
 	if (inventory_[selectedSlot_] != nullptr)
 	{
-		inventory_[selectedSlot_]->GetTransform().Attach(
-			&transform_, { 0,120,0 });
+		//inventory_[selectedSlot_]->GetTransform().Attach(
+		//	&transform_, { 0,120,0 });
 	}
 }
 
