@@ -95,6 +95,12 @@ private:
 	// 現在選択中のインベントリスロット
 	int selectedSlot_;
 
+	// インベントトリ内アイテムの画像
+	int inventoryItemImgs_[INVENTORY_MAX];
+
+	// 照準の現在半径（補間用）
+	float crosshairRadius_;
+
 	// アイテム関連更新
 	void UpdateItem(void);
 

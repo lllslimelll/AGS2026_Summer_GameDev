@@ -56,10 +56,13 @@ Item* ItemManager::Create(const Item::ItemData& data)
 	// í•Ê–‚ÉƒAƒCƒeƒ€¶¬
 	switch (data.type)
 	{
-	case Item::TYPE::COIN:
+	case Item::TYPE::type1:
 		item = new Item(data);
 		break;
-	case Item::TYPE::GEM:
+	case Item::TYPE::type2:
+		item = new Item(data);
+		break;
+	case Item::TYPE::type3:
 		item = new Item(data);
 		break;
 	default:

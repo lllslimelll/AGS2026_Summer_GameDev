@@ -10,12 +10,13 @@
 Item::Item(const ItemData& data)
     :
     ActorBase(),
-    type(data.type),
+    type_(data.type),
     grade_(data.grade),
     defaultPos_(data.defaultPos),
     value_(data.value),
-    valueBillImg_(-1),
-    isAimed_(false)
+    valueBillImg_{ -1, -1, -1 },
+    isAimed_(false),
+    isSelected_(false)
 {
 }
 
@@ -49,31 +50,37 @@ void Item::Update(void)
 
 void Item::Draw(void)
 {
-   // 選択中のアイテムのみ描画
-   
-	
-	ActorBase::Draw();
+   // モデル描画
+   //if (transform_.modelId != -1) return;
+
+   //MV1DrawModel(transform_.modelId);
+
+
+	// 落ちてる状態 or インベントリ内で選択されてる状態のとき、アイテムを描画
+    bool shouldDraw = (state_ == STATE::DROPPED) || isSelected_;
+
+    if (shouldDraw)
+    {
+        int color;
+        switch (type_)
+        {
+        case TYPE::type1: color = 0xffff00; break;
+        case TYPE::type2: color = 0x00ffff; break;
+        case TYPE::type3: color = 0xff00ff; break;
+        default: color = 0xffffff; break;
+        }
+        DrawSphere3D(transform_.pos, 30.0f, 8, color, color, TRUE);
+    }
+    // 状態別描画
+    stateDraw_();
 
 #ifdef _DEBUG
-   int color;
 
-    if (isAimed_)
+    // 所有しているコライダの描画
+    for (const auto& own : ownColliders_)
     {
-        // 照準中は赤で統一
-        color = 0xff0000;
+        //own.second->Draw();
     }
-    else
-    {
-        // 種別ごとに色を変える
-        switch (type)
-        {
-        case TYPE::COIN: color = 0xffff00; break; // 黄色
-        case TYPE::GEM:  color = 0x00ffff; break; // 水色
-        default:         color = 0xff0000; break; // 赤（未定義）
-        }
-    }
-
-    DrawSphere3D(transform_.pos, 30.0f, 8, color, color, TRUE);
 #endif
 }
 
@@ -92,9 +99,14 @@ void Item::OnHitEnemy(void)
 {
 }
 
+Item::TYPE Item::GetType(void) const
+{
+    return type_;
+}
+
 int Item::GetValue(void) const
 {
-    return 0;
+    return value_;
 }
 
 Item::GRADE Item::GetGrade(void) const
@@ -141,6 +153,11 @@ void Item::SetAimed(bool aimed)
     isAimed_ = aimed;
 }
 
+void Item::SetSelected(bool selected)
+{
+	isSelected_ = selected;
+}
+
 void Item::InitLoad(void)
 {
     //// モデル読み込み
@@ -148,7 +165,14 @@ void Item::InitLoad(void)
     //    ResourceManager::SRC::MAIN_STAGE).handleId_);
 
 	// アイテム価値のビルボード画像読み込み
-    valueBillImg_ = 
+    valueBillImg_[0] = LoadGraph("Data/Image/$100.png");
+	valueBillImg_[1] = LoadGraph("Data/Image/$500.png");
+	valueBillImg_[2] = LoadGraph("Data/Image/$1.000.png");
+
+    if (valueBillImg_[0] == -1)
+    {
+        printfDx("$100.png のロード失敗\n");
+    }
 }
 
 void Item::InitTransform(void)
@@ -203,16 +227,19 @@ void Item::ChangeState(STATE state)
 void Item::ChangeDropped(void)
 {
     stateUpdate_ = std::bind(&Item::UpdateDropped, this);
+    stateDraw_ = std::bind(&Item::DrawDropped, this);
 }
 
 void Item::ChangeHeld(void)
 {
     stateUpdate_ = std::bind(&Item::UpdateHeld, this);
+    stateDraw_ = std::bind(&Item::DrawHeld, this);
 }
 
 void Item::ChangeThrow(void)
 {
     stateUpdate_ = std::bind(&Item::UpdateThrow, this);
+    stateDraw_ = std::bind(&Item::DrawThrow, this);
 }
 
 void Item::UpdateDropped(void)
@@ -221,8 +248,6 @@ void Item::UpdateDropped(void)
 
 void Item::UpdateHeld(void)
 {
-	// アイテムを持っているプレイヤーの座標に追従させる
-	transform_.pos = VAdd(scnMng_.GetCamera()->GetTransform().pos, VGet(0.0f, 140.0f, 0.0f));
 }
 
 void Item::UpdateThrow(void)
@@ -231,14 +256,21 @@ void Item::UpdateThrow(void)
 
 void Item::DrawDropped(void)
 {
+	// 標準に当たっている時だけ価値のビルボード画像描画
+    if (isAimed_)
+    {
+		DrawBillboard();
+    }
 }
 
 void Item::DrawHeld(void)
 {
+    
 }
 
 void Item::DrawThrow(void)
 {
+  
 }
 
 void Item::UpdateThrowMove(void)
@@ -247,4 +279,19 @@ void Item::UpdateThrowMove(void)
 
 void Item::DrawBillboard(void) const
 {
+    VECTOR Vec = VNorm(VSub(scnMng_.GetCamera()->GetTransform().pos, transform_.pos));
+    
+
+    switch (type_)
+    {
+    case TYPE::type1:
+        DrawBillboard3D(VAdd(transform_.pos, VScale(Vec, 32.0f)), 0.5f, 0.5f, 50.0f, 0.0f, valueBillImg_[0], true);
+        break;
+	case TYPE::type2:
+        DrawBillboard3D(VAdd(transform_.pos, VScale(Vec, 32.0f)), 0.5f, 0.5f, 50.0f, 0.0f, valueBillImg_[1], true);
+		break;
+	case TYPE::type3:
+		DrawBillboard3D(VAdd(transform_.pos, VScale(Vec, 32.0f)), 0.5f, 0.5f, 50.0f, 0.0f, valueBillImg_[2], true);
+		break;
+    }
 }

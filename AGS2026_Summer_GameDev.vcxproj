@@ -214,6 +214,16 @@
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Data\Image\$100.png" />
+    <Image Include="Data\Image\100$.png" />
+    <Image Include="Data\Image\Congratulations.png" />
+    <Image Include="Data\Image\PushSpace.png" />
+    <Image Include="Data\Image\roket.png" />
+    <Image Include="Data\Image\Shadow.png" />
+    <Image Include="Data\Image\SpeechBalloon.png" />
+    <Image Include="Data\Image\Title.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

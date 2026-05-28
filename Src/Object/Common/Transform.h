@@ -13,9 +13,6 @@ class Transform
 
 public:
 
-	// 親Transform
-	Transform* parent_;
-
 	// モデルのハンドルID
 	int modelId;
 
@@ -37,9 +34,6 @@ public:
 
 	// ローカル回転
 	Quaternion quaRotLocal;
-
-	// 親からのオフセット（ローカル座標基準）
-	VECTOR localOffset_;
 
 	// コンストラクタ
 	Transform(void);
@@ -76,9 +70,5 @@ public:
 
 	// 対象方向を取得
 	VECTOR GetDir(const VECTOR& dir) const;
-
-	// 親子関係の設定・解除
-	void Attach(Transform* parent, VECTOR offset);
-	void Detach(void);
 
 };

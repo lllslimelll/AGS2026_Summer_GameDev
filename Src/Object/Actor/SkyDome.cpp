@@ -146,7 +146,7 @@ void SkyDome::UpdateFollow(void)
 {
 	// Yé≤âÒì]
 	Quaternion rot = Quaternion::AngleAxis(
-		AsoUtility::Deg2RadF(0.1f), AsoUtility::AXIS_Y);
+		AsoUtility::Deg2RadF(0.06f), AsoUtility::AXIS_Y);
 	transform_.quaRot = transform_.quaRot.Mult(rot);
 
 	// í«è]

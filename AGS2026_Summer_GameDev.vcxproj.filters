@@ -244,4 +244,30 @@
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Data\Image\$100.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Image\100$.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Image\Congratulations.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Image\PushSpace.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Image\roket.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Image\Shadow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Image\SpeechBalloon.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Image\Title.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

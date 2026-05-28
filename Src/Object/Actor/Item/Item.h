@@ -9,8 +9,9 @@ public:
 
 	// 種別
 	enum class TYPE {
-		COIN, // コイン
-		GEM,  // 宝石
+		type1,
+		type2, 
+		type3
 	};
 
 	// 値段のグレード
@@ -65,6 +66,7 @@ public:
 	void OnHitEnemy(void);
 
 	// 取得
+	TYPE GetType(void) const;  // 種別
 	int   GetValue(void) const; // 値段
 	GRADE GetGrade(void) const; // グレード
 	STATE GetState(void) const; // 状態
@@ -75,6 +77,8 @@ public:
 
 	// アイテム取得可能か
 	void SetAimed(bool aimed);
+	// 選択されてるアイテムか
+	void SetSelected(bool selected);
 
 protected:
 
@@ -92,7 +96,7 @@ protected:
 private:
 
 	// 種別
-	TYPE type;
+	TYPE type_;
 	// グレード
 	GRADE grade_;
 	// 初期位置
@@ -108,15 +112,19 @@ private:
 
 	// アイテムを拾える状態か
 	bool isAimed_;
+	// 選択されてるアイテムか
+	bool isSelected_;
 
 	// アイテム価値のビルボード画像
-	int valueBillImg_;
+	int valueBillImg_[3];
 
 
 	// 状態管理
 	std::map<STATE, std::function<void(void)>> stateChanges_;
 	// 状態別更新
 	std::function<void(void)> stateUpdate_;
+	// 状態別描画
+	std::function<void(void)> stateDraw_;
 
 	// 状態遷移
 	void ChangeState(STATE state);

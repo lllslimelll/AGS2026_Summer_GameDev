@@ -18,7 +18,8 @@ Player::Player(ItemManager* itemMng)
 	itemMgr_(itemMng),
 	aimedItem_(nullptr),
 	inventory_{},
-	selectedSlot_(0)
+	selectedSlot_(0),
+	crosshairRadius_(5.0f)
 {
 }
 
@@ -224,6 +225,11 @@ void Player::UpdateItem(void)
 
 	// 投擲処理
 	ProcessThrow();
+
+	// 照準半径の補間
+	float targetRadius = CanPickUp() ? 20.0f : 5.0f;
+	crosshairRadius_ += 
+		(targetRadius - crosshairRadius_) * 15.0f * scnMng_.GetDeltaTime();
 }
 
 void Player::UpdateAimedItem(void)
@@ -285,9 +291,6 @@ void Player::AddInventory(Item* item)
 		{
 			inventory_[i] = item;
 
-			//item->GetTransform().Attach(
-			//	&transform_, { 0,120,0 });
-			
 			break;
 		}
 	}
@@ -298,7 +301,7 @@ void Player::ChangeSelectedSlot()
 	// 旧選択アイテムをデタッチ
 	if (inventory_[selectedSlot_] != nullptr)
 	{
-		//inventory_[selectedSlot_]->GetTransform().Detach();
+		inventory_[selectedSlot_]->SetSelected(false);
 	}
 
 	auto& ins = InputManager::GetInstance();
@@ -330,8 +333,7 @@ void Player::ChangeSelectedSlot()
 	// 新選択アイテムをアタッチ
 	if (inventory_[selectedSlot_] != nullptr)
 	{
-		//inventory_[selectedSlot_]->GetTransform().Attach(
-		//	&transform_, { 0,120,0 });
+		inventory_[selectedSlot_]->SetSelected(true);
 	}
 }
 
@@ -366,28 +368,79 @@ void Player::Draw(void)
 	// 基底クラスの描画
 	CharactorBase::Draw();
 
-	// インベントリ四角の描画(画像などは未実装)
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	const int size = 130;
+	const int imgSize = 110;
+	const int padding = 30;
+	const int slotSpan = size + padding;
+	const int totalWidth = INVENTORY_MAX * slotSpan - padding;
+	const int startX = (screenW - totalWidth) / 2;
+	const int marginBottom = 60;
+	const int baseY = screenH - size - marginBottom;
+
+	// 選択中スロットの拡大量
+	const int selectedExpand = 30;
+
 	for (int i = 0; i < INVENTORY_MAX; i++)
 	{
-		int x = 20 + i * 60;
-		int y = 620;
-		int size = 50;
-		// 選択中のスロットは赤い四角で囲む
-		if (i == selectedSlot_)
+		int x = startX + i * slotSpan;
+
+		bool isSelected = (i == selectedSlot_);
+
+		int expand = isSelected ? selectedExpand : 0;
+		int drawX = x - expand / 2;
+		int drawY = baseY - expand / 2;
+		int drawSize = size + expand;
+
+		// 枠描画
+		DrawBox(drawX, drawY, drawX + drawSize, drawY + drawSize,
+			GetColor(255, 255, 255), FALSE);
+
+		// アイテム画像
+		Item* item = inventory_[i];
+		if (item != nullptr)
 		{
-			DrawBox(x - 5, y - 5, x + size + 5, y + size + 5, GetColor(255, 0, 0), false);
+			int typeIdx = static_cast<int>(item->GetType());
+			if (typeIdx >= 0 && typeIdx < 3 &&
+				inventoryItemImgs_[typeIdx] != -1)
+			{
+				int margin = 10;              // 枠からの余白
+				int imgDrawSize = drawSize - margin * 2;
+				int imgOffset = margin;
+
+				DrawExtendGraph(
+					drawX + imgOffset,
+					drawY + imgOffset,
+					drawX + imgOffset + imgDrawSize,
+					drawY + imgOffset + imgDrawSize,
+					inventoryItemImgs_[typeIdx], TRUE);
+			}
+
+			SetFontSize(30);
+			// 値段表示
+			int price = item->GetValue();
+			int textW = GetDrawFormatStringWidth("$%d", price);  // 実際の文字列幅を取得
+			DrawFormatString(
+				drawX + (drawSize - textW) / 2,  // 中央揃え
+				drawY + drawSize + 6,
+				GetColor(0, 255, 40),
+				"$%d", price);
 		}
-		// スロットの四角を描画
-		DrawBox(x, y, x + size, y + size, GetColor(255, 255, 255), false);
 	}
 
+	// 照準
+	int cx = screenW / 2;
+	int cy = screenH / 2;
+	int radius = static_cast<int>(crosshairRadius_);
+	bool isFilled = (crosshairRadius_ <= 7.0f);
 
-	// デバッグ表示
+	DrawCircle(cx, cy, radius, GetColor(255, 255, 255), isFilled ? TRUE : FALSE);
+
 	DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
-		transform_.pos.x,
-		transform_.pos.y,
-		transform_.pos.z);
+		transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 // 衝突判定用の調整
@@ -453,6 +506,12 @@ void Player::InitLoad(void)
 	// モデル読み込み
 	transform_.SetModel(resMng_.Load(			// 1個 = Load()  複数 = Depulicate()
 		ResourceManager::SRC::PLAYER).handleId_);
+
+	// インベントリ内アイテムの画像読み込み
+	inventoryItemImgs_[0] = LoadGraph("Data/Image/item1.png");
+	inventoryItemImgs_[1] = LoadGraph("Data/Image/item2.png");
+	inventoryItemImgs_[2] = LoadGraph("Data/Image/item3.png");
+
 }
 
 void Player::InitTransform(void)

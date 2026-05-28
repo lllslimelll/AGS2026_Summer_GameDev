@@ -16,6 +16,10 @@ Stage::~Stage(void)
 
 void Stage::Update(void)
 {
+	//// YŽ²‰ñ“]
+	//Quaternion rot = Quaternion::AngleAxis(
+	//	AsoUtility::Deg2RadF(0.1f), AsoUtility::AXIS_Y);
+	//transform_.quaRot = transform_.quaRot.Mult(rot);
 	transform_.Update();
 }
 
