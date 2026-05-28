@@ -13,6 +13,7 @@ public:
 	enum class COLLIDER_TYPE
 	{
 		MODEL = 0,
+		SPHERE,
 		MAX,
 	};
 
@@ -20,6 +21,9 @@ public:
 
 	// 更新
 	void Update(void) override;
+
+	// 描画
+	//void Draw(void) override;
 
 protected:
 
@@ -39,6 +43,8 @@ protected:
 	virtual void InitPost(void) override;
 
 private:
+
+	VECTOR roketPos_;
 
 	// 除外フレーム名称
 	const std::vector<std::string> EXCLUDE_FRAME_NAMES = {

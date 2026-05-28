@@ -69,7 +69,7 @@ void Item::Draw(void)
         case TYPE::type3: color = 0xff00ff; break;
         default: color = 0xffffff; break;
         }
-        DrawSphere3D(transform_.pos, 30.0f, 8, color, color, TRUE);
+        DrawSphere3D(transform_.pos, 10.0f, 8, color, color, TRUE);
     }
     // èÛë‘ï ï`âÊ
     stateDraw_();
@@ -156,6 +156,12 @@ void Item::SetAimed(bool aimed)
 void Item::SetSelected(bool selected)
 {
 	isSelected_ = selected;
+}
+
+void Item::SetHeldPos(const VECTOR& pos)
+{
+    if (state_ != STATE::HELD) return;
+    transform_.pos = pos;
 }
 
 void Item::InitLoad(void)

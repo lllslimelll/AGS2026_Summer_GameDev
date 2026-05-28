@@ -230,6 +230,9 @@ void Player::UpdateItem(void)
 	float targetRadius = CanPickUp() ? 20.0f : 5.0f;
 	crosshairRadius_ += 
 		(targetRadius - crosshairRadius_) * 15.0f * scnMng_.GetDeltaTime();
+
+	// 選択中アイテムの追従
+	UpdateFollowItem();
 }
 
 void Player::UpdateAimedItem(void)
@@ -258,6 +261,21 @@ void Player::UpdateAimedItem(void)
 
 		aimedItem_ = newAimed;
 	}
+}
+
+void Player::UpdateFollowItem(void)
+{
+	VECTOR pos = MV1GetFramePosition(transform_.modelId, 36);
+	pos = VAdd(pos, VScale(transform_.GetForward(), 30.0f));
+
+	for (int i = 0; i < INVENTORY_MAX; i++)
+	{
+		if (inventory_[i] != nullptr)
+		{
+			inventory_[i]->SetHeldPos(pos);
+		}
+	}
+
 }
 
 void Player::ProcessPickUp(void)

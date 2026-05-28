@@ -23,6 +23,13 @@ void Stage::Update(void)
 	transform_.Update();
 }
 
+//void Stage::Draw(void)
+//{
+//	ActorBase::Draw();
+//
+//	DrawSphere3D(roketPos_, 80, 16, 0xffffff, 0xffffff, false);
+//}
+
 void Stage::InitLoad(void)
 {
 	// ÉÇÉfÉãì«Ç›çûÇ›
@@ -37,6 +44,8 @@ void Stage::InitTransform(void)
 	// ç¿ïW
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
 
+	// ç¿ïW
+	roketPos_ = VAdd(AsoUtility::VECTOR_ZERO, VScale(AsoUtility::DIR_U, 2600.0f));
 }
 
 void Stage::InitCollider(void)

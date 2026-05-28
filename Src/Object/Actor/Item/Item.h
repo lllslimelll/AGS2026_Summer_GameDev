@@ -7,6 +7,14 @@ class Item : public ActorBase
 {
 public:
 
+	// 衝突判定種別
+	enum class COLLIDER_TYPE
+	{
+		GROUND_LINE,
+		SPHERE,
+		MAX,
+	};
+
 	// 種別
 	enum class TYPE {
 		type1,
@@ -51,7 +59,7 @@ public:
 
 	// コンストラクタ
 	Item(const ItemData& data);
-	~Item(); // デストラクタ
+	~Item() override; // デストラクタ
 
 	// 更新
 	void Update(void) override;
@@ -79,6 +87,9 @@ public:
 	void SetAimed(bool aimed);
 	// 選択されてるアイテムか
 	void SetSelected(bool selected);
+
+	// 保持中の追従アイテムを設定
+	void SetHeldPos(const VECTOR& pos);
 
 protected:
 

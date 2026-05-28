@@ -107,6 +107,9 @@ private:
 	// 照準に当たっているアイテムを取得して isAimed_ を更新
 	void UpdateAimedItem(void);
 
+	// 選択中のアイテムをプレイヤーに追従させる
+	void UpdateFollowItem(void);
+
 	// 拾う処理
 	void ProcessPickUp(void);
 	// 投擲処理
