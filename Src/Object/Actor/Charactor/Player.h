@@ -4,6 +4,7 @@
 
 class ItemManager;  
 class Item;
+class Stage;
 
 class Player : public CharactorBase
 {
@@ -17,7 +18,7 @@ public:
 		JUMP,
 	};
 
-	Player(ItemManager* itemMng);
+	Player(ItemManager* itemMng, Stage* stage_);
 
 	~Player(void) override;
 
@@ -85,13 +86,21 @@ private:
 	// インベントリ
 	static constexpr int INVENTORY_MAX = 5;
 
+	// ステージ
+	Stage* stage_;
+
 	// アイテム管理（拾得・投擲）
 	ItemManager* itemMgr_;
+
+	// ブーストフラグ
+	bool isBoost_;
 
 	// 現在照準に当たっているアイテム
 	Item* aimedItem_;
 	// インベントリ
 	std::array<Item*, INVENTORY_MAX> inventory_;
+
+
 	// 現在選択中のインベントリスロット
 	int selectedSlot_;
 
@@ -132,5 +141,35 @@ private:
 
 	// 衝突判定
 	void CollisionReserve(void) override;
+
+	// 納品処理
+	void ProcessDelivery(void);
+
+	// ロケット照準判定
+	bool IsAimingRoket(void) const;
+
+	// ===== HP・酸素 =====
+	static constexpr int   MAX_HP = 100;
+	static constexpr float MAX_OXYGEN = 300.0f;  // 秒
+	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	// 酸素消費倍率（ブースト中）
+	static constexpr float SUFFOCATE_INTERVAL = 2.0f;   // ダメージ周期
+	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 10;  // 10
+
+	int   hp_;
+	float oxygen_;
+	float suffocateTimer_;  // 酸素切れ後の経過時間
+	bool  isDead_;
+
+	// 更新
+	void UpdateOxygenAndHp(void);
+
+	// ダメージ
+	void TakeDamage(int amount);
+
+	// ゲームオーバー処理
+	void OnDeath(void);
+
+	// UI描画
+	void DrawStatusUI(void);
 };
 

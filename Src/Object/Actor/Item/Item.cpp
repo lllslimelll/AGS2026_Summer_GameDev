@@ -95,6 +95,11 @@ void Item::OnThrow(const VECTOR& throwDir)
     ChangeState(STATE::THROW);
 }
 
+void Item::OnDelivered(void)
+{
+    ChangeState(STATE::DELIVERED);
+}
+
 void Item::OnHitEnemy(void)
 {
 }
@@ -164,6 +169,11 @@ void Item::SetHeldPos(const VECTOR& pos)
     transform_.pos = pos;
 }
 
+void Item::SetNouhin(bool nouhin)
+{
+    isNouhinn_ = nouhin;
+}
+
 void Item::InitLoad(void)
 {
     //// ÉÇÉfÉãì«Ç›çûÇ›
@@ -216,6 +226,8 @@ void Item::InitPost(void)
         std::bind(&Item::ChangeHeld, this);
 	stateChanges_[STATE::THROW] =
         std::bind(&Item::ChangeThrow, this);
+    stateChanges_[STATE::DELIVERED] =
+        std::bind(&Item::ChangeDelivered, this);
 
     // èâä˙èÛë‘
     ChangeState(STATE::DROPPED);
@@ -248,6 +260,12 @@ void Item::ChangeThrow(void)
     stateDraw_ = std::bind(&Item::DrawThrow, this);
 }
 
+void Item::ChangeDelivered(void)
+{
+    stateUpdate_ = std::bind(&Item::UpdateDelivered, this);
+    stateDraw_ = std::bind(&Item::DrawDelelivered, this);
+}
+
 void Item::UpdateDropped(void)
 {
 }
@@ -258,6 +276,11 @@ void Item::UpdateHeld(void)
 
 void Item::UpdateThrow(void)
 {
+}
+
+void Item::UpdateDelivered(void)
+{
+
 }
 
 void Item::DrawDropped(void)
@@ -277,6 +300,10 @@ void Item::DrawHeld(void)
 void Item::DrawThrow(void)
 {
   
+}
+
+void Item::DrawDelelivered(void)
+{
 }
 
 void Item::UpdateThrowMove(void)

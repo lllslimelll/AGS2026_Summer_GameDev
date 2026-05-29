@@ -23,12 +23,32 @@ void Stage::Update(void)
 	transform_.Update();
 }
 
-//void Stage::Draw(void)
-//{
-//	ActorBase::Draw();
-//
-//	DrawSphere3D(roketPos_, 80, 16, 0xffffff, 0xffffff, false);
-//}
+void Stage::Draw(void)
+{
+	ActorBase::Draw();
+
+	DrawSphere3D(roketPos_, 80, 16, 0xffffff, 0xffffff, false);
+
+	// フォントサイズを一時的に変更
+	int prevSize = GetFontSize();
+	SetFontSize(48);
+
+	// 文字列の幅を計測して右上揃え
+	char buf[64];
+	sprintf_s(buf, "$%d / $%d", totalDelivered_, QUOTA);
+	int textW = GetDrawStringWidth(buf, (int)strlen(buf));
+
+	constexpr int SCREEN_W = 1920;
+	constexpr int MARGIN = 30;
+	int x = SCREEN_W - textW - MARGIN;
+	int y = MARGIN;
+
+	unsigned int color = IsQuotaCleared() ? 0x00ff00 : 0xffffff;
+	DrawFormatString(x, y, color, "%s", buf);
+
+	// フォントサイズを戻す
+	SetFontSize(prevSize);
+}
 
 void Stage::InitLoad(void)
 {
@@ -45,7 +65,7 @@ void Stage::InitTransform(void)
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
 
 	// 座標
-	roketPos_ = VAdd(AsoUtility::VECTOR_ZERO, VScale(AsoUtility::DIR_U, 2600.0f));
+	roketPos_ = VAdd(AsoUtility::VECTOR_ZERO, VScale(AsoUtility::DIR_U, 2500.0f));
 }
 
 void Stage::InitCollider(void)
@@ -79,4 +99,24 @@ void Stage::InitAnimation(void)
 void Stage::InitPost(void)
 {
 	transform_.Update();
+}
+
+const VECTOR& Stage::GetRoketPos() const
+{
+	return roketPos_;
+}
+
+void Stage::AddDelivery(int value)
+{
+	totalDelivered_ += value;
+}
+
+int Stage::GetTotalDelivered(void)
+{
+	return totalDelivered_;
+}
+
+bool Stage::IsQuotaCleared(void) const
+{
+	return totalDelivered_ >= QUOTA;
 }

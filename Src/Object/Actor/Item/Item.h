@@ -44,6 +44,7 @@ public:
 		DROPPED, // 落ちている
 		HELD,   // インベントリ内
 		THROW, // 投擲
+		DELIVERED, // 納品
 	};
 
 	// 拾える距離
@@ -70,6 +71,8 @@ public:
 	void OnPickedUp(void);
 	// 投擲された
 	void OnThrow(const VECTOR& throwDir);
+	// 納品された
+	void OnDelivered(void);
 	// 敵に命中した
 	void OnHitEnemy(void);
 
@@ -90,6 +93,10 @@ public:
 
 	// 保持中の追従アイテムを設定
 	void SetHeldPos(const VECTOR& pos);
+
+	// 納品したか否かを設定
+	void SetNouhin(bool nouhin);
+
 
 protected:
 
@@ -130,6 +137,9 @@ private:
 	int valueBillImg_[3];
 
 
+	// 納品されたか
+	bool isNouhinn_ = false;
+
 	// 状態管理
 	std::map<STATE, std::function<void(void)>> stateChanges_;
 	// 状態別更新
@@ -142,16 +152,19 @@ private:
 	void ChangeDropped(void); // 落ちている状態
 	void ChangeHeld(void);    // インベントリ内状態
 	void ChangeThrow(void);  // 空中状態
+	void ChangeDelivered(void); // 納品状態
 
 	// 状態別更新
 	void UpdateDropped(void); 
 	void UpdateHeld(void);
 	void UpdateThrow(void);
+	void UpdateDelivered(void);
 
 	// 状態別描画
 	void DrawDropped(void);
 	void DrawHeld(void);
 	void DrawThrow(void);
+	void DrawDelelivered(void);
 
 	// 投擲中の弾道計算
 	void UpdateThrowMove(void);

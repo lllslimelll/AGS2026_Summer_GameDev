@@ -23,7 +23,18 @@ public:
 	void Update(void) override;
 
 	// 描画
-	//void Draw(void) override;
+	void Draw(void) override;
+
+	const VECTOR& GetRoketPos() const;
+
+	// 納品を受け付ける
+	void AddDelivery(int value);
+
+	// 累計納品額
+	int GetTotalDelivered(void);
+
+	// ノルマクリアしたか
+	bool IsQuotaCleared(void) const;
 
 protected:
 
@@ -42,9 +53,16 @@ protected:
 	// 初期化後の個別処理
 	virtual void InitPost(void) override;
 
+	
+
 private:
 
+	// ノルマ納品額
+	static constexpr int QUOTA = 10000;
+
 	VECTOR roketPos_;
+
+	int totalDelivered_ = 0;
 
 	// 除外フレーム名称
 	const std::vector<std::string> EXCLUDE_FRAME_NAMES = {

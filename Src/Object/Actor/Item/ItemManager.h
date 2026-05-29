@@ -66,5 +66,8 @@ private:
 
 	// 投擲中リストを毎フレーム更新
 	void UpdateThrowingList(void);
+
+	// 納品済みアイテムを削除
+	void RemoveDeliveredItems(void);
 };
 

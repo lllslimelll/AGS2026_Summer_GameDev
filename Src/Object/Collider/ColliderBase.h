@@ -20,12 +20,12 @@ public:
 	enum class TAG
 	{
 		STAGE,
+		ROKET,
 		PLAYER,
 		CAMERA,
 		ENEMY,
 		VIEW_RANGE,
 		ITEM,
-		ROKET,
 	};
 
 	// コンストラクタ

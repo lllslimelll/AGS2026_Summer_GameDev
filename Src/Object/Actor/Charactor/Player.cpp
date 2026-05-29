@@ -1,9 +1,11 @@
 #include "../../../Object/Common/AnimationController.h"
+#include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/SceneManager.h"
 #include "../../../Manager/Camera.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../Item/ItemManager.h"
+#include "../Stage.h"
 #include "../item/Item.h"
 #include "../../Common/Transform.h"
 #include "../../../Utility/AsoUtility.h"
@@ -12,10 +14,16 @@
 #include "Player.h"
 
 
-Player::Player(ItemManager* itemMng)
+Player::Player(ItemManager* itemMng, Stage* stage)
 	:
 	CharactorBase(),
+	stage_(stage),
 	itemMgr_(itemMng),
+	hp_(MAX_HP),
+	oxygen_(MAX_OXYGEN),
+	suffocateTimer_(0.0f),
+	isBoost_(false),
+	isDead_(false),
 	aimedItem_(nullptr),
 	inventory_{},
 	selectedSlot_(0),
@@ -37,8 +45,8 @@ void Player::ProcessMove(void)
 	// 移動方向
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
-	// ダッシュボタン
-	bool isDash = false;
+	// ブーストフラグを折る
+	isBoost_ = false;
 
 	// ゲームパッドが接続数で処理を分ける
 	if (GetJoypadNum() == 0)
@@ -48,8 +56,8 @@ void Player::ProcessMove(void)
 		if (ins.IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
 		if (ins.IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
 		if (ins.IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
-		// 右Shiftでダッシュ
-		if (ins.IsNew(KEY_INPUT_LSHIFT)) { isDash = true; }
+		// 左Shiftでダッシュ
+		if (ins.IsNew(KEY_INPUT_LSHIFT)) { isBoost_ = true; }
 	}
 	else
 	{
@@ -60,11 +68,11 @@ void Player::ProcessMove(void)
 		// アナログキーの入力値から方向を取得
 		dir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
 
-		// Rでダッシュ
+		// LTでダッシュ
 		if (ins.IsPadBtnNew(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::L_TRIGGER)) {
-			isDash = true;
+			isBoost_ = true;
 		}
 	}
 
@@ -104,7 +112,7 @@ void Player::ProcessMove(void)
 		// ジャンプ中はアニメーションを変えない
 		//if (!isJump_)
 		{
-			if (isDash)
+			if (isBoost_)
 			{
 				// ダッシュ速度
 				moveSpeed_ = SPEED_DASH;
@@ -139,6 +147,9 @@ void Player::ProcessMove(void)
 		{
 			animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 		}
+
+		// ブーストフラグを折る
+		isBoost_ = false;
 	}
 }
 
@@ -203,6 +214,9 @@ void Player::UpdateProcess(void)
 
 	// 衝突判定用の調整
 	CollisionReserve();
+
+	// 酸素とHP更新
+	UpdateOxygenAndHp();
 }
 
 void Player::UpdateProcessPost(void)
@@ -223,11 +237,14 @@ void Player::UpdateItem(void)
 	// 拾う処理
 	ProcessPickUp();
 
+	// 納品処理
+	ProcessDelivery();
+
 	// 投擲処理
 	ProcessThrow();
 
 	// 照準半径の補間
-	float targetRadius = CanPickUp() ? 20.0f : 5.0f;
+	float targetRadius = CanPickUp()|| IsAimingRoket() ? 20.0f : 5.0f;
 	crosshairRadius_ += 
 		(targetRadius - crosshairRadius_) * 15.0f * scnMng_.GetDeltaTime();
 
@@ -286,7 +303,7 @@ void Player::ProcessPickUp(void)
 	auto& ins = InputManager::GetInstance();
 
 	// 入力があったら
-	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT))
+	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) || ins.IsTrgDown(KEY_INPUT_F))
 	{
 		// 拾う
 		aimedItem_->OnPickedUp();
@@ -394,7 +411,7 @@ void Player::Draw(void)
 	const int padding = 30;
 	const int slotSpan = size + padding;
 	const int totalWidth = INVENTORY_MAX * slotSpan - padding;
-	const int startX = (screenW - totalWidth) / 2;
+	const int startX = (screenW - totalWidth) / 2 + 10;
 	const int marginBottom = 60;
 	const int baseY = screenH - size - marginBottom;
 
@@ -456,6 +473,10 @@ void Player::Draw(void)
 
 	DrawCircle(cx, cy, radius, GetColor(255, 255, 255), isFilled ? TRUE : FALSE);
 
+	
+	DrawStatusUI();
+
+
 	DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
 		transform_.pos.x, transform_.pos.y, transform_.pos.z);
@@ -514,6 +535,137 @@ void Player::CollisionReserve(void)
 			colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_LOCAL_POS);
 		}
 	}
+}
+
+void Player::ProcessDelivery(void)
+{
+	// 拾える対象がいるならピックアップを優先
+	if (aimedItem_ != nullptr) return;
+
+	// ロケットに照準が当たっているか
+	if (!IsAimingRoket()) return;
+
+	// 選択中スロットが空なら納品できない
+	Item* item = inventory_[selectedSlot_];
+	if (item == nullptr) return;
+
+	// ボタン入力（ピックアップと同じキー）
+	auto& ins = InputManager::GetInstance();
+	bool pressed =
+		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) ||
+		ins.IsTrgDown(KEY_INPUT_F);
+	if (!pressed) return;
+
+	// 納品実行
+	stage_->AddDelivery(item->GetValue());
+	item->OnDelivered();
+	inventory_[selectedSlot_] = nullptr;
+}
+
+bool Player::IsAimingRoket(void) const
+{
+	const VECTOR camPos = scnMng_.GetCamera()->GetPos();
+	const VECTOR rayEnd = VAdd(camPos,
+		VScale(scnMng_.GetCamera()->GetForward(), Item::RANGE_PICKUP));
+
+	return AsoUtility::IsHitSphereCapsule(
+		stage_->GetRoketPos(), 80.0f,
+		camPos, rayEnd, 0.0f);
+}
+
+void Player::UpdateOxygenAndHp(void)
+{
+	// 死亡済みなら何もしない
+	if (isDead_) return;
+
+	const float dt = SceneManager::GetInstance().GetDeltaTime();
+
+	// 酸素を減らす
+	// 酸素消費倍率（ブースト中は2倍）
+	float consumeRate = isBoost_ ? OXYGEN_DASH_RATE : 1.0f;
+	oxygen_ -= dt * consumeRate;
+	if (oxygen_ < 0.0f) oxygen_ = 0.0f;
+
+	// 酸素が残っているなら窒息タイマーをリセット
+	if (oxygen_ > 0.0f)
+	{
+		suffocateTimer_ = 0.0f;
+		return;
+	}
+
+	// 酸素切れ：タイマー加算
+	suffocateTimer_ += dt;
+	if (suffocateTimer_ >= SUFFOCATE_INTERVAL)
+	{
+		suffocateTimer_ -= SUFFOCATE_INTERVAL;  // 余剰時間は次周期に持ち越し
+		TakeDamage(SUFFOCATE_DAMAGE);
+	}
+}
+
+void Player::TakeDamage(int amount)
+{
+	if (isDead_) return;
+
+	hp_ -= amount;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		OnDeath();
+	}
+}
+
+void Player::OnDeath(void)
+{
+	isDead_ = true;
+	// 当面はタイトルに戻す。GAMEOVERシーンを作ったら差し替え
+	SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+}
+
+void Player::DrawStatusUI(void)
+{
+	constexpr int SCREEN_H = 1080;
+	constexpr int MARGIN = 40;
+	constexpr int BAR_W = 480;
+	constexpr int BAR_H = 64;
+	constexpr int FONT_BIG = 40;
+	constexpr int FONT_SMALL = 24;
+
+	int prevSize = GetFontSize();
+
+	// HPバー（下）
+	int hpY = SCREEN_H - MARGIN - BAR_H;
+	int hpFill = static_cast<int>(BAR_W * (static_cast<float>(hp_) / MAX_HP));
+	DrawBox(MARGIN, hpY, MARGIN + BAR_W, hpY + BAR_H, 0x303030, TRUE);
+	DrawBox(MARGIN, hpY, MARGIN + hpFill, hpY + BAR_H, 0xff3030, TRUE);
+	SetFontSize(FONT_BIG);
+	DrawFormatString(MARGIN, hpY - FONT_BIG - 8, 0xffffff,
+		"HP: %d%%", (int)(static_cast<float>(hp_) / MAX_HP * 100));
+
+	// 酸素バー（HPの上）
+	int oxY = hpY - BAR_H - 70;
+	int oxFill = static_cast<int>(BAR_W * (oxygen_ / MAX_OXYGEN));
+	unsigned int oxColor = (oxygen_ <= 0.0f) ? 0xff8800 : 0x30a0ff;
+	DrawBox(MARGIN, oxY, MARGIN + BAR_W, oxY + BAR_H, 0x303030, TRUE);
+	DrawBox(MARGIN, oxY, MARGIN + oxFill, oxY + BAR_H, oxColor, TRUE);
+
+	// "O" を大きく
+	int textY = oxY - FONT_BIG - 8;
+	SetFontSize(FONT_BIG);
+	DrawString(MARGIN, textY, "O", 0xffffff);
+	int oW = GetDrawStringWidth("O", 1);
+
+	// "2" を小さく・下げて添字風に
+	SetFontSize(FONT_SMALL);
+	int subY = textY + (FONT_BIG - FONT_SMALL) + 8;
+	DrawString(MARGIN + oW, subY, "2", 0xffffff);
+	int twoW = GetDrawStringWidth("2", 1);
+
+	// ": 75%" を大きく
+	SetFontSize(FONT_BIG);
+	DrawFormatString(MARGIN + oW + twoW, textY, 0xffffff,
+		": %d%%", (int)(oxygen_ / MAX_OXYGEN * 100));
+
+	SetFontSize(prevSize);
 }
 
 void Player::InitLoad(void)

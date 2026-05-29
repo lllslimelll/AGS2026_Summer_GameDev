@@ -27,6 +27,9 @@ void ItemManager::Update(void)
 	{
 		item->Update();
 	}
+
+	// 納品済みアイテムを掃除
+	RemoveDeliveredItems();
 }
 
 void ItemManager::Draw(void)
@@ -174,4 +177,22 @@ void ItemManager::LoadCsvData(void)
 	}
 
 	ifs.close();
+}
+
+void ItemManager::RemoveDeliveredItems(void)
+{
+	auto it = items_.begin();
+	while (it != items_.end())
+	{
+		if ((*it)->GetState() == Item::STATE::DELIVERED)
+		{
+			(*it)->Release();
+			delete* it;
+			it = items_.erase(it);  // eraseは次のイテレータを返す
+		}
+		else
+		{
+			++it;
+		}
+	}
 }

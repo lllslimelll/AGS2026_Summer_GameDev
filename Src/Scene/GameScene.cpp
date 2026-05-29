@@ -31,7 +31,7 @@ void GameScene::Init(void)
 
 	itemMng_ = new ItemManager();
 
-	player_ = new Player(itemMng_);
+	player_ = new Player(itemMng_, stage_);
 
 	enemyManager_ = new EnemyManager(player_);
 
