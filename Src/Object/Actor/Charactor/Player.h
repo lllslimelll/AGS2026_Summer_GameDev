@@ -45,10 +45,10 @@ protected:
 private:
 
 	// 移動速度（通常）
-	static constexpr float SPEED_MOVE = 5.0f;
+	static constexpr float SPEED_MOVE = 2.5f;
 
 	// 移動速度（ダッシュ）
-	static constexpr float SPEED_DASH = 10.0f;
+	static constexpr float SPEED_DASH = 5.0f;
 
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
@@ -150,9 +150,9 @@ private:
 
 	// ===== HP・酸素 =====
 	static constexpr int   MAX_HP = 100;
-	static constexpr float MAX_OXYGEN = 10.0f;  // 秒
+	static constexpr float MAX_OXYGEN = 300.0f;  // 秒
 	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	// 酸素消費倍率（ブースト中）
-	static constexpr float SUFFOCATE_INTERVAL = 0.1f;   // ダメージ周期
+	static constexpr float SUFFOCATE_INTERVAL = 0.4f;   // ダメージ周期
 	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
 
 	int   hp_;
@@ -186,5 +186,8 @@ private:
 	// 死亡メニュー処理
 	void UpdateDeathMenu(void);
 	void DrawDeathMenu(void);
+
+
+	float fullInventoryMsgTimer_ = 0;
 };
 

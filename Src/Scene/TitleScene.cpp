@@ -102,7 +102,9 @@ void TitleScene::Update(void)
 
 	// シーン遷移
 	auto const& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	bool decide = ins.IsTrgDown(KEY_INPUT_SPACE)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT);
+	if(decide)
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 	}
@@ -110,26 +112,26 @@ void TitleScene::Update(void)
 
 void TitleScene::Draw(void)
 {
-	skyDome_->Draw();
+	//skyDome_->Draw();
 
-	// 惑星描画
-	MV1DrawModel(bigPlanet_.modelId);
+	//// 惑星描画
+	//MV1DrawModel(bigPlanet_.modelId);
 
-	// 球体惑星描画
-	MV1DrawModel(spherePlanet_.modelId);
+	//// 球体惑星描画
+	//MV1DrawModel(spherePlanet_.modelId);
 
-	// プレイヤー描画
-	MV1DrawModel(player_.modelId);
+	//// プレイヤー描画
+	//MV1DrawModel(player_.modelId);
 
-	// タイトル画像描画
-	DrawRotaGraph(
-		Application::SCREEN_SIZE_X / 2,
-		Application::SCREEN_SIZE_Y / 2 - 50,
-		1.0f,
-		0.0,
-		imgTitle_,
-		TRUE
-	);
+	//// タイトル画像描画
+	//DrawRotaGraph(
+	//	Application::SCREEN_SIZE_X / 2,
+	//	Application::SCREEN_SIZE_Y / 2 - 50,
+	//	1.0f,
+	//	0.0,
+	//	imgTitle_,
+	//	TRUE
+	//);
 
 	// PushSpace描画
 	DrawRotaGraph(

@@ -11,7 +11,7 @@ class Camera : public ActorBase
 {
 
 public:
-
+	void SetInputEnabled(bool enabled) { isInputEnabled_ = enabled; }
 	// カメラの初期座標
 	static constexpr VECTOR DERFAULT_POS = { 0.0f, 200.0f, -500.0f };
 	
@@ -28,7 +28,7 @@ public:
 	static constexpr float SPEED = 20.0f;
 
 	// カメラのクリップ範囲
-	static constexpr float VIEW_NEAR = 10.0f;
+	static constexpr float VIEW_NEAR = 3.0f;
 	static constexpr float VIEW_FAR = 20000.0f;
 
 	// 追従位置からカメラ位置までの相対座標
@@ -116,7 +116,7 @@ protected:
 	void InitPost(void) override;
 
 private:
-
+	bool isInputEnabled_ = true;
 	// 衝突時の押し戻し試行回数
 	static constexpr int CNT_TRY_COLLISION_CAMERA = 30;
 

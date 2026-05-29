@@ -321,19 +321,45 @@ void Player::UpdateFollowItem(void)
 
 void Player::ProcessPickUp(void)
 {
-	// 拾える状態じゃなければ処理しない
-	if (!CanPickUp()) return;
+	//// 拾える状態じゃなければ処理しない
+	//if (!CanPickUp()) return;
+
+	//auto& ins = InputManager::GetInstance();
+
+	//// 入力があったら
+	//if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) || ins.IsTrgDown(KEY_INPUT_F))
+	//{
+	//	// 拾う
+	//	aimedItem_->OnPickedUp();
+
+	//	// インベントリに追加
+	//	AddInventory(aimedItem_);
+	//}
+
+	   // 照準にアイテムが当たってない or ドロップ状態でないなら何もしない
+	if (aimedItem_ == nullptr ||
+		aimedItem_->GetState() != Item::STATE::DROPPED)
+	{
+		return;
+	}
 
 	auto& ins = InputManager::GetInstance();
+	bool pressed =
+		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) ||
+		ins.IsTrgDown(KEY_INPUT_F);
 
-	// 入力があったら
-	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) || ins.IsTrgDown(KEY_INPUT_F))
+	if (!pressed) return;
+
+	if (CanPickUp())
 	{
 		// 拾う
 		aimedItem_->OnPickedUp();
-
-		// インベントリに追加
 		AddInventory(aimedItem_);
+	}
+	else
+	{
+		// 満杯：メッセージ表示開始（2秒間）
+		fullInventoryMsgTimer_ = 2.0f;
 	}
 }
 
@@ -542,21 +568,12 @@ void Player::Draw(void)
 
 		if (CanPickUp())
 		{
-			// ゲームパッドが接続数で処理を分ける
-			if (GetJoypadNum() == 0)
-			{
-				DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
-					"[F] 拾う");
-			}
-			else
-			{
-				DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
-					"[X] 拾う");
-			}
+			const char* hint = (GetJoypadNum() == 0) ? "[F] 拾う" : "[X] 拾う";
+			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255), hint);
 		}
-		else
+		else if (fullInventoryMsgTimer_ > 0.0f)
 		{
-			if()
+			// 拾おうとして満杯だった時のフィードバック
 			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 100, 100),
 				"インベントリ満杯");
 		}
@@ -705,6 +722,8 @@ void Player::OnDeath(void)
 {
 	isDead_ = true;
 	deathMenuIndex_ = 0;
+
+	scnMng_.GetCamera()->SetInputEnabled(false);  // カメラ操作停止
 }
 
 void Player::DrawStatusUI(void)

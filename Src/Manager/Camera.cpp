@@ -66,8 +66,8 @@ void Camera::SetBeforeDraw(void)
 
 void Camera::DrawDebug(void)
 {
-	DrawFormatString(0, 200, GetColor(255, 255, 255),
-		"Camera Pos: (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	/*DrawFormatString(0, 200, GetColor(255, 255, 255),
+		"Camera Pos: (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
 }
 
 void Camera::Release(void)
@@ -225,7 +225,7 @@ void Camera::SyncFollow(void)
 
 void Camera::ProcessRot(bool isLimit)
 {
-
+	if (!isInputEnabled_) return;  // “ü—Í‚ðŽó‚¯‚È‚¢
 	if (GetJoypadNum() == 0)
 	{
 		// •ûŒü‰ñ“]‚É‚æ‚éXYZ‚ÌˆÚ“®(ƒ}ƒEƒX)

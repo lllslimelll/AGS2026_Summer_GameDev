@@ -58,7 +58,7 @@ void CharactorBase::Draw(void)
 {
 	// Šî’êƒNƒ‰ƒX•`‰æˆ—
 	ActorBase::Draw();
-	DrawFormatString(0, 100, 0xffffff, "isjump:%d", isJump_);
+	//DrawFormatString(0, 100, 0xffffff, "isjump:%d", isJump_);
 	// ŠÛ‰e‚Ì•`‰æ
 	//DrawShadow();
 }
