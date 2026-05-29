@@ -206,6 +206,17 @@ void Player::ProcessJump(void)
 
 void Player::UpdateProcess(void)
 {
+	if (isDead_)
+	{
+		// 移動量と移動方向をリセット
+		movePow_ = AsoUtility::VECTOR_ZERO;
+		jumpPow_ = AsoUtility::VECTOR_ZERO;
+		moveSpeed_ = 0.0f;
+
+		UpdateDeathMenu();
+		return;
+	}
+
 	// 移動処理
 	ProcessMove();
 
@@ -221,6 +232,7 @@ void Player::UpdateProcess(void)
 
 void Player::UpdateProcessPost(void)
 {
+	if (isDead_) return;
 	// アイテム更新
 	UpdateItem();
 
@@ -250,6 +262,18 @@ void Player::UpdateItem(void)
 
 	// 選択中アイテムの追従
 	UpdateFollowItem();
+
+	// 帰還
+	if (IsAimingRoket())
+	{
+		auto& ins = InputManager::GetInstance();
+		
+		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_F))
+		{
+			SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
+			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RESULT);
+		}
+	}
 }
 
 void Player::UpdateAimedItem(void)
@@ -476,10 +500,73 @@ void Player::Draw(void)
 	
 	DrawStatusUI();
 
+	// ロケット照準中のアクションヒント
+	if (IsAimingRoket())
+	{
+		int prevSize = GetFontSize();
+		SetFontSize(40);
 
-	DrawFormatString(0, 0, GetColor(255, 255, 255),
+		constexpr int HINT_X = 60;
+		int hintY = screenH / 2 + 40;  // 照準の少し下
+
+		// 納品ヒント（選択中スロットにアイテムがあるときだけ）
+		if (inventory_[selectedSlot_] != nullptr)
+		{
+			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
+				"[X] 納品");
+			hintY += 50;
+		}
+
+		// 帰還ヒント
+		DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
+			"[Y] 帰還");
+
+		SetFontSize(prevSize);
+	}
+
+	// 死亡メニュー（最前面）
+	if (isDead_)
+	{
+		DrawDeathMenu();
+	}
+
+
+
+
+	// 拾う文字表示-----------------------
+	if (aimedItem_ != nullptr && aimedItem_->GetState() == Item::STATE::DROPPED)
+	{
+		int prevSize = GetFontSize();
+		SetFontSize(40);
+		int hintY = screenH / 2 + 60;
+
+		if (CanPickUp())
+		{
+			// ゲームパッドが接続数で処理を分ける
+			if (GetJoypadNum() == 0)
+			{
+				DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
+					"[F] 拾う");
+			}
+			else
+			{
+				DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
+					"[X] 拾う");
+			}
+		}
+		else
+		{
+			if()
+			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 100, 100),
+				"インベントリ満杯");
+		}
+
+		SetFontSize(prevSize);
+	}
+
+	/*DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
-		transform_.pos.x, transform_.pos.y, transform_.pos.z);
+		transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
 }
 
 // 衝突判定用の調整
@@ -569,7 +656,7 @@ bool Player::IsAimingRoket(void) const
 		VScale(scnMng_.GetCamera()->GetForward(), Item::RANGE_PICKUP));
 
 	return AsoUtility::IsHitSphereCapsule(
-		stage_->GetRoketPos(), 80.0f,
+		stage_->GetRoketPos(), 120.0f,
 		camPos, rayEnd, 0.0f);
 }
 
@@ -617,53 +704,132 @@ void Player::TakeDamage(int amount)
 void Player::OnDeath(void)
 {
 	isDead_ = true;
-	// 当面はタイトルに戻す。GAMEOVERシーンを作ったら差し替え
-	SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+	deathMenuIndex_ = 0;
 }
 
 void Player::DrawStatusUI(void)
 {
 	constexpr int SCREEN_H = 1080;
-	constexpr int MARGIN = 40;
-	constexpr int BAR_W = 480;
-	constexpr int BAR_H = 64;
-	constexpr int FONT_BIG = 40;
-	constexpr int FONT_SMALL = 24;
+    constexpr int MARGIN = 40;
+    constexpr int BAR_W = 480;
+    constexpr int BAR_H = 64;
+    constexpr int FONT_BIG = 40;
+    constexpr int FONT_SMALL = 24;
+
+    int prevSize = GetFontSize();
+
+    // HPバー（下）
+    int hpY = SCREEN_H - MARGIN - BAR_H;
+    int hpFill = static_cast<int>(BAR_W * (static_cast<float>(hp_) / MAX_HP));
+    DrawBox(MARGIN, hpY, MARGIN + hpFill, hpY + BAR_H, 0xff3030, TRUE);   // 中身
+    DrawBox(MARGIN, hpY, MARGIN + BAR_W,  hpY + BAR_H, 0xffffff, FALSE);  // 枠
+    SetFontSize(FONT_BIG);
+    DrawFormatString(MARGIN, hpY - FONT_BIG - 8, 0xffffff,
+        "HP: %d%% (仮)", (int)(static_cast<float>(hp_) / MAX_HP * 100));
+
+    // 酸素バー（HPの上）
+    int oxY = hpY - BAR_H - 70;
+    int oxFill = static_cast<int>(BAR_W * (oxygen_ / MAX_OXYGEN));
+    unsigned int oxColor = (oxygen_ <= 0.0f) ? 0xff8800 : 0x30a0ff;
+    DrawBox(MARGIN, oxY, MARGIN + oxFill, oxY + BAR_H, oxColor,  TRUE);   // 中身
+    DrawBox(MARGIN, oxY, MARGIN + BAR_W,  oxY + BAR_H, 0xffffff, FALSE);  // 枠
+
+    int textY = oxY - FONT_BIG - 8;
+    SetFontSize(FONT_BIG);
+    DrawString(MARGIN, textY, "O", 0xffffff);
+    int oW = GetDrawStringWidth("O", 1);
+
+    SetFontSize(FONT_SMALL);
+    int subY = textY + (FONT_BIG - FONT_SMALL) + 8;
+    DrawString(MARGIN + oW, subY, "2", 0xffffff);
+    int twoW = GetDrawStringWidth("2", 1);
+
+    SetFontSize(FONT_BIG);
+    DrawFormatString(MARGIN + oW + twoW, textY, 0xffffff,
+        ": %d%% (仮)", (int)(oxygen_ / MAX_OXYGEN * 100));
+
+    SetFontSize(prevSize);
+}
+
+void Player::UpdateDeathMenu(void)
+{
+	auto& ins = InputManager::GetInstance();
+
+	// 上下で選択
+	bool up = ins.IsTrgDown(KEY_INPUT_UP)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP);
+	bool down = ins.IsTrgDown(KEY_INPUT_DOWN)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN);
+
+	constexpr int MENU_MAX = static_cast<int>(DEATH_MENU::MAX);
+	if (up)   deathMenuIndex_ = (deathMenuIndex_ - 1 + MENU_MAX) % MENU_MAX;
+	if (down) deathMenuIndex_ = (deathMenuIndex_ + 1) % MENU_MAX;
+
+	// 決定
+	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT); 
+	if (!decide) return;
+
+	switch (static_cast<DEATH_MENU>(deathMenuIndex_))
+	{
+	case DEATH_MENU::RETRY:
+		// 同じシーンを再生成
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
+		break;
+	case DEATH_MENU::TITLE:
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+		break;
+	default: break;
+	}
+}
+
+void Player::DrawDeathMenu(void)
+{
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	// 半透明黒で画面全体を覆う
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	DrawBox(0, 0, screenW, screenH, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	int prevSize = GetFontSize();
 
-	// HPバー（下）
-	int hpY = SCREEN_H - MARGIN - BAR_H;
-	int hpFill = static_cast<int>(BAR_W * (static_cast<float>(hp_) / MAX_HP));
-	DrawBox(MARGIN, hpY, MARGIN + BAR_W, hpY + BAR_H, 0x303030, TRUE);
-	DrawBox(MARGIN, hpY, MARGIN + hpFill, hpY + BAR_H, 0xff3030, TRUE);
-	SetFontSize(FONT_BIG);
-	DrawFormatString(MARGIN, hpY - FONT_BIG - 8, 0xffffff,
-		"HP: %d%%", (int)(static_cast<float>(hp_) / MAX_HP * 100));
+	// タイトル
+	constexpr int TITLE_FONT = 140;
+	SetFontSize(TITLE_FONT);
+	const char* title = "調査失敗";
+	int titleW = GetDrawStringWidth(title, (int)strlen(title));
+	DrawString((screenW - titleW) / 2, screenH / 2 - 280, title, 0xff4040);
 
-	// 酸素バー（HPの上）
-	int oxY = hpY - BAR_H - 70;
-	int oxFill = static_cast<int>(BAR_W * (oxygen_ / MAX_OXYGEN));
-	unsigned int oxColor = (oxygen_ <= 0.0f) ? 0xff8800 : 0x30a0ff;
-	DrawBox(MARGIN, oxY, MARGIN + BAR_W, oxY + BAR_H, 0x303030, TRUE);
-	DrawBox(MARGIN, oxY, MARGIN + oxFill, oxY + BAR_H, oxColor, TRUE);
+	// メニュー項目
+	constexpr int MENU_FONT = 70;
+	SetFontSize(MENU_FONT);
 
-	// "O" を大きく
-	int textY = oxY - FONT_BIG - 8;
-	SetFontSize(FONT_BIG);
-	DrawString(MARGIN, textY, "O", 0xffffff);
-	int oW = GetDrawStringWidth("O", 1);
+	const char* labels[static_cast<int>(DEATH_MENU::MAX)] =
+	{
+		"リトライ",
+		" タイトルへ",
+	};
 
-	// "2" を小さく・下げて添字風に
-	SetFontSize(FONT_SMALL);
-	int subY = textY + (FONT_BIG - FONT_SMALL) + 8;
-	DrawString(MARGIN + oW, subY, "2", 0xffffff);
-	int twoW = GetDrawStringWidth("2", 1);
+	int baseY = screenH / 2 - 20;
+	constexpr int ITEM_SPAN = 110;
 
-	// ": 75%" を大きく
-	SetFontSize(FONT_BIG);
-	DrawFormatString(MARGIN + oW + twoW, textY, 0xffffff,
-		": %d%%", (int)(oxygen_ / MAX_OXYGEN * 100));
+	for (int i = 0; i < static_cast<int>(DEATH_MENU::MAX); i++)
+	{
+		bool selected = (i == deathMenuIndex_);
+		unsigned int color = selected ? 0xffff60 : 0xaaaaaa;
+
+		int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
+		int x = (screenW - textW) / 2;
+		int y = baseY + i * ITEM_SPAN;
+
+		if (selected)
+		{
+			DrawString(x - 60, y, ">", color);
+		}
+		DrawString(x, y, labels[i], color);
+	}
 
 	SetFontSize(prevSize);
 }
@@ -694,7 +860,7 @@ void Player::InitTransform(void)
 	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
 
 	// 座標
-	transform_.pos = VAdd(AsoUtility::VECTOR_ZERO, VScale(AsoUtility::DIR_U, 2600.0f));//64.0f));
+	transform_.pos = { -283.80f, 2586.20f, 376.75f };
 
 	transform_.Update();
 

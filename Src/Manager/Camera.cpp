@@ -430,7 +430,7 @@ void Camera::RotKeyboard(bool isLimit)
 void Camera::RotMouse(bool isLimit)
 {
 	// マウスの感度（この数値をいじってカメラの回転速度を調整します）
-	const float SENSITIVITY = 0.00005f;
+	const float SENSITIVITY = 0.00040f;
 
 	// 画面のサイズを取得して、中心の座標を計算
 	int screenW, screenH;

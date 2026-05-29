@@ -65,14 +65,6 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
-
-	// ƒV[ƒ“‘JˆÚ
-	auto const& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
-	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
-	}
-
 	// XV
 	stage_->Update();
 	itemMng_->Update();
@@ -89,9 +81,9 @@ void GameScene::Draw(void)
 	itemMng_->Draw();
 	// ‰e•`‰æ
 	DrawShadow();
-	player_->Draw();
-	enemyManager_->Draw();
 	
+	enemyManager_->Draw();
+	player_->Draw();
 }
 
 void GameScene::Release(void)

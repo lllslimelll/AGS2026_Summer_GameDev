@@ -27,26 +27,48 @@ void Stage::Draw(void)
 {
 	ActorBase::Draw();
 
-	DrawSphere3D(roketPos_, 80, 16, 0xffffff, 0xffffff, false);
+	DrawSphere3D(roketPos_, 120, 16, 0xffffff, 0xffffff, false);
 
-	// フォントサイズを一時的に変更
 	int prevSize = GetFontSize();
-	SetFontSize(48);
+	SetFontSize(55);
 
-	// 文字列の幅を計測して右上揃え
+	// 整数をカンマ区切り文字列に変換するラムダ
+	auto withComma = [](int value, char* out)
+		{
+			char tmp[32];
+			sprintf_s(tmp, 32, "%d", value);
+			int len = (int)strlen(tmp);
+			int outIdx = 0;
+			int firstLen = len % 3;
+			if (firstLen == 0) firstLen = 3;
+			for (int i = 0; i < firstLen; i++) out[outIdx++] = tmp[i];
+			for (int i = firstLen; i < len; i += 3)
+			{
+				out[outIdx++] = ',';
+				out[outIdx++] = tmp[i];
+				out[outIdx++] = tmp[i + 1];
+				out[outIdx++] = tmp[i + 2];
+			}
+			out[outIdx] = '\0';
+		};
+
+	char totalStr[32];
+	char quotaStr[32];
+	withComma(totalDelivered_, totalStr);
+	withComma(QUOTA, quotaStr);
+
 	char buf[64];
-	sprintf_s(buf, "$%d / $%d", totalDelivered_, QUOTA);
+	sprintf_s(buf, "$%s / $%s", totalStr, quotaStr);
 	int textW = GetDrawStringWidth(buf, (int)strlen(buf));
 
 	constexpr int SCREEN_W = 1920;
-	constexpr int MARGIN = 30;
+	constexpr int MARGIN = 50;
 	int x = SCREEN_W - textW - MARGIN;
 	int y = MARGIN;
 
 	unsigned int color = IsQuotaCleared() ? 0x00ff00 : 0xffffff;
 	DrawFormatString(x, y, color, "%s", buf);
 
-	// フォントサイズを戻す
 	SetFontSize(prevSize);
 }
 
@@ -60,12 +82,14 @@ void Stage::InitLoad(void)
 void Stage::InitTransform(void)
 {
 	// 大きさ
-	transform_.scl = AsoUtility::VECTOR_ONE;
+	transform_.scl = { 0.5f, 0.5f, 0.5f };
 	// 座標
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
 
 	// 座標
-	roketPos_ = VAdd(AsoUtility::VECTOR_ZERO, VScale(AsoUtility::DIR_U, 2500.0f));
+	roketPos_ = { -405.45f, 2593.0f, 660.0f };
+
+	transform_.Update();
 }
 
 void Stage::InitCollider(void)

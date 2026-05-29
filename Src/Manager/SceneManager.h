@@ -12,8 +12,8 @@ public:
 
 	// 背景色
 	static constexpr int BACKGROUND_COLOR_R = 0;
-	static constexpr int BACKGROUND_COLOR_G = 139;
-	static constexpr int BACKGROUND_COLOR_B = 139;
+	static constexpr int BACKGROUND_COLOR_G = 0;
+	static constexpr int BACKGROUND_COLOR_B = 0;
 
 	// ディレクショナルライトの方向
 	static constexpr VECTOR LIGHT_DIRECTION = { 0.3f, -0.7f, 0.8f };
@@ -24,6 +24,7 @@ public:
 		NONE,
 		TITLE,
 		GAME,
+		RESULT,
 		DEBUG,
 	};
 	
@@ -60,8 +61,11 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
-private:
+	void SetResultScore(int score) { resultScore_ = score; }
+	int  GetResultScore(void) const { return resultScore_; }
 
+private:
+	int resultScore_ = 0;
 	// 静的インスタンス
 	static SceneManager* instance_;
 

@@ -40,6 +40,9 @@ void EnemyRat::InitTransform(void)
 	// ローカル回転
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
 
+	VECTOR upVec = VNorm((VSub(transform_.pos, { 0,0,0 })));
+	transform_.pos = VAdd(transform_.pos, VScale(upVec, 28));
+
 	transform_.Update();
 }
 
@@ -166,13 +169,42 @@ void EnemyRat::ChangeStateIdle(void)
 
 void EnemyRat::ChangeStateWander(void)
 {
+	//stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
+
+	//// ランダムな角度
+	//float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
+
+	//// 移動方向
+	//moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
+
+	//// ランダムな移動時間
+	//step_ = 2.0f + static_cast<float>(GetRand(5));
+
+	//// 移動スピード
+	//moveSpeed_ = 3.0f;
+
+	//// 歩きアニメーション再生
+	//animController_->Play(
+	//	static_cast<int>(ANIM_TYPE::WALK), true);
+
 	stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
 
-	// ランダムな角度
-	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
+	// 月中心からの上方向（地面の法線）
+	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
-	// 移動方向
-	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
+	// 接平面上の基底ベクトルを2本作る
+	// upDir とほぼ平行な参照軸を避けて外積を取る
+	VECTOR ref = (fabsf(upDir.y) < 0.99f)
+		? AsoUtility::AXIS_Y
+		: AsoUtility::AXIS_X;
+	VECTOR tangent = VNorm(VCross(upDir, ref));     // 接ベクトル1
+	VECTOR binormal = VNorm(VCross(upDir, tangent)); // 接ベクトル2
+
+	// 接平面上でランダム角度の方向を合成
+	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
+	moveDir_ = VAdd(
+		VScale(tangent, cosf(angle)),
+		VScale(binormal, sinf(angle)));
 
 	// ランダムな移動時間
 	step_ = 2.0f + static_cast<float>(GetRand(5));
@@ -181,8 +213,7 @@ void EnemyRat::ChangeStateWander(void)
 	moveSpeed_ = 3.0f;
 
 	// 歩きアニメーション再生
-	animController_->Play(
-		static_cast<int>(ANIM_TYPE::WALK), true);
+	animController_->Play(static_cast<int>(ANIM_TYPE::WALK), true);
 }
 
 void EnemyRat::ChangeStateEnd(void)
@@ -219,6 +250,14 @@ void EnemyRat::UpdateWander(void)
 		
 		return;
 	}
+
+	// 現在位置の法線に対して moveDir_ を接平面に再投影（前回追加した補正）
+	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+	float d = VDot(moveDir_, upDir);
+	moveDir_ = VNorm(VSub(moveDir_, VScale(upDir, d)));
+
+	// 進行方向を向く
+	faceDir_ = moveDir_;
 
 	// 移動量
 	movePow_ = VScale(moveDir_, moveSpeed_);

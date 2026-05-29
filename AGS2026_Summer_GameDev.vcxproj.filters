@@ -123,6 +123,9 @@
     <ClCompile Include="Src\Object\Actor\Item\Item1.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scene\ResultScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Fader.h">
@@ -233,6 +236,9 @@
     <ClInclude Include="Src\Object\Actor\Item\Item1.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Scene\ResultScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -240,6 +246,7 @@
     <None Include="Data\Csv\EnemyData.xlsx" />
     <None Include="Data\Csv\ItemData.csv" />
     <None Include="Data\Csv\ItemData.xlsx" />
+    <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />

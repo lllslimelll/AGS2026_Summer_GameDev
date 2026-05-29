@@ -58,7 +58,7 @@ protected:
 private:
 
 	// ƒmƒ‹ƒ}”[•iŠz
-	static constexpr int QUOTA = 10000;
+	static constexpr int QUOTA = 5000;
 
 	VECTOR roketPos_;
 

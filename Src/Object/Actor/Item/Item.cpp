@@ -67,9 +67,15 @@ void Item::Draw(void)
         case TYPE::type1: color = 0xffff00; break;
         case TYPE::type2: color = 0x00ffff; break;
         case TYPE::type3: color = 0xff00ff; break;
-        default: color = 0xffffff; break;
+        default:
+            break;
         }
-        DrawSphere3D(transform_.pos, 10.0f, 8, color, color, TRUE);
+
+        // 落ちてるとき30、持ってるとき10
+        float radius = (state_ == STATE::DROPPED) ? 30.0f : 10.0f;
+
+        DrawSphere3D(transform_.pos, radius, 8, color, color, TRUE);
+
     }
     // 状態別描画
     stateDraw_();
@@ -183,7 +189,7 @@ void Item::InitLoad(void)
 	// アイテム価値のビルボード画像読み込み
     valueBillImg_[0] = LoadGraph("Data/Image/$100.png");
 	valueBillImg_[1] = LoadGraph("Data/Image/$500.png");
-	valueBillImg_[2] = LoadGraph("Data/Image/$1.000.png");
+	valueBillImg_[2] = LoadGraph("Data/Image/$1,000.png");
 
     if (valueBillImg_[0] == -1)
     {
@@ -205,6 +211,9 @@ void Item::InitTransform(void)
 
     // 座標
     transform_.pos = defaultPos_;
+
+    VECTOR upVec = VNorm((VSub(transform_.pos, { 0,0,0 })));
+    transform_.pos = VAdd(transform_.pos, VScale(upVec, 28));
 
     transform_.Update();
 }

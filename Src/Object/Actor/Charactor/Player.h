@@ -150,10 +150,10 @@ private:
 
 	// ===== HP・酸素 =====
 	static constexpr int   MAX_HP = 100;
-	static constexpr float MAX_OXYGEN = 300.0f;  // 秒
+	static constexpr float MAX_OXYGEN = 10.0f;  // 秒
 	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	// 酸素消費倍率（ブースト中）
-	static constexpr float SUFFOCATE_INTERVAL = 2.0f;   // ダメージ周期
-	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 10;  // 10
+	static constexpr float SUFFOCATE_INTERVAL = 0.1f;   // ダメージ周期
+	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
 
 	int   hp_;
 	float oxygen_;
@@ -171,5 +171,20 @@ private:
 
 	// UI描画
 	void DrawStatusUI(void);
+
+
+
+	// 死亡メニュー
+	enum class DEATH_MENU
+	{
+		RETRY,
+		TITLE,
+		MAX,
+	};
+	int deathMenuIndex_ = 0;  // 0=リトライ, 1=タイトル
+
+	// 死亡メニュー処理
+	void UpdateDeathMenu(void);
+	void DrawDeathMenu(void);
 };
 
