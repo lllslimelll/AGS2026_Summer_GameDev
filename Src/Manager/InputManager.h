@@ -53,6 +53,7 @@ public:
 		L_TRIGGER,
 		R_SHOULDER,
 		L_SHOULDER,
+		START,
 		MAX
 	};
 

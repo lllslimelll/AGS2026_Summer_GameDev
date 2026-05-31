@@ -42,6 +42,7 @@ void InputManager::Init(void)
 	InputManager::GetInstance().Add(KEY_INPUT_S);
 	InputManager::GetInstance().Add(KEY_INPUT_D);
 	InputManager::GetInstance().Add(KEY_INPUT_F);
+	InputManager::GetInstance().Add(KEY_INPUT_C);
 
 	InputManager::GetInstance().Add(KEY_INPUT_LSHIFT);
 
@@ -52,6 +53,10 @@ void InputManager::Init(void)
 	GetInstance().Add(KEY_INPUT_3);
 	GetInstance().Add(KEY_INPUT_4);
 	GetInstance().Add(KEY_INPUT_5);
+
+	GetInstance().Add(KEY_INPUT_0);
+
+	GetInstance().Add(KEY_INPUT_ESCAPE);
 
 	InputManager::MouseInfo info;
 
@@ -327,6 +332,9 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 
 		idx = static_cast<int>(JOYPAD_BTN::L_SHOULDER);
 		ret.ButtonsNew[idx] = d.Buttons[4]; // L_SHOULDER
+
+		idx = static_cast<int>(JOYPAD_BTN::START);
+		ret.ButtonsNew[idx] = d.Buttons[7]; // L_SHOULDER
 
 		// 左スティック
 		ret.AKeyLX = d.X;

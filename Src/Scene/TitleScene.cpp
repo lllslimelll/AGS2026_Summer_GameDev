@@ -133,15 +133,24 @@ void TitleScene::Draw(void)
 	//	TRUE
 	//);
 
-	// PushSpace•`‰æ
-	DrawRotaGraph(
-		Application::SCREEN_SIZE_X / 2,
-		Application::SCREEN_SIZE_Y - 120,
-		1.0f,
-		0.0,
-		imgPushSpace_,
-		TRUE
-	);
+	if (GetJoypadNum() == 0)
+	{
+		// PushSpace•`‰æ
+		DrawRotaGraph(
+			Application::SCREEN_SIZE_X / 2,
+			Application::SCREEN_SIZE_Y - 120,
+			1.0f,
+			0.0,
+			imgPushSpace_,
+			TRUE
+		);
+	}
+	else
+	{
+		SetFontSize(50);
+		DrawFormatString(Application::SCREEN_SIZE_X / 2,
+			Application::SCREEN_SIZE_Y / 2 + 400, 0xffffff, "Push A Button");
+	}
 }
 
 void TitleScene::Release(void)

@@ -268,7 +268,7 @@ void Player::UpdateItem(void)
 	{
 		auto& ins = InputManager::GetInstance();
 		
-		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_F))
+		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_C))
 		{
 			SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RESULT);
@@ -535,17 +535,20 @@ void Player::Draw(void)
 		constexpr int HINT_X = 60;
 		int hintY = screenH / 2 + 40;  // 照準の少し下
 
+		const char* hintDelivary = (GetJoypadNum() == 0) ? "[F] 納品" : "[X] 納品"; 
+		const char* hintReturn = (GetJoypadNum() == 0) ? "[C] 帰還" : "[Y] 納品";
+
 		// 納品ヒント（選択中スロットにアイテムがあるときだけ）
 		if (inventory_[selectedSlot_] != nullptr)
 		{
 			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
-				"[X] 納品");
+				hintDelivary);
 			hintY += 50;
 		}
 
 		// 帰還ヒント
 		DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
-			"[Y] 帰還");
+			hintReturn);
 
 		SetFontSize(prevSize);
 	}

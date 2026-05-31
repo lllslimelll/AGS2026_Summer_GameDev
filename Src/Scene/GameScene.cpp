@@ -17,6 +17,8 @@ GameScene::GameScene(void)
 	player_(nullptr),
 	enemyManager_(nullptr),
 	skyDome_(nullptr),
+	isPaused_(false),
+	pauseMenuIndex_(0),
 	SceneBase()
 {
 }
@@ -65,6 +67,23 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
+	auto& ins = InputManager::GetInstance();
+
+	// ESC / STARTでポーズ切り替え
+	bool pauseToggle = ins.IsTrgDown(KEY_INPUT_ESCAPE)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::START);
+	if (pauseToggle)
+	{
+		isPaused_ = !isPaused_;
+		pauseMenuIndex_ = 0;
+	}
+
+	if (isPaused_)
+	{
+		UpdatePauseMenu();
+		return;
+	}
+
 	// 更新
 	stage_->Update();
 	itemMng_->Update();
@@ -84,6 +103,11 @@ void GameScene::Draw(void)
 	
 	enemyManager_->Draw();
 	player_->Draw();
+
+	if (isPaused_)
+	{
+		DrawPauseMenu();
+	}
 }
 
 void GameScene::Release(void)
@@ -103,6 +127,84 @@ void GameScene::Release(void)
 	skyDome_->Release();
 	delete skyDome_;
 }
+
+void GameScene::UpdatePauseMenu(void)
+{
+	auto& ins = InputManager::GetInstance();
+
+	bool up = ins.IsTrgDown(KEY_INPUT_UP) || ins.IsTrgDown(KEY_INPUT_W)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP);
+	bool down = ins.IsTrgDown(KEY_INPUT_DOWN) || ins.IsTrgDown(KEY_INPUT_S)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN);
+
+	constexpr int MENU_MAX = static_cast<int>(PAUSE_MENU::MAX);
+	if (up)   pauseMenuIndex_ = (pauseMenuIndex_ - 1 + MENU_MAX) % MENU_MAX;
+	if (down) pauseMenuIndex_ = (pauseMenuIndex_ + 1) % MENU_MAX;
+
+	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT);
+	if (!decide) return;
+
+	switch (static_cast<PAUSE_MENU>(pauseMenuIndex_))
+	{
+	case PAUSE_MENU::RESUME:
+		isPaused_ = false;
+		break;
+	case PAUSE_MENU::TITLE:
+		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+		break;
+	default: break;
+	}
+}
+
+void GameScene::DrawPauseMenu(void)
+{
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	DrawBox(0, 0, screenW, screenH, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	int prevSize = GetFontSize();
+
+	constexpr int TITLE_FONT = 140;
+	SetFontSize(TITLE_FONT);
+	const char* title = "ポーズ";
+	int titleW = GetDrawStringWidth(title, (int)strlen(title));
+	DrawString((screenW - titleW) / 2, screenH / 2 - 280, title, 0xffffff);
+
+	constexpr int MENU_FONT = 70;
+	SetFontSize(MENU_FONT);
+
+	const char* labels[static_cast<int>(PAUSE_MENU::MAX)] =
+	{
+		"ゲームに戻る",
+		"タイトルに戻る",
+	};
+
+	int baseY = screenH / 2 - 20;
+	constexpr int ITEM_SPAN = 110;
+
+	for (int i = 0; i < static_cast<int>(PAUSE_MENU::MAX); i++)
+	{
+		bool selected = (i == pauseMenuIndex_);
+		unsigned int color = selected ? 0xffff60 : 0xaaaaaa;
+
+		int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
+		int x = (screenW - textW) / 2;
+		int y = baseY + i * ITEM_SPAN;
+
+		if (selected)
+		{
+			DrawString(x - 60, y, ">", color);
+		}
+		DrawString(x, y, labels[i], color);
+	}
+
+	SetFontSize(prevSize);
+}
+
 
 // リアルシャドウ描画
 void GameScene::DrawShadow(void)

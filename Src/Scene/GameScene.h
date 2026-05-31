@@ -47,4 +47,17 @@ private:
 
 	// リアルシャドウ描画
 	void DrawShadow(void);
+
+	bool isPaused_;
+	int  pauseMenuIndex_;
+
+	enum class PAUSE_MENU
+	{
+		RESUME,
+		TITLE,
+		MAX,
+	};
+
+	void UpdatePauseMenu(void);
+	void DrawPauseMenu(void);
 };
