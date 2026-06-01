@@ -731,46 +731,66 @@ void Player::OnDeath(void)
 
 void Player::DrawStatusUI(void)
 {
-	constexpr int SCREEN_H = 1080;
-    constexpr int MARGIN = 40;
-    constexpr int BAR_W = 480;
-    constexpr int BAR_H = 64;
-    constexpr int FONT_BIG = 40;
-    constexpr int FONT_SMALL = 24;
+		int screenW, screenH;
+		GetScreenState(&screenW, &screenH, nullptr);
 
-    int prevSize = GetFontSize();
+		// ===== インベントリと同じレイアウト計算 =====
+		const int size = 130;
+		const int padding = 30;
+		const int slotSpan = size + padding;
+		const int totalWidth = INVENTORY_MAX * slotSpan - padding;
+		const int startX = (screenW - totalWidth) / 2 + 10;   // ← 元に戻した
+		const int marginBottom = 60;
+		const int invTopY = screenH - size - marginBottom;
 
-    // HPバー（下）
-    int hpY = SCREEN_H - MARGIN - BAR_H;
-    int hpFill = static_cast<int>(BAR_W * (static_cast<float>(hp_) / MAX_HP));
-    DrawBox(MARGIN, hpY, MARGIN + hpFill, hpY + BAR_H, 0xff3030, TRUE);   // 中身
-    DrawBox(MARGIN, hpY, MARGIN + BAR_W,  hpY + BAR_H, 0xffffff, FALSE);  // 枠
-    SetFontSize(FONT_BIG);
-    DrawFormatString(MARGIN, hpY - FONT_BIG - 8, 0xffffff,
-        "HP: %d%% (仮)", (int)(static_cast<float>(hp_) / MAX_HP * 100));
+		// ===== ゲージの寸法 =====
+		constexpr int BAR_H = 28;
+		constexpr int GAP = 16;
+		constexpr int MID_GAP = 20;
+		constexpr int FONT_LABEL = 24;
 
-    // 酸素バー（HPの上）
-    int oxY = hpY - BAR_H - 70;
-    int oxFill = static_cast<int>(BAR_W * (oxygen_ / MAX_OXYGEN));
-    unsigned int oxColor = (oxygen_ <= 0.0f) ? 0xff8800 : 0x30a0ff;
-    DrawBox(MARGIN, oxY, MARGIN + oxFill, oxY + BAR_H, oxColor,  TRUE);   // 中身
-    DrawBox(MARGIN, oxY, MARGIN + BAR_W,  oxY + BAR_H, 0xffffff, FALSE);  // 枠
+		int barY = invTopY - GAP - BAR_H;
+		int halfW = (totalWidth - MID_GAP) / 2;
 
-    int textY = oxY - FONT_BIG - 8;
-    SetFontSize(FONT_BIG);
-    DrawString(MARGIN, textY, "O", 0xffffff);
-    int oW = GetDrawStringWidth("O", 1);
+		// ===== HPバー（左半分） =====
+		int hpL = startX;
+		int hpR = hpL + halfW;
+		int hpFill = static_cast<int>(halfW * (static_cast<float>(hp_) / MAX_HP));
 
-    SetFontSize(FONT_SMALL);
-    int subY = textY + (FONT_BIG - FONT_SMALL) + 8;
-    DrawString(MARGIN + oW, subY, "2", 0xffffff);
-    int twoW = GetDrawStringWidth("2", 1);
+		DrawBox(hpL, barY, hpL + hpFill, barY + BAR_H, 0xff3030, TRUE);
+		DrawBox(hpL, barY, hpR, barY + BAR_H, 0xffffff, FALSE);
 
-    SetFontSize(FONT_BIG);
-    DrawFormatString(MARGIN + oW + twoW, textY, 0xffffff,
-        ": %d%% (仮)", (int)(oxygen_ / MAX_OXYGEN * 100));
+		// ===== O2バー（右半分） =====
+		int oxL = hpR + MID_GAP;
+		int oxR = oxL + halfW;
+		int oxFill = static_cast<int>(halfW * (oxygen_ / MAX_OXYGEN));
+		unsigned int oxColor = (oxygen_ <= 0.0f) ? 0xff8800 : 0x30a0ff;
 
-    SetFontSize(prevSize);
+		DrawBox(oxL, barY, oxL + oxFill, barY + BAR_H, oxColor, TRUE);
+		DrawBox(oxL, barY, oxR, barY + BAR_H, 0xffffff, FALSE);
+
+		// ===== ラベル（バーの上） =====
+		int prevSize = GetFontSize();
+		SetFontSize(FONT_LABEL);
+		int labelY = barY - FONT_LABEL - 2;
+
+		int hpPercent = (int)(static_cast<float>(hp_) / MAX_HP * 100);
+		DrawFormatString(hpL, labelY, 0xffffff, "HP  %d%%", hpPercent);
+
+		DrawString(oxL, labelY, "O", 0xffffff);
+		int oW = GetDrawStringWidth("O", 1);
+
+		constexpr int FONT_SUB = 16;
+		SetFontSize(FONT_SUB);
+		int subY = labelY + (FONT_LABEL - FONT_SUB) + 4;
+		DrawString(oxL + oW, subY, "2", 0xffffff);
+		int twoW = GetDrawStringWidth("2", 1);
+
+		int oxPercent = (int)(oxygen_ / MAX_OXYGEN * 100);
+		SetFontSize(FONT_LABEL);
+		DrawFormatString(oxL + oW + twoW + 4, labelY, 0xffffff, " %d%%", oxPercent);
+
+		SetFontSize(prevSize);
 }
 
 void Player::UpdateDeathMenu(void)
