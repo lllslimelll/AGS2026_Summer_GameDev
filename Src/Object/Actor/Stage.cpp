@@ -82,7 +82,7 @@ void Stage::InitLoad(void)
 void Stage::InitTransform(void)
 {
 	// ‘å‚«‚³
-	transform_.scl = { 0.5f, 0.5f, 0.5f };
+	transform_.scl = { 2.0f, 2.0f, 2.0f };
 	// À•W
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
 

@@ -247,6 +247,7 @@
     <None Include="Data\Csv\ItemData.csv" />
     <None Include="Data\Csv\ItemData.xlsx" />
     <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
+    <None Include="Data\Model\Stage\MainStage\planet.mv1" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />
@@ -274,6 +275,9 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="Data\Image\Title.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Model\Stage\MainStage\lroc_color_poles_8k.tif_0.png">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>

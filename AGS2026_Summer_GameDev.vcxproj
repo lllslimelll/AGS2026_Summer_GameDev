@@ -212,6 +212,7 @@
     <None Include="Data\Csv\ItemData.csv" />
     <None Include="Data\Csv\ItemData.xlsx" />
     <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
+    <None Include="Data\Model\Stage\MainStage\planet.mv1" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +227,7 @@
     <Image Include="Data\Image\Shadow.png" />
     <Image Include="Data\Image\SpeechBalloon.png" />
     <Image Include="Data\Image\Title.png" />
+    <Image Include="Data\Model\Stage\MainStage\lroc_color_poles_8k.tif_0.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
