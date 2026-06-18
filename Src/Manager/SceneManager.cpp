@@ -242,12 +242,15 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	{
 	case SCENE_ID::TITLE:
 		scene_ = new TitleScene();
+		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::GAME:
 		scene_ = new GameScene();
+		SetMouseDispFlag(false);
 		break;
 	case SCENE_ID::RESULT:
 		scene_ = new ResultScene();
+		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::DEBUG:
 		scene_ = new DebugScene();

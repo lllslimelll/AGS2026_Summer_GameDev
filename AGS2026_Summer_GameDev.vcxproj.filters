@@ -126,6 +126,12 @@
     <ClCompile Include="Src\Scene\ResultScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\UI\UI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\UI\GameUI\GameUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Fader.h">
@@ -239,6 +245,12 @@
     <ClInclude Include="Src\Scene\ResultScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\UI\UI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\UI\GameUI\GameUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -248,6 +260,8 @@
     <None Include="Data\Csv\ItemData.xlsx" />
     <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
     <None Include="Data\Model\Stage\MainStage\planet.mv1" />
+    <None Include="Data\Model\SkyDome\SpaceDome.mv1" />
+    <None Include="Data\Model\SpaceDome\SpaceDome.mv1" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />
@@ -278,6 +292,9 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="Data\Model\Stage\MainStage\lroc_color_poles_8k.tif_0.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="Data\Model\SkyDome\SpaceDome.jpg">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>

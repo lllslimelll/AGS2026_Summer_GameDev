@@ -584,9 +584,9 @@ void Player::Draw(void)
 		SetFontSize(prevSize);
 	}
 
-	/*DrawFormatString(0, 0, GetColor(255, 255, 255),
+	DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
-		transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
+		transform_.pos.x, transform_.pos.y, transform_.pos.z);
 }
 
 // 衝突判定用の調整
@@ -736,11 +736,11 @@ void Player::DrawStatusUI(void)
 
 		// ===== インベントリと同じレイアウト計算 =====
 		const int size = 130;
-		const int padding = 30;
+		const int padding = 35;
 		const int slotSpan = size + padding;
 		const int totalWidth = INVENTORY_MAX * slotSpan - padding;
-		const int startX = (screenW - totalWidth) / 2 + 10;   // ← 元に戻した
-		const int marginBottom = 60;
+		const int startX = (screenW - totalWidth) / 2 + 10 - 0;   // ← 元に戻した
+		const int marginBottom = 70;
 		const int invTopY = screenH - size - marginBottom;
 
 		// ===== ゲージの寸法 =====
@@ -889,7 +889,7 @@ void Player::InitLoad(void)
 	inventoryItemImgs_[0] = LoadGraph("Data/Image/item1.png");
 	inventoryItemImgs_[1] = LoadGraph("Data/Image/item2.png");
 	inventoryItemImgs_[2] = LoadGraph("Data/Image/item3.png");
-
+	
 }
 
 void Player::InitTransform(void)

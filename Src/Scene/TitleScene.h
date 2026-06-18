@@ -41,10 +41,10 @@ private:
 
 	// 定数
 	static constexpr int   MENU_COUNT = static_cast<int>(MENU::MAX);
-	static constexpr int   MENU_X = 100;   // 左余白
-	static constexpr int   MENU_Y_START = 400;   // 先頭項目のY座標
+	static constexpr int   MENU_X = 120;   // 左余白
+	static constexpr int   MENU_Y_START = 420;   // 先頭項目のY座標
 	static constexpr int   MENU_FONT_SIZE = 48;
-	static constexpr int   TITLE_FONT_SIZE = 120;
+	static constexpr int   TITLE_FONT_SIZE = 150;
 	static constexpr int   MENU_LINE_HEIGHT = 80;
 	static constexpr float PLANET_ROT_SPEED = 1.0f;  // 1フレームあたりの回転角(deg)
 

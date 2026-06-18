@@ -51,16 +51,16 @@ void SkyDome::InitLoad(void)
 {
 	// モデル読み込み
 	transform_.SetModel(resMng_.Load(			// 1個 = Load()  複数 = Depulicate()
-		ResourceManager::SRC::SKY_DOME).handleId_);
+		ResourceManager::SRC::SPACE_DOME).handleId_);
 }
 
 void SkyDome::InitTransform(void)
 {
-	transform_.scl = { 100.0f,100.0f,100.0f };
+	transform_.scl = { 0.3f,0.3f,0.3f };
 
 	transform_.quaRot = Quaternion::Identity();
-	// Y軸を180度
-	//transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
+	// X軸を90度
+	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(200.0f), AsoUtility::AXIS_Z);
 
 	// 座標
 	transform_.pos = AsoUtility::VECTOR_ZERO;
@@ -146,7 +146,7 @@ void SkyDome::UpdateFollow(void)
 {
 	// Y軸回転
 	Quaternion rot = Quaternion::AngleAxis(
-		AsoUtility::Deg2RadF(0.06f), AsoUtility::AXIS_Y);
+		AsoUtility::Deg2RadF(0.03f), AsoUtility::AXIS_Y);
 	transform_.quaRot = transform_.quaRot.Mult(rot);
 
 	// 追従

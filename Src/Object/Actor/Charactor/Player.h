@@ -189,5 +189,9 @@ private:
 
 
 	float fullInventoryMsgTimer_ = 0;
+
+	// UIƒo[‰æ‘œ
+	int hpBarImg_;
+	int o2BarImg_;
 };
 

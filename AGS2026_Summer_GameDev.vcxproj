@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\UI\GameUI\GameUI.cpp" />
     <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\Item1.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\ItemManager.cpp" />
@@ -166,8 +167,10 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
+    <ClCompile Include="Src\UI\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\UI\GameUI\GameUI.h" />
     <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Object\Actor\Item\Item1.h" />
     <ClInclude Include="Src\Object\Actor\Item\ItemManager.h" />
@@ -205,12 +208,15 @@
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\AsoUtility.h" />
     <ClInclude Include="Src\Utility\MatrixUtility.h" />
+    <ClInclude Include="Src\UI\UI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Csv\EnemyData.csv" />
     <None Include="Data\Csv\EnemyData.xlsx" />
     <None Include="Data\Csv\ItemData.csv" />
     <None Include="Data\Csv\ItemData.xlsx" />
+    <None Include="Data\Model\SkyDome\SpaceDome.mv1" />
+    <None Include="Data\Model\SpaceDome\SpaceDome.mv1" />
     <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
     <None Include="Data\Model\Stage\MainStage\planet.mv1" />
     <None Include="README.md" />
@@ -227,6 +233,7 @@
     <Image Include="Data\Image\Shadow.png" />
     <Image Include="Data\Image\SpeechBalloon.png" />
     <Image Include="Data\Image\Title.png" />
+    <Image Include="Data\Model\SkyDome\SpaceDome.jpg" />
     <Image Include="Data\Model\Stage\MainStage\lroc_color_poles_8k.tif_0.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

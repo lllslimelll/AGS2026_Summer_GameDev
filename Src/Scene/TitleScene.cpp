@@ -37,7 +37,6 @@ TitleScene::~TitleScene(void)
 
 void TitleScene::Init(void)
 {
-
 	// PushSpace画像読み込み
 	imgPushSpace_ = resMng_.Load(ResourceManager::SRC::PUSH_SPACE).handleId_;
 
@@ -56,6 +55,7 @@ void TitleScene::Init(void)
 	// スカイドーム
 	skyDome_ = new SkyDome(empty_);
 	skyDome_->Init();
+
 }
 
 void TitleScene::Update(void)
@@ -65,7 +65,7 @@ void TitleScene::Update(void)
 	// 惑星にX軸に毎フレーム1°ずつ回転を追加
 	spherePlanet_.quaRotLocal = Quaternion::Mult(
 		spherePlanet_.quaRotLocal,
-		Quaternion::AngleAxis(AsoUtility::Deg2RadF(-1.0f), AsoUtility::AXIS_Z));
+		Quaternion::AngleAxis(AsoUtility::Deg2RadF(-0.1f), AsoUtility::AXIS_Z));
 
 	// モデル行列を更新
 	spherePlanet_.Update();
@@ -76,6 +76,22 @@ void TitleScene::Update(void)
 void TitleScene::UpdateInput(void)
 {
 	auto const& ins = InputManager::GetInstance();
+
+	// マウス座標取得
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+
+	// マウスがメニュー項目に重なっていたらselectIndexを更新
+	for (int i = 0; i < MENU_COUNT; ++i)
+	{
+		int itemY = MENU_Y_START + i * MENU_LINE_HEIGHT;
+		// 当たり判定の矩形（横幅は適宜調整）
+		if (mouseX >= MENU_X && mouseX <= MENU_X + 300 &&
+			mouseY >= itemY && mouseY <= itemY + MENU_LINE_HEIGHT)
+		{
+			selectIndex_ = i;
+		}
+	}
 
 	// ↑↓ でカーソル移動
 	if (ins.IsTrgDown(KEY_INPUT_UP) ||
@@ -91,11 +107,13 @@ void TitleScene::UpdateInput(void)
 		selectIndex_ = (selectIndex_ + 1) % MENU_COUNT;
 	}
 
-	// 決定
+	// 決定（マウス左クリック追加）
 	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN)
 		|| ins.IsTrgDown(KEY_INPUT_SPACE)
 		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::LEFT);
+			InputManager::JOYPAD_BTN::LEFT)
+		|| (GetMouseInput() & MOUSE_INPUT_LEFT);  // 左クリック
+
 	if (decide)
 	{
 		switch (static_cast<MENU>(selectIndex_))
@@ -104,14 +122,13 @@ void TitleScene::UpdateInput(void)
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 			break;
 		case MENU::QUIT_GAME:
-			// DXライブラリにウィンドウ終了を要求
 			PostQuitMessage(0);
 			break;
 		default:
-			// TUTORIAL / OPTION / RANKING は未実装スタブ
 			break;
 		}
 	}
+
 }
 
 void TitleScene::Draw(void)

@@ -1,3 +1,4 @@
+#include <cassert>
 #include <DxLib.h>
 #include "../Application.h"
 #include "Resource.h"
@@ -61,8 +62,8 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/planet.mv1");
 	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
 
-	res = new RES(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");
-	resourcesMap_.emplace(SRC::SKY_DOME, res);
+	res = new RES(RES_T::MODEL, PATH_MDL + "SpaceDome/SpaceDome.mv1");
+	resourcesMap_.emplace(SRC::SPACE_DOME, res);
 
 	// ƒlƒYƒ~
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rat/Rat.mv1");

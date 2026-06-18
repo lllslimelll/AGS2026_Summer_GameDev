@@ -213,7 +213,7 @@ void Item::InitTransform(void)
     transform_.pos = defaultPos_;
 
     VECTOR upVec = VNorm((VSub(transform_.pos, { 0,0,0 })));
-    transform_.pos = VAdd(transform_.pos, VScale(upVec, 28));
+    transform_.pos = VSub(transform_.pos, VScale(upVec, 428));
 
     transform_.Update();
 }
@@ -297,7 +297,22 @@ void Item::DrawDropped(void)
 	// 標準に当たっている時だけ価値のビルボード画像描画
     if (isAimed_)
     {
-		DrawBillboard();
+        // ビルボード画像の代わりにデバッグ文字で価値を表示
+        // 3D座標をスクリーン座標に変換
+        VECTOR screenPos = ConvWorldPosToScreenPos(transform_.pos);
+
+        // カメラの後ろにある場合は描画しない（z > 1.0f）
+        if (screenPos.z <= 1.0f)
+        {
+            int prevSize = GetFontSize();
+            SetFontSize(32);
+            DrawFormatString(
+                (int)screenPos.x,
+                (int)screenPos.y,
+                GetColor(255, 255, 255),
+                "$%d", value_);
+            SetFontSize(prevSize);
+        }
     }
 }
 
