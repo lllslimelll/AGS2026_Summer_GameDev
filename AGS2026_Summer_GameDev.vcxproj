@@ -129,6 +129,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\UI\GameUI\HUD.cpp" />
+    <ClCompile Include="Src\UI\GameUI\InventoryUI.cpp" />
     <ClCompile Include="Src\UI\GameUI\GameUI.cpp" />
     <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\Item1.cpp" />
@@ -170,6 +172,8 @@
     <ClCompile Include="Src\UI\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\UI\GameUI\HUD.h" />
+    <ClInclude Include="Src\UI\GameUI\InventoryUI.h" />
     <ClInclude Include="Src\UI\GameUI\GameUI.h" />
     <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Object\Actor\Item\Item1.h" />

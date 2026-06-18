@@ -171,7 +171,8 @@ private:
 
 	// UI描画
 	void DrawStatusUI(void);
-
+	// 操作ヘルプ（右端固定・動的表示）
+	void DrawControlHelp(void);
 
 
 	// 死亡メニュー
@@ -187,8 +188,6 @@ private:
 	void UpdateDeathMenu(void);
 	void DrawDeathMenu(void);
 
-
-	float fullInventoryMsgTimer_ = 0;
 
 	// UIバー画像
 	int hpBarImg_;

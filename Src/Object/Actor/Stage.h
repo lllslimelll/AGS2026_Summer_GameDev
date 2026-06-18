@@ -24,6 +24,7 @@ public:
 
 	// •`‰æ
 	void Draw(void) override;
+	void DrawUI(void);
 
 	const VECTOR& GetRoketPos() const;
 

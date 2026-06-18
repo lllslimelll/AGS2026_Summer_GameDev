@@ -161,12 +161,12 @@ void Player::ProcessJump(void)
 	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
 	// ジャンプキーが押されたか
-	bool isHitKey = ins.IsTrgDown(KEY_INPUT_BACKSLASH)
+	bool isHitKey = ins.IsTrgDown(KEY_INPUT_SPACE)
 		|| ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DOWN);
 	// ジャンプキーが押されているか
-	bool isHitKeyNew = ins.IsNew(KEY_INPUT_BACKSLASH)
+	bool isHitKeyNew = ins.IsNew(KEY_INPUT_SPACE)
 		|| ins.IsPadBtnNew(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DOWN);
@@ -356,11 +356,6 @@ void Player::ProcessPickUp(void)
 		aimedItem_->OnPickedUp();
 		AddInventory(aimedItem_);
 	}
-	else
-	{
-		// 満杯：メッセージ表示開始（2秒間）
-		fullInventoryMsgTimer_ = 2.0f;
-	}
 }
 
 void Player::ProcessThrow(void)
@@ -510,7 +505,7 @@ void Player::Draw(void)
 			DrawFormatString(
 				drawX + (drawSize - textW) / 2,  // 中央揃え
 				drawY + drawSize + 6,
-				GetColor(0, 255, 40),
+				GetColor(255, 255, 255),
 				"$%d", price);
 		}
 	}
@@ -526,32 +521,7 @@ void Player::Draw(void)
 	
 	DrawStatusUI();
 
-	// ロケット照準中のアクションヒント
-	if (IsAimingRoket())
-	{
-		int prevSize = GetFontSize();
-		SetFontSize(40);
-
-		constexpr int HINT_X = 60;
-		int hintY = screenH / 2 + 40;  // 照準の少し下
-
-		const char* hintDelivary = (GetJoypadNum() == 0) ? "[F] 納品" : "[X] 納品"; 
-		const char* hintReturn = (GetJoypadNum() == 0) ? "[C] 帰還" : "[Y] 納品";
-
-		// 納品ヒント（選択中スロットにアイテムがあるときだけ）
-		if (inventory_[selectedSlot_] != nullptr)
-		{
-			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
-				hintDelivary);
-			hintY += 50;
-		}
-
-		// 帰還ヒント
-		DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255),
-			hintReturn);
-
-		SetFontSize(prevSize);
-	}
+	DrawControlHelp();
 
 	// 死亡メニュー（最前面）
 	if (isDead_)
@@ -559,30 +529,6 @@ void Player::Draw(void)
 		DrawDeathMenu();
 	}
 
-
-
-
-	// 拾う文字表示-----------------------
-	if (aimedItem_ != nullptr && aimedItem_->GetState() == Item::STATE::DROPPED)
-	{
-		int prevSize = GetFontSize();
-		SetFontSize(40);
-		int hintY = screenH / 2 + 60;
-
-		if (CanPickUp())
-		{
-			const char* hint = (GetJoypadNum() == 0) ? "[F] 拾う" : "[X] 拾う";
-			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 255, 255), hint);
-		}
-		else if (fullInventoryMsgTimer_ > 0.0f)
-		{
-			// 拾おうとして満杯だった時のフィードバック
-			DrawFormatString(screenW / 2 + 30, hintY, GetColor(255, 100, 100),
-				"インベントリ満杯");
-		}
-
-		SetFontSize(prevSize);
-	}
 
 	DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
@@ -791,6 +737,61 @@ void Player::DrawStatusUI(void)
 		DrawFormatString(oxL + oW + twoW + 4, labelY, 0xffffff, " %d%%", oxPercent);
 
 		SetFontSize(prevSize);
+}
+
+void Player::DrawControlHelp(void)
+{
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	bool isPad = (GetJoypadNum() != 0);
+
+	// 表示中のヒントを上から順に積み上げる
+	const char* visibleLabels[3];
+	int visibleCount = 0;
+
+	// 拾う：照準先がドロップ状態のアイテムで、かつ拾える状態の時のみ
+	if (aimedItem_ != nullptr &&
+		aimedItem_->GetState() == Item::STATE::DROPPED &&
+		CanPickUp())
+	{
+		visibleLabels[visibleCount++] = isPad ? "拾う : [X]" : "拾う : [F]";
+	}
+
+	// ロケットに照準が当たっている時のみ
+	if (IsAimingRoket())
+	{
+		// 納品：選択中スロットにアイテムがある時のみ
+		if (inventory_[selectedSlot_] != nullptr)
+		{
+			visibleLabels[visibleCount++] = isPad ? "納品 : [X]" : "納品 : [F]";
+		}
+
+		// 帰還：常時（ロケット照準中であれば）
+		visibleLabels[visibleCount++] = isPad ? "帰還 : [Y]" : "帰還 : [C]";
+	}
+
+	if (visibleCount == 0) return;
+
+	int prevSize = GetFontSize();
+	constexpr int FONT_SIZE = 30;
+	constexpr int LINE_SPAN = 36;
+	constexpr int MARGIN_TOP = 110;   // Stage側のトータル値段表示と重ならないよう下にオフセット
+	constexpr int MARGIN_RIGHT = 50;
+
+	SetFontSize(FONT_SIZE);
+
+	for (int i = 0; i < visibleCount; i++)
+	{
+		const char* buf = visibleLabels[i];
+		int textW = GetDrawStringWidth(buf, (int)strlen(buf));
+		int x = screenW - textW - MARGIN_RIGHT;
+		int y = MARGIN_TOP + i * LINE_SPAN;
+
+		DrawString(x, y, buf, GetColor(255, 255, 255));
+	}
+
+	SetFontSize(prevSize);
 }
 
 void Player::UpdateDeathMenu(void)

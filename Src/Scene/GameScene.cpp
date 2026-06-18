@@ -103,8 +103,8 @@ void GameScene::Draw(void)
 	
 	enemyManager_->Draw();
 	player_->Draw();
-
-	if (isPaused_)
+	stage_->DrawUI();
+;	if (isPaused_)
 	{
 		DrawPauseMenu();
 	}

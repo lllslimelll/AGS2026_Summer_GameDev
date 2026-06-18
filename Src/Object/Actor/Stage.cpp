@@ -29,6 +29,11 @@ void Stage::Draw(void)
 
 	DrawSphere3D(roketPos_, 120, 16, 0xffffff, 0xffffff, false);
 
+	DrawUI();
+}
+
+void Stage::DrawUI(void)
+{
 	int prevSize = GetFontSize();
 	SetFontSize(55);
 
