@@ -98,9 +98,10 @@ void GameScene::Draw(void)
 	skyDome_->Draw();
 	stage_->Draw();
 	itemMng_->Draw();
+
 	// ‰e•`‰æ
 	DrawShadow();
-	
+
 	enemyManager_->Draw();
 	player_->Draw();
 	stage_->DrawUI();

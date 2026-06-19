@@ -17,10 +17,10 @@ public:
 	
 	// カメラの初期角度
 	static constexpr VECTOR DERFAULT_ANGLES = { 
-		0.0f, 0.0f, 0.0f
+		0.0f, 175.0f * DX_PI_F / 180.0f, 0.0f
 	};
 
-	// カメラの回転量
+	// カメラの回転量//
 	const float ROT_POW_DEG = 2.0f;
 	const float ROT_POW_RAD = ROT_POW_DEG * DX_PI_F / 180.0f;
 

@@ -223,6 +223,7 @@
     <None Include="Data\Model\SpaceDome\SpaceDome.mv1" />
     <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
     <None Include="Data\Model\Stage\MainStage\planet.mv1" />
+    <None Include="Data\Model\Stage\roket.mv1" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>

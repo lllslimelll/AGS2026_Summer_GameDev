@@ -94,14 +94,12 @@ void TitleScene::UpdateInput(void)
 	}
 
 	// ↑↓ でカーソル移動
-	if (ins.IsTrgDown(KEY_INPUT_UP) ||
-		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
+	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::TOP))
 	{
 		selectIndex_ = (selectIndex_ - 1 + MENU_COUNT) % MENU_COUNT;
 	}
-	if (ins.IsTrgDown(KEY_INPUT_DOWN) ||
-		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
+	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DOWN))
 	{
 		selectIndex_ = (selectIndex_ + 1) % MENU_COUNT;
@@ -109,7 +107,6 @@ void TitleScene::UpdateInput(void)
 
 	// 決定（マウス左クリック追加）
 	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN)
-		|| ins.IsTrgDown(KEY_INPUT_SPACE)
 		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::LEFT)
 		|| (GetMouseInput() & MOUSE_INPUT_LEFT);  // 左クリック

@@ -213,7 +213,7 @@ void Item::InitTransform(void)
     transform_.pos = defaultPos_;
 
     VECTOR upVec = VNorm((VSub(transform_.pos, { 0,0,0 })));
-    transform_.pos = VSub(transform_.pos, VScale(upVec, 428));
+    transform_.pos = VAdd(transform_.pos, VScale(upVec, 34));
 
     transform_.Update();
 }

@@ -62,6 +62,9 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/planet.mv1");
 	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
 
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/roket.mv1");
+	resourcesMap_.emplace(SRC::ROKET, res);
+
 	res = new RES(RES_T::MODEL, PATH_MDL + "SpaceDome/SpaceDome.mv1");
 	resourcesMap_.emplace(SRC::SPACE_DOME, res);
 

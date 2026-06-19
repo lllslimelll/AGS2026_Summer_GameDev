@@ -57,7 +57,7 @@ protected:
 	
 
 private:
-
+	int model_;
 	// ƒmƒ‹ƒ}”[•iŠz
 	static constexpr int QUOTA = 5000;
 

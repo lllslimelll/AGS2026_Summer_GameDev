@@ -148,6 +148,9 @@ void ItemManager::LoadCsvData(void)
 			continue;
 		}
 
+		// 空行スキップ
+		if (line.empty() || line.find_first_not_of(",\r\n ") == std::string::npos) continue;
+
 		// 1行をカンマ区切りで分割
 		strSplit = AsoUtility::Split(line, ',');
 

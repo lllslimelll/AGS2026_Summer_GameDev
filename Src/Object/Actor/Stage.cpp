@@ -29,6 +29,8 @@ void Stage::Draw(void)
 
 	DrawSphere3D(roketPos_, 120, 16, 0xffffff, 0xffffff, false);
 
+	MV1DrawModel(model_);
+
 	DrawUI();
 }
 
@@ -80,8 +82,10 @@ void Stage::DrawUI(void)
 void Stage::InitLoad(void)
 {
 	// ÉÇÉfÉãì«Ç›çûÇ›
-	transform_.SetModel(resMng_.Load(			// 1å¬ = Load()  ï°êî = Depulicate()
+	transform_.SetModel(resMng_.Load(
 		ResourceManager::SRC::MAIN_STAGE).handleId_);
+
+	model_ = resMng_.Load(ResourceManager::SRC::ROKET).handleId_;
 }
 
 void Stage::InitTransform(void)
@@ -92,9 +96,12 @@ void Stage::InitTransform(void)
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
 
 	// ç¿ïW
-	roketPos_ = { -405.45f, 2593.0f, 660.0f };
+	roketPos_ = { 1300, -860, 430 };
 
 	transform_.Update();
+
+	MV1SetRotationXYZ(model_, VGet(AsoUtility::Deg2RadF(-20.0f), AsoUtility::Deg2RadF(180.0f), AsoUtility::Deg2RadF(-130.0f)));
+	MV1SetPosition(model_, roketPos_);
 }
 
 void Stage::InitCollider(void)

@@ -49,7 +49,7 @@ private:
 	static constexpr float PLANET_ROT_SPEED = 1.0f;  // 1フレームあたりの回転角(deg)
 
 	// 選択インデックス
-	int selectIndex_;
+	int selectIndex_ = -1;
 
 	SkyDome* skyDome_;
 

@@ -903,7 +903,7 @@ void Player::InitTransform(void)
 	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
 
 	// ç¿ïW
-	transform_.pos = { -283.80f, 2586.20f, 376.75f };
+	transform_.pos = { 1190, -790, 770 };
 
 	transform_.Update();
 
