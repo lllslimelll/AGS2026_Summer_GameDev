@@ -104,6 +104,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,6 +122,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\SoundManager.cpp" />
     <ClCompile Include="Src\UI\GameUI\HUD.cpp" />
     <ClCompile Include="Src\UI\GameUI\InventoryUI.cpp" />
     <ClCompile Include="Src\UI\GameUI\GameUI.cpp" />
@@ -172,6 +175,7 @@
     <ClCompile Include="Src\UI\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\SoundManager.h" />
     <ClInclude Include="Src\UI\GameUI\HUD.h" />
     <ClInclude Include="Src\UI\GameUI\InventoryUI.h" />
     <ClInclude Include="Src\UI\GameUI\GameUI.h" />
@@ -240,6 +244,11 @@
     <Image Include="Data\Image\Title.png" />
     <Image Include="Data\Model\SkyDome\SpaceDome.jpg" />
     <Image Include="Data\Model\Stage\MainStage\lroc_color_poles_8k.tif_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Data\Sound\BGM_Title.mp3" />
+    <Media Include="Data\Sound\PickUp.wav" />
+    <Media Include="Data\Sound\Walk.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

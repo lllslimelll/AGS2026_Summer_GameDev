@@ -69,4 +69,7 @@ private:
 	void UpdateInput(void);
 	void DrawTitle(void)  const;
 	void DrawMenu(void)   const;
+
+	int prevMouseX_ = -1;
+	int prevMouseY_ = -1;
 };

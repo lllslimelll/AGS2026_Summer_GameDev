@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Actor/ActorBase.h"
 #include "../Object/Actor/Charactor/Player.h"
@@ -63,10 +64,12 @@ void GameScene::Init(void)
 	camera->SetFollow(&player_->GetTransform());
 	camera->ChangeMode(Camera::MODE::FOLLOW);
 	camera->AddHitCollider(stageCollider); // ステージモデルのコライダー登録
+	camera->SetInputEnabled(true);
 }
 
 void GameScene::Update(void)
 {
+	SetMouseDispFlag(false);
 	auto& ins = InputManager::GetInstance();
 
 	// ESC / STARTでポーズ切り替え
@@ -75,11 +78,14 @@ void GameScene::Update(void)
 	if (pauseToggle)
 	{
 		isPaused_ = !isPaused_;
-		pauseMenuIndex_ = 0;
+		pauseMenuIndex_ = -1;
+		
+		sceMng_.GetCamera()->SetInputEnabled(!isPaused_);
 	}
 
 	if (isPaused_)
 	{
+		SetMouseDispFlag(true);
 		UpdatePauseMenu();
 		return;
 	}
@@ -133,26 +139,80 @@ void GameScene::UpdatePauseMenu(void)
 {
 	auto& ins = InputManager::GetInstance();
 
-	bool up = ins.IsTrgDown(KEY_INPUT_UP) || ins.IsTrgDown(KEY_INPUT_W)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP);
-	bool down = ins.IsTrgDown(KEY_INPUT_DOWN) || ins.IsTrgDown(KEY_INPUT_S)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN);
+	bool up = ins.IsTriggerd("Up");
+	bool down = ins.IsTriggerd("Down");
 
 	constexpr int MENU_MAX = static_cast<int>(PAUSE_MENU::MAX);
-	if (up)   pauseMenuIndex_ = (pauseMenuIndex_ - 1 + MENU_MAX) % MENU_MAX;
-	if (down) pauseMenuIndex_ = (pauseMenuIndex_ + 1) % MENU_MAX;
 
+	if (up)
+	{
+		pauseMenuIndex_ = (pauseMenuIndex_ <= 0) ? MENU_MAX - 1 : pauseMenuIndex_ - 1;
+	}
+	if (down)
+	{
+		pauseMenuIndex_ = (pauseMenuIndex_ < 0 || pauseMenuIndex_ >= MENU_MAX - 1) ? 0 : pauseMenuIndex_ + 1;
+	}
+
+	// ===== マウスでの選択 =====
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+
+	// マウスが動いた時だけホバー判定を行う
+	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
+
+	if (mouseMoved)
+	{
+		const char* labels[MENU_MAX] = { "Resume", "Option", "Back to Title" };
+
+		int baseY = screenH / 2 - 20;
+		constexpr int ITEM_SPAN = 110;
+		constexpr int MENU_FONT = 70;
+
+		int prevSize = GetFontSize();
+		SetFontSize(MENU_FONT);
+
+		int mouseHoverIndex = -1;
+		for (int i = 0; i < MENU_MAX; i++)
+		{
+			int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
+			int x = (screenW - textW) / 2;
+			int y = baseY + i * ITEM_SPAN;
+
+			if (mouseX >= x - 60 && mouseX <= x + textW &&
+				mouseY >= y && mouseY <= y + ITEM_SPAN)
+			{
+				mouseHoverIndex = i;
+				break;
+			}
+		}
+
+		SetFontSize(prevSize);
+
+		pauseMenuIndex_ = mouseHoverIndex;
+	}
+
+	prevMouseX_ = mouseX;
+	prevMouseY_ = mouseY;
+
+	// 決定（マウス左クリック追加）
 	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT);
-	if (!decide) return;
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN)
+		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
+	if (!decide || pauseMenuIndex_ < 0) return;
 
 	switch (static_cast<PAUSE_MENU>(pauseMenuIndex_))
 	{
 	case PAUSE_MENU::RESUME:
 		isPaused_ = false;
 		break;
+	case PAUSE_MENU::OPTION:
+		break;
 	case PAUSE_MENU::TITLE:
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+		SoundManager::GetInstance().StopWalk();
 		break;
 	default: break;
 	}
@@ -169,25 +229,23 @@ void GameScene::DrawPauseMenu(void)
 
 	int prevSize = GetFontSize();
 
-	constexpr int TITLE_FONT = 140;
-	SetFontSize(TITLE_FONT);
-	const char* title = "ポーズ";
-	int titleW = GetDrawStringWidth(title, (int)strlen(title));
-	DrawString((screenW - titleW) / 2, screenH / 2 - 280, title, 0xffffff);
-
+	constexpr int MENU_MAX = static_cast<int>(PAUSE_MENU::MAX);
 	constexpr int MENU_FONT = 70;
 	SetFontSize(MENU_FONT);
 
-	const char* labels[static_cast<int>(PAUSE_MENU::MAX)] =
+	const char* labels[MENU_MAX] =
 	{
-		"ゲームに戻る",
-		"タイトルに戻る",
+		"Resume",
+		"Option",
+		"Back to Title",
 	};
 
-	int baseY = screenH / 2 - 20;
 	constexpr int ITEM_SPAN = 110;
+	// 3項目を画面縦中央に配置（中央の項目がscreenH/2に来るよう逆算）
+	int totalHeight = ITEM_SPAN * (MENU_MAX - 1);
+	int baseY = (screenH - totalHeight) / 2;
 
-	for (int i = 0; i < static_cast<int>(PAUSE_MENU::MAX); i++)
+	for (int i = 0; i < MENU_MAX; i++)
 	{
 		bool selected = (i == pauseMenuIndex_);
 		unsigned int color = selected ? 0xffff60 : 0xaaaaaa;

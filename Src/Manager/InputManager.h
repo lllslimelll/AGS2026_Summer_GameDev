@@ -3,7 +3,24 @@
 #include <map>
 #include <Dxlib.h>
 #include "../Common/Vector2.h"
+#include <array>
+#include <string>
+#include <unordered_map>
 
+// 周辺機器種別
+enum class PeripheralType
+{
+	KEYBOAD, // キーボード
+	PAD,     // ジョイパッド
+	MOUSE    // マウス
+};
+
+// 入力状態
+struct InputState
+{
+	PeripheralType type; // 周辺機器種別
+	unsigned int id;     // 実入力の値
+};
 class InputManager
 {
 
@@ -77,7 +94,9 @@ public:
 
 	// インスタンスの取得
 	static InputManager& GetInstance(void);
+	bool IsPressed(const std::string& name) const;
 
+	bool IsTriggerd(const std::string& name) const;
 	// 初期化
 	void Init(void);
 
@@ -212,4 +231,13 @@ private:
 	// コントローラの入力情報を更新する
 	void SetJPadInState(JOYPAD_NO jpNo);
 
+
+	// 入力状態の関数ポインタ型
+	using InputTable_t = std::unordered_map<std::string, std::vector<InputState>>;
+	// メンバ関数ポインタ
+	InputTable_t inputTable_;
+
+	// 押されたかどうか記録用
+	std::unordered_map<std::string, bool> currentInputInfo_;
+	std::unordered_map<std::string, bool> lastInputInfo_;
 };

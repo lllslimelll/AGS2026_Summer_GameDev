@@ -27,7 +27,8 @@ void Stage::Draw(void)
 {
 	ActorBase::Draw();
 
-	DrawSphere3D(roketPos_, 120, 16, 0xffffff, 0xffffff, false);
+	VECTOR pos = VAdd(GetRoketPos(), { 120,-95, 40 });
+	//DrawSphere3D(pos, 100, 16, 0xffffff, 0xffffff, false);
 
 	MV1DrawModel(model_);
 
@@ -100,7 +101,7 @@ void Stage::InitTransform(void)
 
 	transform_.Update();
 
-	MV1SetRotationXYZ(model_, VGet(AsoUtility::Deg2RadF(-20.0f), AsoUtility::Deg2RadF(180.0f), AsoUtility::Deg2RadF(-130.0f)));
+	MV1SetRotationXYZ(model_, VGet(AsoUtility::Deg2RadF(15.0f), AsoUtility::Deg2RadF(0), AsoUtility::Deg2RadF(-130.0f)));
 	MV1SetPosition(model_, roketPos_);
 }
 

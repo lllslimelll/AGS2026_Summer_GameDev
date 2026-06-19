@@ -4,6 +4,7 @@
 #include "../../../Manager/Camera.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
+#include "../../../Manager/SoundManager.h"
 #include "../Item/ItemManager.h"
 #include "../Stage.h"
 #include "../item/Item.h"
@@ -76,8 +77,12 @@ void Player::ProcessMove(void)
 		}
 	}
 
+	if(isJump_) SoundManager::GetInstance().StopWalk();
+
 	if (!AsoUtility::EqualsVZero(dir))
 	{
+		SoundManager::GetInstance().PlayWalk();
+
 		// 上方向を取得（地面の法線方向）
 		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
@@ -119,6 +124,8 @@ void Player::ProcessMove(void)
 
 				// 速く走るアニメーション再生
 				animController_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
+
+				//SoundManager::GetInstance().PlayBoost();
 			}
 			else
 			{
@@ -127,6 +134,8 @@ void Player::ProcessMove(void)
 
 				// 走るアニメーション再生
 				animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
+
+				//SoundManager::GetInstance().StopBoost();
 			}
 		}
 
@@ -135,6 +144,8 @@ void Player::ProcessMove(void)
 	}
 	else
 	{
+		SoundManager::GetInstance().StopWalk();
+
 		// 入力がない時も、常にカメラの方向を向かせ続ける場合
 		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
@@ -212,8 +223,9 @@ void Player::UpdateProcess(void)
 		movePow_ = AsoUtility::VECTOR_ZERO;
 		jumpPow_ = AsoUtility::VECTOR_ZERO;
 		moveSpeed_ = 0.0f;
-
+		SetMouseDispFlag(true);
 		UpdateDeathMenu();
+		animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), false);
 		return;
 	}
 
@@ -268,7 +280,7 @@ void Player::UpdateItem(void)
 	{
 		auto& ins = InputManager::GetInstance();
 		
-		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_C))
+		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_E))
 		{
 			SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RESULT);
@@ -530,9 +542,9 @@ void Player::Draw(void)
 	}
 
 
-	DrawFormatString(0, 0, GetColor(255, 255, 255),
+	/*DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
-		transform_.pos.x, transform_.pos.y, transform_.pos.z);
+		transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
 }
 
 // 衝突判定用の調整
@@ -621,8 +633,9 @@ bool Player::IsAimingRoket(void) const
 	const VECTOR rayEnd = VAdd(camPos,
 		VScale(scnMng_.GetCamera()->GetForward(), Item::RANGE_PICKUP));
 
+	VECTOR pos = VAdd(stage_->GetRoketPos(), { 120,-95, 40 });
 	return AsoUtility::IsHitSphereCapsule(
-		stage_->GetRoketPos(), 120.0f,
+		pos, 100.0f,
 		camPos, rayEnd, 0.0f);
 }
 
@@ -672,7 +685,9 @@ void Player::OnDeath(void)
 	isDead_ = true;
 	deathMenuIndex_ = 0;
 
+	
 	scnMng_.GetCamera()->SetInputEnabled(false);  // カメラ操作停止
+	SoundManager::GetInstance().StopWalk();
 }
 
 void Player::DrawStatusUI(void)
@@ -768,16 +783,16 @@ void Player::DrawControlHelp(void)
 		}
 
 		// 帰還：常時（ロケット照準中であれば）
-		visibleLabels[visibleCount++] = isPad ? "帰還 : [Y]" : "帰還 : [C]";
+		visibleLabels[visibleCount++] = isPad ? "帰還 : [Y]" : "帰還 : [E]";
 	}
 
 	if (visibleCount == 0) return;
 
 	int prevSize = GetFontSize();
-	constexpr int FONT_SIZE = 30;
-	constexpr int LINE_SPAN = 36;
-	constexpr int MARGIN_TOP = 110;   // Stage側のトータル値段表示と重ならないよう下にオフセット
-	constexpr int MARGIN_RIGHT = 50;
+	constexpr int FONT_SIZE = 50;
+	constexpr int LINE_SPAN = 60;
+	constexpr int MARGIN_TOP = 170;   // Stage側のトータル値段表示と重ならないよう下にオフセット
+	constexpr int MARGIN_RIGHT = 60;
 
 	SetFontSize(FONT_SIZE);
 
@@ -799,24 +814,67 @@ void Player::UpdateDeathMenu(void)
 	auto& ins = InputManager::GetInstance();
 
 	// 上下で選択
-	bool up = ins.IsTrgDown(KEY_INPUT_UP)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP);
-	bool down = ins.IsTrgDown(KEY_INPUT_DOWN)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN);
+	bool up = ins.IsTriggerd("Up");
+	bool down = ins.IsTriggerd("Down");
 
 	constexpr int MENU_MAX = static_cast<int>(DEATH_MENU::MAX);
 	if (up)   deathMenuIndex_ = (deathMenuIndex_ - 1 + MENU_MAX) % MENU_MAX;
 	if (down) deathMenuIndex_ = (deathMenuIndex_ + 1) % MENU_MAX;
 
-	// 決定
+	// ===== マウスでの選択 =====
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+
+	// マウスが動いた時だけホバー判定を行う
+	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
+
+	if (mouseMoved)
+	{
+		const char* labels[MENU_MAX] = { "リトライ", " タイトルへ" };
+
+		int baseY = screenH / 2 - 20;
+		constexpr int ITEM_SPAN = 110;
+		constexpr int MENU_FONT = 70;
+
+		int prevSize = GetFontSize();
+		SetFontSize(MENU_FONT);
+
+		int mouseHoverIndex = -1;
+		for (int i = 0; i < MENU_MAX; i++)
+		{
+			int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
+			int x = (screenW - textW) / 2;
+			int y = baseY + i * ITEM_SPAN;
+
+			if (mouseX >= x - 60 && mouseX <= x + textW &&
+				mouseY >= y && mouseY <= y + ITEM_SPAN)
+			{
+				mouseHoverIndex = i;
+				break;
+			}
+		}
+
+		SetFontSize(prevSize);
+
+		// マウスが動いたら、外れている場合も含めて反映する（未選択(-1)もありえる）
+		deathMenuIndex_ = mouseHoverIndex;
+	}
+
+	prevMouseX_ = mouseX;
+	prevMouseY_ = mouseY;
+
+	// 決定（マウス左クリック追加）
 	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT); 
-	if (!decide) return;
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT)
+		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
+	if (!decide || deathMenuIndex_ < 0) return;
 
 	switch (static_cast<DEATH_MENU>(deathMenuIndex_))
 	{
 	case DEATH_MENU::RETRY:
-		// 同じシーンを再生成
 		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
 		break;
 	case DEATH_MENU::TITLE:
@@ -903,7 +961,7 @@ void Player::InitTransform(void)
 	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
 
 	// 座標
-	transform_.pos = { 1190, -790, 770 };
+	transform_.pos = { 1386, -910, -94.8f };
 
 	transform_.Update();
 

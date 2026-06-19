@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
 
@@ -50,7 +51,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// èâä˙ÉVÅ[ÉìÇÃê›íË
-	DoChangeScene(SCENE_ID::GAME);
+	DoChangeScene(SCENE_ID::TITLE);
 
 }
 
@@ -243,13 +244,16 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	case SCENE_ID::TITLE:
 		scene_ = new TitleScene();
 		SetMouseDispFlag(true);
+		SoundManager::GetInstance().StopWalk();
 		break;
 	case SCENE_ID::GAME:
 		scene_ = new GameScene();
+		SoundManager::GetInstance().StopWalk();
 		SetMouseDispFlag(false);
 		break;
 	case SCENE_ID::RESULT:
 		scene_ = new ResultScene();
+		SoundManager::GetInstance().StopWalk();
 		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::DEBUG:

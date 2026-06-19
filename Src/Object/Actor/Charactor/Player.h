@@ -43,7 +43,9 @@ protected:
 	virtual void InitPost(void) override;
 
 private:
-
+	// マウス移動検知用（前フレームの座標）
+	int prevMouseX_ = -1;
+	int prevMouseY_ = -1;
 	// 移動速度（通常）
 	static constexpr float SPEED_MOVE = 2.5f;
 
@@ -159,6 +161,7 @@ private:
 	float oxygen_;
 	float suffocateTimer_;  // 酸素切れ後の経過時間
 	bool  isDead_;
+
 
 	// 更新
 	void UpdateOxygenAndHp(void);

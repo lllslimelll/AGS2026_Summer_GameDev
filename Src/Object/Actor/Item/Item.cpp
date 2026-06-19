@@ -3,6 +3,7 @@
 #include "../../../Manager/SceneManager.h"
 #include "../../../Manager/Camera.h"
 #include "../../../Manager/ResourceManager.h"
+#include "../../../Manager/SoundManager.h"
 #include "../../Collider/ColliderBase.h"
 #include "../../Collider/ColliderModel.h"
 #include "Item.h"
@@ -92,6 +93,7 @@ void Item::Draw(void)
 
 void Item::OnPickedUp(void)
 {
+    SoundManager::GetInstance().PlayPickUp();
 	// ƒAƒCƒeƒ€‚ğ‚Á‚Ä‚¢‚éó‘Ô‚É‘JˆÚ
     ChangeState(STATE::HELD);
 }

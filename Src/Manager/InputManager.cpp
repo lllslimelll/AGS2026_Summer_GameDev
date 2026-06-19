@@ -29,7 +29,7 @@ void InputManager::Init(void)
 	// ゲームで使用したいキーを、
 	// 事前にここで登録しておいてください
 	InputManager::GetInstance().Add(KEY_INPUT_SPACE);
-	InputManager::GetInstance().Add(KEY_INPUT_N);
+	InputManager::GetInstance().Add(KEY_INPUT_E);
 	InputManager::GetInstance().Add(KEY_INPUT_Z);
 
 	InputManager::GetInstance().Add(KEY_INPUT_LEFT);
@@ -80,6 +80,41 @@ void InputManager::Init(void)
 
 	mouseWheelRot_ = 0;
 
+	inputTable_["Up"] = { //{PeripheralType::KEYBOAD, KEY_INPUT_UP},
+							//{PeripheralType::KEYBOAD, KEY_INPUT_W},
+							{PeripheralType::PAD, PAD_INPUT_UP} };
+
+	inputTable_["Down"] = { //{PeripheralType::KEYBOAD, KEY_INPUT_DOWN},
+								//{PeripheralType::KEYBOAD, KEY_INPUT_S},
+								{PeripheralType::PAD, PAD_INPUT_DOWN} };
+
+	inputTable_["left"] = { {PeripheralType::KEYBOAD, KEY_INPUT_LEFT},
+								{PeripheralType::KEYBOAD, KEY_INPUT_A},
+								{PeripheralType::PAD, PAD_INPUT_LEFT} };
+
+	inputTable_["right"] = { {PeripheralType::KEYBOAD, KEY_INPUT_RIGHT},
+								{PeripheralType::KEYBOAD, KEY_INPUT_D},
+								{PeripheralType::PAD, PAD_INPUT_RIGHT} };
+
+	// DXライブラリはPADのボタン番号が6ボタンベースなのでずれています
+	inputTable_["ok"] = { {PeripheralType::KEYBOAD, KEY_INPUT_RETURN},
+								{PeripheralType::MOUSE, MOUSE_INPUT_LEFT},
+								{PeripheralType::PAD, PAD_INPUT_DOWN} }; // SELECTボタン
+
+	inputTable_["pause"] = { {PeripheralType::KEYBOAD, KEY_INPUT_P},
+								{PeripheralType::PAD, PAD_INPUT_R} }; // STARTボタン
+
+	inputTable_["jump"] = { {PeripheralType::KEYBOAD, KEY_INPUT_Z},
+								{PeripheralType::PAD, PAD_INPUT_C} }; // Xボタン
+
+	inputTable_["attack"] = { {PeripheralType::KEYBOAD, KEY_INPUT_X},
+								{PeripheralType::PAD, PAD_INPUT_A} }; // Aボタン
+
+	for (auto& inputInfo : inputTable_)
+	{
+		currentInputInfo_[inputInfo.first] = false;
+		lastInputInfo_[inputInfo.first] = false;
+	}
 }
 
 void InputManager::Update(void)
@@ -116,6 +151,58 @@ void InputManager::Update(void)
 	// マウスホイールの回転量を取得
 	mouseWheelRot_ = GetMouseWheelRotVol();
 
+	lastInputInfo_ = currentInputInfo_;
+	// 生データ取得
+	std::array<char, 256> keyState;
+	GetHitKeyStateAll(keyState.data());
+	int mouseState = GetMouseInput();
+	int padState = GetJoypadInputState(DX_INPUT_PAD1); // 1コントローラーだけ
+
+	// 生データを入力フラグに反映
+	for (auto& inputInfo : inputTable_)
+	{
+		const auto& eventName = inputInfo.first;
+
+		for (auto& inputState : inputInfo.second)
+		{
+			switch (inputState.type)
+			{
+			case PeripheralType::KEYBOAD:
+				currentInputInfo_[eventName] = keyState[inputState.id];
+				break;
+			case PeripheralType::MOUSE:
+				currentInputInfo_[eventName] = mouseState & inputState.id;
+				break;
+			case PeripheralType::PAD:
+				currentInputInfo_[eventName] = padState & inputState.id;
+				break;
+			}
+			if (currentInputInfo_[eventName])
+			{
+				break;
+			}
+		}
+	}
+
+}
+bool InputManager::IsPressed(const std::string& name) const
+{
+	if (!currentInputInfo_.contains(name))
+	{
+		return false;
+	}
+
+	return currentInputInfo_.at(name);
+}
+
+bool InputManager::IsTriggerd(const std::string& name) const
+{
+	if (!currentInputInfo_.contains(name))
+	{
+		return false;
+	}
+
+	return currentInputInfo_.at(name) && !lastInputInfo_.at(name);
 }
 
 void InputManager::Destroy(void)

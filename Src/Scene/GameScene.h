@@ -50,10 +50,14 @@ private:
 
 	bool isPaused_;
 	int  pauseMenuIndex_;
+	// マウス移動検知用（前フレームの座標）
+	int prevMouseX_ = -1;
+	int prevMouseY_ = -1;
 
 	enum class PAUSE_MENU
 	{
 		RESUME,
+		OPTION,
 		TITLE,
 		MAX,
 	};

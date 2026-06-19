@@ -8,6 +8,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/ResourceManager.h"
+#include "../Manager/SoundManager.h"
 #include "TitleScene.h"
 // メニューラベル（MENU_ITEM の順に対応）
 static const char* MENU_LABELS[] = {
@@ -37,6 +38,9 @@ TitleScene::~TitleScene(void)
 
 void TitleScene::Init(void)
 {
+	// BGM再生
+	SoundManager::GetInstance().PlayBgmTitle();
+
 	// PushSpace画像読み込み
 	imgPushSpace_ = resMng_.Load(ResourceManager::SRC::PUSH_SPACE).handleId_;
 
@@ -77,46 +81,55 @@ void TitleScene::UpdateInput(void)
 {
 	auto const& ins = InputManager::GetInstance();
 
-	// マウス座標取得
-	int mouseX, mouseY;
-	GetMousePoint(&mouseX, &mouseY);
-
-	// マウスがメニュー項目に重なっていたらselectIndexを更新
-	for (int i = 0; i < MENU_COUNT; ++i)
-	{
-		int itemY = MENU_Y_START + i * MENU_LINE_HEIGHT;
-		// 当たり判定の矩形（横幅は適宜調整）
-		if (mouseX >= MENU_X && mouseX <= MENU_X + 300 &&
-			mouseY >= itemY && mouseY <= itemY + MENU_LINE_HEIGHT)
-		{
-			selectIndex_ = i;
-		}
-	}
-
-	// ↑↓ でカーソル移動
-	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::TOP))
+	// ↑↓ でカーソル移動（キーボード・パッド両対応）
+	if (ins.IsTriggerd("Up"))
 	{
 		selectIndex_ = (selectIndex_ - 1 + MENU_COUNT) % MENU_COUNT;
 	}
-	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::DOWN))
+	if (ins.IsTriggerd("Down"))
 	{
 		selectIndex_ = (selectIndex_ + 1) % MENU_COUNT;
 	}
 
+	// マウス座標取得
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+
+	// マウスが動いた時だけホバー判定を行う
+	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
+
+	if (mouseMoved)
+	{
+		int mouseHoverIndex = -1;
+		for (int i = 0; i < MENU_COUNT; ++i)
+		{
+			int itemY = MENU_Y_START + i * MENU_LINE_HEIGHT;
+			if (mouseX >= MENU_X && mouseX <= MENU_X + 300 &&
+				mouseY >= itemY && mouseY <= itemY + MENU_LINE_HEIGHT)
+			{
+				mouseHoverIndex = i;
+				break;
+			}
+		}
+		selectIndex_ = mouseHoverIndex;
+	}
+
+	prevMouseX_ = mouseX;
+	prevMouseY_ = mouseY;
+
 	// 決定（マウス左クリック追加）
 	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN)
 		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::LEFT)
-		|| (GetMouseInput() & MOUSE_INPUT_LEFT);  // 左クリック
+			InputManager::JOYPAD_BTN::DOWN)
+		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
 
-	if (decide)
+	if (decide && selectIndex_ != -1)
 	{
 		switch (static_cast<MENU>(selectIndex_))
 		{
 		case MENU::GAME_START:
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+			SoundManager::GetInstance().StopBGMTitle();
 			break;
 		case MENU::QUIT_GAME:
 			PostQuitMessage(0);
@@ -125,7 +138,6 @@ void TitleScene::UpdateInput(void)
 			break;
 		}
 	}
-
 }
 
 void TitleScene::Draw(void)

@@ -3,6 +3,7 @@
 #include "Manager/InputManager.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/SceneManager.h"
+#include "Manager/SoundManager.h"
 #include "Common/FpsController.h"
 #include "Application.h"
 
@@ -31,7 +32,7 @@ void Application::Init(void)
 {
 
 	// アプリケーションの初期設定
-	SetWindowText("月面調査1");
+	SetWindowText("惑星探査");
 
 	// ウィンドウサイズ
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
@@ -68,6 +69,9 @@ void Application::Init(void)
 
 	// リソース管理初期化
 	ResourceManager::CreateInstance();
+
+	// サウンド管理初期化
+	SoundManager::CreateInstance();
 
 	// シーン管理初期化
 	SceneManager::CreateInstance();
@@ -115,6 +119,8 @@ void Application::Destroy(void)
 	
 	// シーン管理解放
 	SceneManager::GetInstance().Destroy();
+	// サウンド管理破棄
+	SoundManager::GetInstance().Destroy();
 
 	// Effekseerを終了する。
 	Effkseer_End();

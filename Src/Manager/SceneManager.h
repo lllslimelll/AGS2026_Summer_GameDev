@@ -65,6 +65,16 @@ public:
 	int  GetResultScore(void) const { return resultScore_; }
 
 private:
+
+	// デフォルトコンストラクタをprivateにして、
+	// 外部から生成できない様にする
+	SceneManager(void);
+
+	// コピーコンストラクタも同様
+	SceneManager(const SceneManager& instance) = default;
+
+	// デストラクタも同様
+	~SceneManager(void) = default;
 	int resultScore_ = 0;
 	// 静的インスタンス
 	static SceneManager* instance_;
@@ -87,16 +97,6 @@ private:
 	// デルタタイム
 	std::chrono::system_clock::time_point preTime_;
 	float deltaTime_;
-	
-	// デフォルトコンストラクタをprivateにして、
-	// 外部から生成できない様にする
-	SceneManager(void);
-
-	// コピーコンストラクタも同様
-	SceneManager(const SceneManager& instance) = default;
-
-	// デストラクタも同様
-	~SceneManager(void) = default;
 
 	// デルタタイムをリセットする
 	void ResetDeltaTime(void);
