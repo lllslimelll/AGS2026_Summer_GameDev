@@ -132,9 +132,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
-    <ClCompile Include="Src\UI\GameUI\HUD.cpp" />
-    <ClCompile Include="Src\UI\GameUI\InventoryUI.cpp" />
-    <ClCompile Include="Src\UI\GameUI\GameUI.cpp" />
+    <ClCompile Include="Src\Object\UI\GameUI\HUD.cpp" />
+    <ClCompile Include="Src\Object\UI\GameUI\InventoryUI.cpp" />
+    <ClCompile Include="Src\Object\UI\GameUI\GameUI.cpp" />
     <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\Item1.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\ItemManager.cpp" />
@@ -172,13 +172,14 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
-    <ClCompile Include="Src\UI\UI.cpp" />
+    <ClCompile Include="Src\Object\UI\UI.cpp" />
+    <ClCompile Include="Src\Object\UI\TitleUI\TitleUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\SoundManager.h" />
-    <ClInclude Include="Src\UI\GameUI\HUD.h" />
-    <ClInclude Include="Src\UI\GameUI\InventoryUI.h" />
-    <ClInclude Include="Src\UI\GameUI\GameUI.h" />
+    <ClInclude Include="Src\Object\UI\GameUI\HUD.h" />
+    <ClInclude Include="Src\Object\UI\GameUI\InventoryUI.h" />
+    <ClInclude Include="Src\Object\UI\GameUI\GameUI.h" />
     <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Object\Actor\Item\Item1.h" />
     <ClInclude Include="Src\Object\Actor\Item\ItemManager.h" />
@@ -216,7 +217,8 @@
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\AsoUtility.h" />
     <ClInclude Include="Src\Utility\MatrixUtility.h" />
-    <ClInclude Include="Src\UI\UI.h" />
+    <ClInclude Include="Src\Object\UI\UI.h" />
+    <ClInclude Include="Src\Object\UI\TitleUI\TitleUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Csv\EnemyData.csv" />

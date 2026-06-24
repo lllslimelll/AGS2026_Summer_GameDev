@@ -132,7 +132,7 @@ Item::STATE Item::GetState(void) const
     return state_;
 }
 
-bool Item::IsAimedBy(const VECTOR& rayOrigin, const VECTOR& rayEnd) const
+bool Item::IsAimed(const VECTOR& rayOrigin, const VECTOR& rayEnd) const
 {
     if (state_ != STATE::DROPPED) return false;
 

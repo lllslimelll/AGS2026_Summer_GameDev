@@ -126,16 +126,22 @@
     <ClCompile Include="Src\Scene\ResultScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UI\UI.cpp">
+    <ClCompile Include="Src\Object\UI\UI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UI\GameUI\GameUI.cpp">
+    <ClCompile Include="Src\Object\UI\GameUI\GameUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UI\GameUI\HUD.cpp">
+    <ClCompile Include="Src\Object\UI\GameUI\HUD.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\UI\GameUI\InventoryUI.cpp">
+    <ClCompile Include="Src\Object\UI\GameUI\InventoryUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Manager\SoundManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\UI\TitleUI\TitleUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -251,16 +257,22 @@
     <ClInclude Include="Src\Scene\ResultScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UI\UI.h">
+    <ClInclude Include="Src\Object\UI\UI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UI\GameUI\GameUI.h">
+    <ClInclude Include="Src\Object\UI\GameUI\GameUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UI\GameUI\HUD.h">
+    <ClInclude Include="Src\Object\UI\GameUI\HUD.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\UI\GameUI\InventoryUI.h">
+    <ClInclude Include="Src\Object\UI\GameUI\InventoryUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Manager\SoundManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\UI\TitleUI\TitleUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -274,6 +286,7 @@
     <None Include="Data\Model\Stage\MainStage\planet.mv1" />
     <None Include="Data\Model\SkyDome\SpaceDome.mv1" />
     <None Include="Data\Model\SpaceDome\SpaceDome.mv1" />
+    <None Include="Data\Model\Stage\roket.mv1" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />
@@ -309,5 +322,12 @@
     <Image Include="Data\Model\SkyDome\SpaceDome.jpg">
       <Filter>リソース ファイル</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Data\Sound\BGM_Title.mp3" />
+    <Media Include="Data\Sound\PickUp.wav">
+      <Filter>リソース ファイル</Filter>
+    </Media>
+    <Media Include="Data\Sound\Walk.mp3" />
   </ItemGroup>
 </Project>

@@ -107,7 +107,7 @@ Item* ItemManager::GetAimedItem(
 	for (auto item : items_)
 	{
 		// アイテムがレイに当たってるか確認
-		if (!item->IsAimedBy(rayOrigin, rayEnd)) continue;
+		if (!item->IsAimed(rayOrigin, rayEnd)) continue;
 
 		// アイテムとカメラの距離を計算
 		float dist = VSize(VSub(item->GetTransform().pos, rayOrigin));

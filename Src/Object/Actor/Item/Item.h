@@ -83,8 +83,8 @@ public:
 	STATE GetState(void) const; // 状態
 
 	// 照準に当たってるか
-	bool IsAimedBy(const VECTOR& rayOrigin,
-					const VECTOR& rayEnd) const;
+	bool IsAimed(const VECTOR& rayOrigin,
+				 const VECTOR& rayEnd) const;
 
 	// アイテム取得可能か
 	void SetAimed(bool aimed);

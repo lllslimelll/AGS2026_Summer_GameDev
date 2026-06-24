@@ -82,7 +82,7 @@ void InputManager::Init(void)
 
 	inputTable_["Up"] = { //{PeripheralType::KEYBOAD, KEY_INPUT_UP},
 							//{PeripheralType::KEYBOAD, KEY_INPUT_W},
-							{PeripheralType::PAD, PAD_INPUT_UP} };
+							{PeripheralType::PAD, XINPUT_BUTTON_DPAD_UP} };
 
 	inputTable_["Down"] = { //{PeripheralType::KEYBOAD, KEY_INPUT_DOWN},
 								//{PeripheralType::KEYBOAD, KEY_INPUT_S},
