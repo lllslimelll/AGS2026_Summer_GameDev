@@ -2,14 +2,15 @@
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "../Common/Fader.h"
-#include "../Scene/TitleScene.h"
-#include "../Scene/GameScene.h"
-#include "../Scene/ResultScene.h"
-#include "../Scene/DebugScene.h"
-#include "Camera.h"
-#include "ResourceManager.h"
+#include "TitleScene.h"
+#include "GameScene.h"
+#include "PauseScene.h"
+#include "ResultScene.h"
+#include "DebugScene.h"
+#include "../Manager/Camera.h"
+#include "../Manager/ResourceManager.h"
 #include "SceneManager.h"
-#include "SoundManager.h"
+#include "../Manager/SoundManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
 
@@ -91,10 +92,7 @@ void SceneManager::Init3D(void)
 void SceneManager::Update(void)
 {
 
-	if (scene_ == nullptr)
-	{
-		return;
-	}
+	if (scenes_.empty()) { return; }
 
 	// デルタタイム
 	auto nowTime = std::chrono::system_clock::now();
@@ -111,8 +109,8 @@ void SceneManager::Update(void)
 	}
 	else
 	{
-		// 各シーンの更新処理
-		scene_->Update();
+		// スタック末尾のみ更新
+		scenes_.back()->Update();
 	}
 
 	// カメラ更新
@@ -136,8 +134,11 @@ void SceneManager::Draw(void)
 	// Effekseerにより再生中のエフェクトを更新する。
 	UpdateEffekseer3D();
 
-	// 各シーンの描画処理
-	scene_->Draw();
+	// スタック内のシーンを描画
+	for (auto& scene : scenes_)
+	{
+		scene->Draw();
+	}
 
 	// カメラ描画
 	camera_->DrawDebug();
@@ -152,12 +153,8 @@ void SceneManager::Draw(void)
 
 void SceneManager::Destroy(void)
 {
-
-	// シーンの解放
-	if (scene_ != nullptr)
-	{
-		delete scene_;
-	}
+	// シーンリストの破棄
+	scenes_.clear();
 
 	// フェード機能の解放
 	delete fader_;
@@ -171,6 +168,7 @@ void SceneManager::Destroy(void)
 
 }
 
+// シーン遷移
 void SceneManager::ChangeScene(SCENE_ID nextId)
 {
 
@@ -183,6 +181,81 @@ void SceneManager::ChangeScene(SCENE_ID nextId)
 	isSceneChanging_ = true;
 
 }
+
+// シーン遷移実行
+void SceneManager::DoChangeScene(SCENE_ID sceneId)
+{
+
+	// リソースの解放
+	ResourceManager::GetInstance().Release();
+
+	// シーンを変更する
+	sceneId_ = sceneId;
+
+	// シーンリストの破棄
+	scenes_.clear();
+
+	// シーンの生成
+	switch (sceneId_)
+	{
+	case SCENE_ID::TITLE:
+		scenes_.push_back(std::make_unique<TitleScene>());
+		SetMouseDispFlag(true);
+		SoundManager::GetInstance().StopWalk();
+		break;
+	case SCENE_ID::GAME:
+		scenes_.push_back(std::make_unique<GameScene>());
+		SoundManager::GetInstance().StopWalk();
+		SetMouseDispFlag(false);
+		break;
+	case SCENE_ID::DEBUG:
+		scenes_.push_back(std::make_unique<DebugScene>());
+		break;
+	}
+
+	// シーン末尾の初期化
+	scenes_.back()->Init();
+
+	// デルタタイムリセット
+	ResetDeltaTime();
+
+	waitSceneId_ = SCENE_ID::NONE;
+}
+
+void SceneManager::PushScene(SCENE_ID sceneId)
+{ 
+	// シーンの変更
+	sceneId_ = sceneId;
+
+	// シーンの生成
+	switch (sceneId_)
+	{
+	case SCENE_ID::PAUSE:
+		scenes_.push_back(std::make_unique<PauseScene>());
+		break;
+	case SCENE_ID::RESULT:
+		scenes_.push_back(std::make_unique<ResultScene>());
+		SoundManager::GetInstance().StopWalk();
+		SetMouseDispFlag(true);
+		break;
+	default:
+		break;
+	}
+
+	// シーン末尾の初期化
+	scenes_.back()->Init();
+}
+
+
+
+void SceneManager::PopScene()
+{
+	if (scenes_.size() > 1)
+	{
+		scenes_.pop_back();
+	}
+}
+
 
 SceneManager::SCENE_ID SceneManager::GetSceneID(void)
 {
@@ -206,7 +279,6 @@ SceneManager::SceneManager(void)
 	sceneId_ = SCENE_ID::NONE;
 	waitSceneId_ = SCENE_ID::NONE;
 
-	scene_ = nullptr;
 	fader_ = nullptr;
 
 	isSceneChanging_ = false;
@@ -222,52 +294,6 @@ void SceneManager::ResetDeltaTime(void)
 {
 	deltaTime_ = 0.016f;
 	preTime_ = std::chrono::system_clock::now();
-}
-
-void SceneManager::DoChangeScene(SCENE_ID sceneId)
-{
-
-	// リソースの解放
-	ResourceManager::GetInstance().Release();
-
-	// シーンを変更する
-	sceneId_ = sceneId;
-
-	// 現在のシーンを解放
-	if (scene_ != nullptr)
-	{
-		delete scene_;
-	}
-
-	switch (sceneId_)
-	{
-	case SCENE_ID::TITLE:
-		scene_ = new TitleScene();
-		SetMouseDispFlag(true);
-		SoundManager::GetInstance().StopWalk();
-		break;
-	case SCENE_ID::GAME:
-		scene_ = new GameScene();
-		SoundManager::GetInstance().StopWalk();
-		SetMouseDispFlag(false);
-		break;
-	case SCENE_ID::RESULT:
-		scene_ = new ResultScene();
-		SoundManager::GetInstance().StopWalk();
-		SetMouseDispFlag(true);
-		break;
-	case SCENE_ID::DEBUG:
-		scene_ = new DebugScene();
-		break;
-	}
-
-	// 各シーンの初期化
-	scene_->Init();
-
-	ResetDeltaTime();
-
-	waitSceneId_ = SCENE_ID::NONE;
-
 }
 
 void SceneManager::Fade(void)
@@ -298,5 +324,4 @@ void SceneManager::Fade(void)
 	}
 
 }
-
 
