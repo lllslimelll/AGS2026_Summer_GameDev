@@ -135,6 +135,7 @@
     <ClCompile Include="Src\Object\UI\GameUI\HUD.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\InventoryUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\GameUI.cpp" />
+    <ClCompile Include="Src\Scene\PauseScene.cpp" />
     <ClCompile Include="Src\Scene\ResultScene.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\Item1.cpp" />
     <ClCompile Include="Src\Object\Actor\Item\ItemManager.cpp" />
@@ -168,7 +169,9 @@
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
     <ClCompile Include="Src\Scene\GameScene.cpp" />
+    <ClCompile Include="Src\Scene\Scene.cpp" />
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
+    <ClCompile Include="Src\Scene\SceneManager.cpp" />
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
@@ -180,6 +183,7 @@
     <ClInclude Include="Src\Object\UI\GameUI\HUD.h" />
     <ClInclude Include="Src\Object\UI\GameUI\InventoryUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\GameUI.h" />
+    <ClInclude Include="Src\Scene\PauseScene.h" />
     <ClInclude Include="Src\Scene\ResultScene.h" />
     <ClInclude Include="Src\Object\Actor\Item\Item1.h" />
     <ClInclude Include="Src\Object\Actor\Item\ItemManager.h" />
@@ -213,7 +217,9 @@
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Scene\DebugScene.h" />
     <ClInclude Include="Src\Scene\GameScene.h" />
+    <ClInclude Include="Src\Scene\Scene.h" />
     <ClInclude Include="Src\Scene\SceneBase.h" />
+    <ClInclude Include="Src\Scene\SceneManager.h" />
     <ClInclude Include="Src\Scene\TitleScene.h" />
     <ClInclude Include="Src\Utility\AsoUtility.h" />
     <ClInclude Include="Src\Utility\MatrixUtility.h" />

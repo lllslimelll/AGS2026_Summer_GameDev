@@ -1,10 +1,12 @@
 #include "ResultScene.h"
-#include "../Manager/SceneManager.h"
+#include "SceneManager.h"
 #include "../Manager/InputManager.h"
 #include <DxLib.h>
 #include <cmath>
 
 ResultScene::ResultScene()
+    :
+    Scene()
 {
 }
 
@@ -159,8 +161,4 @@ void ResultScene::Draw(void)
     DrawBox(rankBoxL, rankBoxT, rankBoxR, rankBoxB, 0xffffff, FALSE);
 
     SetFontSize(prevSize);
-}
-
-void ResultScene::Release(void)
-{
 }

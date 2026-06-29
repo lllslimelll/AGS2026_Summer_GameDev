@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 #include <DxLib.h>
-#include "SceneBase.h"
+#include "Scene.h"
 class Stage;
 
-class DebugScene : public SceneBase
+class DebugScene : public Scene
 {
 public:
 
@@ -19,8 +19,6 @@ public:
 	void Update(void) override;
 	// •`‰æ
 	void Draw(void) override;
-	// ‰ð•ú
-	void Release(void) override;
 
 private:
 

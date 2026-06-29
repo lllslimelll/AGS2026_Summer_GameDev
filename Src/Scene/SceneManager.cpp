@@ -1,16 +1,17 @@
 #include <chrono>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
-#include "../Common/Fader.h"
+#include "Scene.h"
 #include "TitleScene.h"
 #include "GameScene.h"
 #include "PauseScene.h"
 #include "ResultScene.h"
 #include "DebugScene.h"
+#include "../Common/Fader.h"
 #include "../Manager/Camera.h"
 #include "../Manager/ResourceManager.h"
-#include "SceneManager.h"
 #include "../Manager/SoundManager.h"
+#include "SceneManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
 

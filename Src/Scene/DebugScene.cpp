@@ -2,7 +2,7 @@
 #include <DxLib.h>
 #include "../Common/Vector2.h"
 #include "../Manager/InputManager.h"
-#include "../Manager/SceneManager.h"
+#include "SceneManager.h"
 #include "../Manager//Camera.h"
 #include "../Object/Actor/Stage.h"
 #include "../Object/Collider/ColliderModel.h"
@@ -10,13 +10,19 @@
 
 DebugScene::DebugScene(void)
 	:
-	SceneBase(),
+	Scene(),
 	stage_(nullptr)
 {
 }
 
 DebugScene::~DebugScene(void)
 {
+	// ステージ解放
+	stage_->Release();
+	delete stage_;
+
+	// デバッグポイント群
+	points_.clear();
 }
 
 void DebugScene::Init(void)
@@ -62,17 +68,6 @@ void DebugScene::Draw(void)
 
 		y += 20;
 	}
-}
-
-void DebugScene::Release(void)
-{
-	// ステージ解放
-	stage_->Release();
-	delete stage_;
-
-	// デバッグポイント群
-	points_.clear();
-
 }
 
 void DebugScene::PlaceDebugPoint(void)

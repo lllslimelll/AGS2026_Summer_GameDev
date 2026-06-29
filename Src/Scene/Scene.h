@@ -2,16 +2,16 @@
 class ResourceManager;
 class SceneManager;
 
-class SceneBase
+class Scene
 {
 
 public:
 
 	// コンストラクタ
-	SceneBase(void);
+	Scene(void);
 
 	// デストラクタ
-	virtual ~SceneBase(void) = 0;
+	virtual ~Scene(void) = 0;
 
 	// 初期化
 	virtual void Init(void) = 0;
@@ -21,9 +21,6 @@ public:
 
 	// 描画
 	virtual void Draw(void) = 0;
-
-	// 解放
-	virtual void Release(void) = 0;
 
 protected:
 

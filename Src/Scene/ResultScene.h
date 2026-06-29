@@ -1,6 +1,7 @@
 #pragma once
-#include "SceneBase.h"
-class ResultScene :	public SceneBase
+#include "Scene.h"
+
+class ResultScene :	public Scene
 {
 public:
 
@@ -16,9 +17,6 @@ public:
 
 	// •`‰æ
 	void Draw(void) override;
-
-	// ‰ð•ú
-	void Release(void) override;
 
 private:
 
