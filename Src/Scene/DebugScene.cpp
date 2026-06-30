@@ -3,7 +3,7 @@
 #include "../Common/Vector2.h"
 #include "../Manager/InputManager.h"
 #include "SceneManager.h"
-#include "../Manager//Camera.h"
+#include "../Camera/Camera.h"
 #include "../Object/Actor/Stage.h"
 #include "../Object/Collider/ColliderModel.h"
 #include "DebugScene.h"

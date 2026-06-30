@@ -1,7 +1,7 @@
 #include "../../../Object/Common/AnimationController.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Manager/SceneManager.h"
-#include "../../../Manager/Camera.h"
+#include "../../../Scene/SceneManager.h"
+#include "../../../Camera/Camera.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SoundManager.h"
@@ -282,7 +282,7 @@ void Player::UpdateItem(void)
 		
 		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_E))
 		{
-			SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
+			//SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RESULT);
 		}
 	}

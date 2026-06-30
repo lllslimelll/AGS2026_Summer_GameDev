@@ -16,11 +16,8 @@ Camera::Camera(void)
 	rotY_(Quaternion::Identity()),
 	targetPos_(AsoUtility::VECTOR_ZERO)
 {
-	// DxLibの初期設定では、
-	// カメラの位置が x = 320.0f, y = 240.0f, z = (画面のサイズによって変化)、
-	// 注視点の位置は x = 320.0f, y = 240.0f, z = 1.0f
-	// カメラの上方向は x = 0.0f, y = 1.0f, z = 0.0f
-	// 右上位置からZ軸のプラス方向を見るようなカメラ
+	// クリップ距離を設定
+	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
 }
 
 Camera::~Camera(void)
@@ -29,13 +26,35 @@ Camera::~Camera(void)
 
 void Camera::Update(void)
 {
+	// 更新前情報
+	prePos_ = transform_.pos;
+
+	switch (mode_)
+	{
+	case Camera::MODE::FIXED_POINT:
+		SetBeforeDrawFixedPoint();
+		break;
+	case Camera::MODE::FREE:
+		SetBeforeDrawFree();
+		break;
+	case Camera::MODE::FOLLOW:
+		SetBeforeDrawFollow();
+		break;
+	}
+
+	// カメラの設定(位置と注視点による制御)
+	SetCameraPositionAndTargetAndUpVec(
+		transform_.pos,
+		targetPos_,
+		transform_.quaRot.GetUp()
+	);
+
+	// DXライブラリのカメラとEffekseerのカメラを同期する。
+	Effekseer_Sync3DSetting();
 }
 
 void Camera::SetBeforeDraw(void)
 {
-
-	// クリップ距離を設定する(SetDrawScreenでリセットされる)
-	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
 
 	// 更新前情報
 	prePos_ = transform_.pos;

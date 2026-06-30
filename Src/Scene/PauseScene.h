@@ -1,8 +1,10 @@
 #pragma once
-#include "Scene"
+#include "Scene.h"
 
 class PauseScene : public Scene
 {
+public:
+
 	PauseScene();
 	~PauseScene() override;
 

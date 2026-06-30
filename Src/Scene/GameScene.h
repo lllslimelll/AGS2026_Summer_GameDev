@@ -1,5 +1,5 @@
 #pragma once
-#include "SceneBase.h"
+#include "Scene.h"
 #include <vector>
 class ActorBase;
 class SkyDome;
@@ -9,7 +9,7 @@ class Player;
 class EnemyManager;
 
 
-class GameScene : public SceneBase
+class GameScene : public Scene
 {
 
 public:
@@ -28,9 +28,6 @@ public:
 
 	// •`‰æ
 	void Draw(void) override;
-
-	// ‰ð•ú
-	void Release(void) override;
 
 private:
 

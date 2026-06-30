@@ -101,7 +101,7 @@ void InputManager::Init(void)
 								{PeripheralType::MOUSE, MOUSE_INPUT_LEFT},
 								{PeripheralType::PAD, PAD_INPUT_DOWN} }; // SELECTボタン
 
-	inputTable_["pause"] = { {PeripheralType::KEYBOAD, KEY_INPUT_P},
+	inputTable_["pause"] = { {PeripheralType::KEYBOAD, KEY_INPUT_ESCAPE},
 								{PeripheralType::PAD, PAD_INPUT_R} }; // STARTボタン
 
 	inputTable_["jump"] = { {PeripheralType::KEYBOAD, KEY_INPUT_Z},

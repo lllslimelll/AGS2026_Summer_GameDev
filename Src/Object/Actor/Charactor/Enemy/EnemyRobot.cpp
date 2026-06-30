@@ -1,6 +1,6 @@
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
-#include "../../../../Manager/SceneManager.h"
+#include "../../../../Scene/SceneManager.h"
 #include "../../../Common/AnimationController.h"
 #include "../../../Collider/ColliderLine.h"
 #include "../../../Collider/ColliderCapsule.h"

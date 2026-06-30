@@ -20,7 +20,7 @@ public:
 		0.0f, 175.0f * DX_PI_F / 180.0f, 0.0f
 	};
 
-	// ƒJƒƒ‰‚Ì‰ñ“]—Ê//
+	// ƒJƒƒ‰‚Ì‰ñ“]—Ê
 	const float ROT_POW_DEG = 2.0f;
 	const float ROT_POW_RAD = ROT_POW_DEG * DX_PI_F / 180.0f;
 

@@ -1,11 +1,13 @@
 #include "../Manager/ResourceManager.h"
+#include "../Manager/InputManager.h"
 #include "SceneManager.h"
 #include "Scene.h"
 
 Scene::Scene(void)
 	: 
 	resMng_(ResourceManager::GetInstance()),
-	sceMng_(SceneManager::GetInstance())
+	sceMng_(SceneManager::GetInstance()),
+	inputMng_(InputManager::GetInstance())
 {
 }
 

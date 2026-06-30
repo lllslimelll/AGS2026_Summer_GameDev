@@ -36,7 +36,7 @@ void SceneManager::Init(void)
 	waitSceneId_ = SCENE_ID::NONE;
 
 	// フェード機能の初期化
-	fader_ = new Fader();
+	fader_ = std::make_unique<Fader>();
 	fader_->Init();
 
 	// カメラ
@@ -129,9 +129,6 @@ void SceneManager::Draw(void)
 	// 画面を初期化
 	ClearDrawScreen();
 
-	// カメラ設定
-	camera_->SetBeforeDraw();
-
 	// Effekseerにより再生中のエフェクトを更新する。
 	UpdateEffekseer3D();
 
@@ -140,9 +137,6 @@ void SceneManager::Draw(void)
 	{
 		scene->Draw();
 	}
-
-	// カメラ描画
-	camera_->DrawDebug();
 
 	// Effekseerにより再生中のエフェクトを描画する。
 	DrawEffekseer3D();
@@ -157,16 +151,8 @@ void SceneManager::Destroy(void)
 	// シーンリストの破棄
 	scenes_.clear();
 
-	// フェード機能の解放
-	delete fader_;
-
-	camera_->Release();
-	delete camera_;
-
-
 	// インスタンスのメモリ解放
 	delete instance_;
-
 }
 
 // シーン遷移
@@ -196,20 +182,23 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	// シーンリストの破棄
 	scenes_.clear();
 
-	// シーンの生成
+	// シーンの生成と追加
 	switch (sceneId_)
 	{
 	case SCENE_ID::TITLE:
+		// 追加
 		scenes_.push_back(std::make_unique<TitleScene>());
 		SetMouseDispFlag(true);
 		SoundManager::GetInstance().StopWalk();
 		break;
 	case SCENE_ID::GAME:
+		// 追加
 		scenes_.push_back(std::make_unique<GameScene>());
 		SoundManager::GetInstance().StopWalk();
 		SetMouseDispFlag(false);
 		break;
 	case SCENE_ID::DEBUG:
+		// 追加
 		scenes_.push_back(std::make_unique<DebugScene>());
 		break;
 	}
@@ -223,11 +212,12 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	waitSceneId_ = SCENE_ID::NONE;
 }
 
+// シーンの追加（オーバーレイとして）
 void SceneManager::PushScene(SCENE_ID sceneId)
 { 
 	// シーンの変更
 	sceneId_ = sceneId;
-
+	
 	// シーンの生成
 	switch (sceneId_)
 	{
@@ -248,9 +238,10 @@ void SceneManager::PushScene(SCENE_ID sceneId)
 }
 
 
-
+// シーンの削除
 void SceneManager::PopScene()
 {
+	// スタックが空にならないようガードして削除
 	if (scenes_.size() > 1)
 	{
 		scenes_.pop_back();
@@ -269,11 +260,6 @@ float SceneManager::GetDeltaTime(void) const
 	//return deltaTime_;
 }
 
-Camera* SceneManager::GetCamera(void) const
-{
-	return camera_;
-}
-
 SceneManager::SceneManager(void)
 {
 
@@ -286,9 +272,6 @@ SceneManager::SceneManager(void)
 
 	// デルタタイム
 	deltaTime_ = 1.0f / 60.0f;
-
-	camera_ = nullptr;
-
 }
 
 void SceneManager::ResetDeltaTime(void)

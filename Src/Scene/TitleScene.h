@@ -1,9 +1,12 @@
 #pragma once
+#include <memory>
 #include "../Object/Common/Transform.h"
 #include "Scene.h"
+
+class Camera;
 class SkyDome;
 
-class TitleScene : public SceneBase
+class TitleScene : public Scene
 {
 
 public:
@@ -22,9 +25,6 @@ public:
 
 	// 描画
 	void Draw(void) override;
-
-	// 解放
-	void Release(void) override;
 
 private:
 
@@ -51,7 +51,8 @@ private:
 	// 選択インデックス
 	int selectIndex_ = -1;
 
-	SkyDome* skyDome_;
+	std::unique_ptr<Camera> camera_;
+	std::unique_ptr<SkyDome> skyDome_;
 
 	int imgTitle_;
 	int imgPushSpace_;

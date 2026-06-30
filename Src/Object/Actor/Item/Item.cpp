@@ -1,7 +1,7 @@
 #include <DxLib.h>
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Manager/SceneManager.h"
-#include "../../../Manager/Camera.h"
+#include "../../../Scene/SceneManager.h"
+#include "../../../Camera/Camera.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SoundManager.h"
 #include "../../Collider/ColliderBase.h"
@@ -78,6 +78,7 @@ void Item::Draw(void)
         DrawSphere3D(transform_.pos, radius, 8, color, color, TRUE);
 
     }
+
     // ó‘Ô•Ê•`‰æ
     stateDraw_();
 

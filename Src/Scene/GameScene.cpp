@@ -1,8 +1,8 @@
 #include <DxLib.h>
-#include "../Manager/SceneManager.h"
+#include "../Scene/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/SoundManager.h"
-#include "../Manager/Camera.h"
+#include "../Camera/Camera.h"
 #include "../Object/Actor/ActorBase.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyManager.h"
@@ -20,12 +20,26 @@ GameScene::GameScene(void)
 	skyDome_(nullptr),
 	isPaused_(false),
 	pauseMenuIndex_(0),
-	SceneBase()
+	Scene()
 {
 }
 
 GameScene::~GameScene(void)
 {
+	stage_->Release();
+	delete stage_;
+
+	itemMng_->Release();
+	delete itemMng_;
+
+	player_->Release();
+	delete player_;
+
+	enemyManager_->Release();
+	delete enemyManager_;
+
+	skyDome_->Release();
+	delete skyDome_;
 }
 
 void GameScene::Init(void)
@@ -72,21 +86,10 @@ void GameScene::Update(void)
 	SetMouseDispFlag(false);
 	auto& ins = InputManager::GetInstance();
 
-	// ESC / STARTでポーズ切り替え
-	bool pauseToggle = ins.IsTrgDown(KEY_INPUT_ESCAPE)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::START);
-	if (pauseToggle)
+	if (ins.IsTriggerd("pause"))
 	{
-		isPaused_ = !isPaused_;
-		pauseMenuIndex_ = -1;
-		
-		sceMng_.GetCamera()->SetInputEnabled(!isPaused_);
-	}
-
-	if (isPaused_)
-	{
-		SetMouseDispFlag(true);
-		UpdatePauseMenu();
+		// ポーズシーンを追加
+		sceMng_.PushScene(SceneManager::SCENE_ID::PAUSE);
 		return;
 	}
 
@@ -115,24 +118,6 @@ void GameScene::Draw(void)
 	{
 		DrawPauseMenu();
 	}
-}
-
-void GameScene::Release(void)
-{
-	stage_->Release();
-	delete stage_;
-
-	itemMng_->Release();
-	delete itemMng_;
-
-	player_->Release();
-	delete player_;
-
-	enemyManager_->Release();
-	delete enemyManager_;
-
-	skyDome_->Release();
-	delete skyDome_;
 }
 
 void GameScene::UpdatePauseMenu(void)

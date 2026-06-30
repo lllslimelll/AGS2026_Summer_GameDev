@@ -1,5 +1,5 @@
 #include "../../Manager/ResourceManager.h"
-#include "../../Manager/SceneManager.h"
+#include "../../Scene/SceneManager.h"
 #include "../Common/Transform.h"
 #include "../../Utility/AsoUtility.h"
 #include "SkyDome.h"

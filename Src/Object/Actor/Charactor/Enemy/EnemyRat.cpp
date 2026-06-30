@@ -4,7 +4,7 @@
 #include "../../../Common/AnimationController.h"
 #include "../../../Collider/ColliderLine.h"
 #include "../../../Collider/ColliderCapsule.h"
-#include "../../../../Manager/SceneManager.h"
+#include "../../../../Scene/SceneManager.h"
 #include "EnemyRat.h"
 
 
