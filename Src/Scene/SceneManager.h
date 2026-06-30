@@ -1,7 +1,9 @@
 #pragma once
+#include <memory>
+#include <vector>
 #include <chrono>
 #include <DxLib.h>
-class SceneBase;
+class Scene;
 class Fader;
 class Camera;
 
@@ -61,9 +63,6 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
-	void SetResultScore(int score) { resultScore_ = score; }
-	int  GetResultScore(void) const { return resultScore_; }
-
 private:
 
 	// デフォルトコンストラクタをprivateにして、
@@ -75,18 +74,18 @@ private:
 
 	// デストラクタも同様
 	~SceneManager(void) = default;
-	int resultScore_ = 0;
+
 	// 静的インスタンス
 	static SceneManager* instance_;
 
 	SCENE_ID sceneId_;
 	SCENE_ID waitSceneId_;
 
+	// 各種シーン
+	std::vector<std::unique_ptr<Scene>> scenes_;
+
 	// フェード
 	Fader* fader_;
-
-	// 各種シーン
-	SceneBase* scene_;
 
 	// カメラ
 	Camera* camera_;

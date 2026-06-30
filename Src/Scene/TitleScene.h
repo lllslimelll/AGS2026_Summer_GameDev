@@ -1,6 +1,6 @@
 #pragma once
 #include "../Object/Common/Transform.h"
-#include "SceneBase.h"
+#include "Scene.h"
 class SkyDome;
 
 class TitleScene : public SceneBase

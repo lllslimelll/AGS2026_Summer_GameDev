@@ -1,26 +1,26 @@
 #include "../Manager/ResourceManager.h"
-#include "../Manager/SceneManager.h"
-#include "SceneBase.h"
+#include "SceneManager.h"
+#include "Scene.h"
 
-SceneBase::SceneBase(void) 
+Scene::Scene(void)
 	: 
 	resMng_(ResourceManager::GetInstance()),
 	sceMng_(SceneManager::GetInstance())
 {
 }
 
-SceneBase::~SceneBase(void)
+Scene::~Scene(void)
 {
 }
 
-void SceneBase::Init(void)
+void Scene::Init(void)
 {
 }
 
-void SceneBase::Update(void)
+void Scene::Update(void)
 {
 }
 
-void SceneBase::Draw(void)
+void Scene::Draw(void)
 {
 }

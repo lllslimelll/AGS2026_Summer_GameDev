@@ -5,11 +5,12 @@
 #include "../Object/Common/AnimationController.h"
 #include "../Object/Actor/SkyDome.h"
 #include "../Manager/InputManager.h"
-#include "../Manager/SceneManager.h"
+#include "SceneManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
 #include "TitleScene.h"
+
 // メニューラベル（MENU_ITEM の順に対応）
 static const char* MENU_LABELS[] = {
 	"GAME START",
