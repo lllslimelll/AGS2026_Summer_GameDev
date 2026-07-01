@@ -25,6 +25,9 @@ public:
 	// 描画
 	void Draw(void) override;
 
+	// カメラTransformを設定
+	void SetCameraTransform(const Transform* cameraTransform);
+
 protected:
 
 	// リソースロード
@@ -93,6 +96,9 @@ private:
 
 	// アイテム管理（拾得・投擲）
 	ItemManager* itemMgr_;
+
+	// カメラTransform
+	const Transform* cameraTransform_;
 
 	// ブーストフラグ
 	bool isBoost_;

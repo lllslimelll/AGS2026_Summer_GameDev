@@ -3,6 +3,7 @@
 #include "../Common/Transform.h"
 #include "../../Utility/AsoUtility.h"
 #include "SkyDome.h"
+#include "Camera.h"
 
 SkyDome::SkyDome(const Transform& followTransform)
 	:

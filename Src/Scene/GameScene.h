@@ -1,11 +1,13 @@
 #pragma once
 #include "Scene.h"
 #include <vector>
+#include <memory>
 class ActorBase;
 class SkyDome;
 class Stage;
 class ItemManager;
 class Player;
+class Camera;
 class EnemyManager;
 
 
@@ -39,6 +41,8 @@ private:
 	ItemManager* itemMng_;
 	// プレイヤー
 	Player* player_;
+	// カメラ
+	std::unique_ptr<Camera> camera_;
 	// 敵
 	EnemyManager* enemyManager_;
 

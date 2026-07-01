@@ -31,15 +31,18 @@ void DebugScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
-	// カメラの追従設定
-	Camera* camera = sceMng_.GetCamera();
-	camera->ChangeMode(Camera::MODE::FREE);
+	// カメラ
+	camera_ = std::make_unique<Camera>();
+	camera_->ChangeMode(Camera::MODE::FREE);
 }
 
 void DebugScene::Update(void)
 {
 	// ステージ更新
 	stage_->Update();
+
+	// カメラ更新
+	camera_->Update();
 
 	// デバッグポイントの配置
 	PlaceDebugPoint();
@@ -99,13 +102,10 @@ void DebugScene::PlaceDebugPoint(void)
 		const ColliderModel* colliderModel =
 			dynamic_cast<const ColliderModel*>(collder);
 
-		// カメラ情報を取得
-		const auto& camera = SceneManager::GetInstance().GetCamera();
-
 		// カメラの位置からカメラ最奥のワールド座標へ向けてレイを飛ばす
 		auto hit = MV1CollCheck_Line(
 			colliderModel->GetFollow()->modelId, -1,
-			camera->GetPos(),
+			camera_->GetPos(),
 			worldPos);
 
 		if (hit.HitFlag)

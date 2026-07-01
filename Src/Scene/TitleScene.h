@@ -60,9 +60,6 @@ private:
 	// 球体惑星
 	Transform spherePlanet_;
 
-	// プレイヤー
-	Transform player_;
-
 	// スカイドーム用の空Transform
 	Transform empty_;
 

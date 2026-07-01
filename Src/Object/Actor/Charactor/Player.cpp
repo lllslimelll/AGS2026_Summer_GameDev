@@ -9,7 +9,6 @@
 #include "../Stage.h"
 #include "../item/Item.h"
 #include "../../Common/Transform.h"
-#include "../../../Utility/AsoUtility.h"
 #include "../../Collider/ColliderLine.h"
 #include "../../Collider/ColliderCapsule.h"
 #include "Player.h"
@@ -547,6 +546,11 @@ void Player::Draw(void)
 		transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
 }
 
+void Player::SetCameraTransform(const Transform* cameraTransform)
+{
+	cameraTransform_ = cameraTransform;
+}
+
 // Õ“Ë”»’è—p‚Ì’²®
 void Player::CollisionReserve(void)
 {
@@ -685,8 +689,6 @@ void Player::OnDeath(void)
 	isDead_ = true;
 	deathMenuIndex_ = 0;
 
-	
-	scnMng_.GetCamera()->SetInputEnabled(false);  // ƒJƒƒ‰‘€ì’â~
 	SoundManager::GetInstance().StopWalk();
 }
 

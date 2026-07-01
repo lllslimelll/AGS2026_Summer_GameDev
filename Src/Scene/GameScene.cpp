@@ -16,6 +16,7 @@ GameScene::GameScene(void)
 	stage_(nullptr),
 	itemMng_(nullptr),
 	player_(nullptr),
+	camera_(nullptr),
 	enemyManager_(nullptr),
 	skyDome_(nullptr),
 	isPaused_(false),
@@ -50,6 +51,9 @@ void GameScene::Init(void)
 
 	player_ = new Player(itemMng_, stage_);
 
+	// カメラ
+	camera_ = std::make_unique<Camera>();
+
 	enemyManager_ = new EnemyManager(player_);
 
 	skyDome_ = new SkyDome(player_->GetTransform());
@@ -74,11 +78,9 @@ void GameScene::Init(void)
 
 	skyDome_->Init();
 	
-	Camera* camera = sceMng_.GetCamera();
-	camera->SetFollow(&player_->GetTransform());
-	camera->ChangeMode(Camera::MODE::FOLLOW);
-	camera->AddHitCollider(stageCollider); // ステージモデルのコライダー登録
-	camera->SetInputEnabled(true);
+	camera_->SetFollow(&player_->GetTransform());// 追従対象の設定
+	camera_->ChangeMode(Camera::MODE::FOLLOW);	 // モード変更
+	camera_->AddHitCollider(stageCollider);		 // ステージモデルのコライダー登録
 }
 
 void GameScene::Update(void)
@@ -97,6 +99,7 @@ void GameScene::Update(void)
 	stage_->Update();
 	itemMng_->Update();
 	player_->Update();
+	camera_->Update();
 	enemyManager_->Update();
 	skyDome_->Update();
 

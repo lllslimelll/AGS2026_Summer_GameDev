@@ -16,8 +16,6 @@ Camera::Camera(void)
 	rotY_(Quaternion::Identity()),
 	targetPos_(AsoUtility::VECTOR_ZERO)
 {
-	// クリップ距離を設定
-	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
 }
 
 Camera::~Camera(void)
@@ -32,13 +30,13 @@ void Camera::Update(void)
 	switch (mode_)
 	{
 	case Camera::MODE::FIXED_POINT:
-		SetBeforeDrawFixedPoint();
+		UpdateFixedPoint();
 		break;
 	case Camera::MODE::FREE:
-		SetBeforeDrawFree();
+		UpdateFree();
 		break;
 	case Camera::MODE::FOLLOW:
-		SetBeforeDrawFollow();
+		UpdateFollow();
 		break;
 	}
 
@@ -53,37 +51,7 @@ void Camera::Update(void)
 	Effekseer_Sync3DSetting();
 }
 
-void Camera::SetBeforeDraw(void)
-{
-
-	// 更新前情報
-	prePos_ = transform_.pos;
-
-	switch (mode_)
-	{
-	case Camera::MODE::FIXED_POINT:
-		SetBeforeDrawFixedPoint();
-		break;
-	case Camera::MODE::FREE:
-		SetBeforeDrawFree();
-		break;
-	case Camera::MODE::FOLLOW:
-		SetBeforeDrawFollow();
-		break;
-	}
-
-	// カメラの設定(位置と注視点による制御)
-	SetCameraPositionAndTargetAndUpVec(
-		transform_.pos, 
-		targetPos_, 
-		transform_.quaRot.GetUp()
-	);
-
-	// DXライブラリのカメラとEffekseerのカメラを同期する。
-	Effekseer_Sync3DSetting();
-}
-
-void Camera::DrawDebug(void)
+void Camera::Draw(void)
 {
 	/*DrawFormatString(0, 200, GetColor(255, 255, 255),
 		"Camera Pos: (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
@@ -105,8 +73,8 @@ void Camera::InitCollider(void)
 		ColliderBase::TAG::CAMERA,
 		&transform_,
 		AsoUtility::VECTOR_ZERO,
-		COL_CAPSULE_SPHERE
-	);
+		COL_CAPSULE_SPHERE);
+
 	// 自分自身の衝突情報に登録
 	ownColliders_.emplace(
 		static_cast<int>(COLLIDER_TYPE::SPHERE), colliderSphere);
@@ -114,7 +82,14 @@ void Camera::InitCollider(void)
 
 void Camera::InitPost(void)
 {
+	// カメラモードを初期化
 	ChangeMode(MODE::FIXED_POINT);
+
+	// クリップ距離を設定
+	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
+
+	//プレイヤーにTrasnform情報を渡す
+	
 }
 
 const VECTOR& Camera::GetPos(void) const
@@ -244,7 +219,6 @@ void Camera::SyncFollow(void)
 
 void Camera::ProcessRot(bool isLimit)
 {
-	if (!isInputEnabled_) return;  // 入力を受けない
 	if (GetJoypadNum() == 0)
 	{
 		// 方向回転によるXYZの移動(マウス)
@@ -255,12 +229,10 @@ void Camera::ProcessRot(bool isLimit)
 		// 方向回転によるXYZの移動(ゲームパッド)
 		RotGamePad(isLimit);
 	}
-
 }
 
 void Camera::ProcessMove(void)
 {
-
 	auto& ins = InputManager::GetInstance();
 
 	VECTOR moveDir = AsoUtility::VECTOR_ZERO;
@@ -303,17 +275,16 @@ void Camera::ProcessMove(void)
 
 }
 
-void Camera::SetBeforeDrawFixedPoint(void)
+void Camera::UpdateFixedPoint(void)
 {
 	// 何もしない
 }
 
-void Camera::SetBeforeDrawFree(void)
+void Camera::UpdateFree(void)
 {
-
 	// カメラ操作(回転)
 	ProcessRot(false);
-	
+
 	// カメラ操作(移動)
 	ProcessMove();
 
@@ -325,12 +296,10 @@ void Camera::SetBeforeDrawFree(void)
 
 	// 注視点更新
 	targetPos_ = VAdd(transform_.pos, transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS));
-
 }
 
-void Camera::SetBeforeDrawFollow(void)
+void Camera::UpdateFollow(void)
 {
-
 	// カメラ操作(回転)
 	ProcessRot(true);
 
@@ -365,8 +334,7 @@ void Camera::Collision(void)
 		auto hitPoly = colliderModel->GetNearestHitPolyLine(
 			start, transform_.pos,
 			false, //ブラックリストを使うか否か
-			true   // ホワイトリストを使うか否か
-		);
+			true);   // ホワイトリストを使うか否か
 
 		// 線分が衝突していなければ次のコライダへ
 		if (!hitPoly.HitFlag) continue;

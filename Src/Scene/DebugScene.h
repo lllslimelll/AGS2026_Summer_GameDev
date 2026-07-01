@@ -1,7 +1,10 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include <DxLib.h>
 #include "Scene.h"
+
+class Camera;
 class Stage;
 
 class DebugScene : public Scene
@@ -21,6 +24,8 @@ public:
 	void Draw(void) override;
 
 private:
+
+	std::unique_ptr<Camera> camera_;
 
 	// ステージ
 	Stage* stage_;

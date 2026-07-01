@@ -43,9 +43,6 @@ void TitleScene::Init(void)
 	// BGM再生
 	SoundManager::GetInstance().PlayBgmTitle();
 
-	// PushSpace画像読み込み
-	imgPushSpace_ = resMng_.Load(ResourceManager::SRC::PUSH_SPACE).handleId_;
-
 	// 球体惑星
 	spherePlanet_.SetModel(resMng_.Load(			// 1個 = Load()  複数 = Depulicate()
 		ResourceManager::SRC::MAIN_STAGE).handleId_);
@@ -68,6 +65,7 @@ void TitleScene::Init(void)
 
 void TitleScene::Update(void)
 {
+	camera_->Update();
 	skyDome_->Update();
 
 	// 惑星にX軸に毎フレーム1°ずつ回転を追加
@@ -147,10 +145,9 @@ void TitleScene::UpdateInput(void)
 // 描画
 void TitleScene::Draw(void)
 {
-	// カメラ
-	camera_->SetBeforeDraw();
-
+	// スカイドーム
 	skyDome_->Draw();
+	// 惑星
 	MV1DrawModel(spherePlanet_.modelId);
 
 	DrawTitle();
