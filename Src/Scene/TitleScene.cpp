@@ -6,7 +6,11 @@
 #include "../Object/Actor/SkyDome.h"
 #include "../Manager/InputManager.h"
 #include "SceneManager.h"
+<<<<<<< HEAD
 #include "../Manager/Camera.h"
+=======
+#include "../Camera/Camera.h"
+>>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
 #include "TitleScene.h"
@@ -27,26 +31,20 @@ static constexpr unsigned int COLOR_TITLE = 0xFFFFFF;
 TitleScene::TitleScene(void)
 	:
 	imgPushSpace_(-1),
-	player_(),
-	SceneBase(),
+	Scene(),
 	skyDome_()
 {
 }
 
 TitleScene::~TitleScene(void)
 {
+	skyDome_->Release();
 }
 
 void TitleScene::Init(void)
 {
 	// BGM再生
 	SoundManager::GetInstance().PlayBgmTitle();
-
-	// PushSpace画像読み込み
-	imgPushSpace_ = resMng_.Load(ResourceManager::SRC::PUSH_SPACE).handleId_;
-
-	// 定点カメラ
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
 
 	// 球体惑星
 	spherePlanet_.SetModel(resMng_.Load(			// 1個 = Load()  複数 = Depulicate()
@@ -57,14 +55,20 @@ void TitleScene::Init(void)
 	spherePlanet_.pos = { 600, -300, 550 };
 	spherePlanet_.Update();
 
+	// カメラ
+	camera_ = std::make_unique<Camera>();
+	// 定点モードに設定
+	camera_->ChangeMode(Camera::MODE::FIXED_POINT);
+
 	// スカイドーム
-	skyDome_ = new SkyDome(empty_);
+	skyDome_ = std::make_unique<SkyDome>(empty_);
 	skyDome_->Init();
 
 }
 
 void TitleScene::Update(void)
 {
+	camera_->Update();
 	skyDome_->Update();
 
 	// 惑星にX軸に毎フレーム1°ずつ回転を追加
@@ -141,9 +145,15 @@ void TitleScene::UpdateInput(void)
 	}
 }
 
+// 描画
 void TitleScene::Draw(void)
 {
+	// 描画前処理の適用
+	camera_->SetBeforeDraw();
+
+	// スカイドーム
 	skyDome_->Draw();
+	// 惑星
 	MV1DrawModel(spherePlanet_.modelId);
 
 	DrawTitle();
@@ -175,10 +185,4 @@ void TitleScene::DrawMenu(void) const
 			DrawFormatString(MENU_X, y, 0xFF8C00, MENU_LABELS[i]);
 		}
 	}
-}
-
-void TitleScene::Release(void)
-{
-	skyDome_->Release();
-	delete skyDome_;
 }

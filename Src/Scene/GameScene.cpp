@@ -1,8 +1,8 @@
 #include <DxLib.h>
-#include "../Manager/SceneManager.h"
+#include "../Scene/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/SoundManager.h"
-#include "../Manager/Camera.h"
+#include "../Camera/Camera.h"
 #include "../Object/Actor/ActorBase.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyManager.h"
@@ -16,16 +16,29 @@ GameScene::GameScene(void)
 	stage_(nullptr),
 	itemMng_(nullptr),
 	player_(nullptr),
+	camera_(nullptr),
 	enemyManager_(nullptr),
 	skyDome_(nullptr),
-	isPaused_(false),
-	pauseMenuIndex_(0),
-	SceneBase()
+	Scene()
 {
 }
 
 GameScene::~GameScene(void)
 {
+	stage_->Release();
+	delete stage_;
+
+	itemMng_->Release();
+	delete itemMng_;
+
+	player_->Release();
+	delete player_;
+
+	enemyManager_->Release();
+	delete enemyManager_;
+
+	skyDome_->Release();
+	delete skyDome_;
 }
 
 void GameScene::Init(void)
@@ -35,6 +48,9 @@ void GameScene::Init(void)
 	itemMng_ = new ItemManager();
 
 	player_ = new Player(itemMng_, stage_);
+
+	// カメラ
+	camera_ = std::make_unique<Camera>();
 
 	enemyManager_ = new EnemyManager(player_);
 
@@ -60,11 +76,12 @@ void GameScene::Init(void)
 
 	skyDome_->Init();
 	
-	Camera* camera = sceMng_.GetCamera();
-	camera->SetFollow(&player_->GetTransform());
-	camera->ChangeMode(Camera::MODE::FOLLOW);
-	camera->AddHitCollider(stageCollider); // ステージモデルのコライダー登録
-	camera->SetInputEnabled(true);
+	camera_->SetFollow(&player_->GetTransform());// 追従対象の設定
+	camera_->ChangeMode(Camera::MODE::FOLLOW);	 // モード変更
+	camera_->AddHitCollider(stageCollider);		 // ステージモデルのコライダー登録
+
+	player_->SetCameraTransform(&camera_->GetTransform()); // カメラのTransformをプレイヤーに渡す
+	player_->SetForward(camera_->GetForward()); // カメラの前方向をプレイヤーに渡す
 }
 
 void GameScene::Update(void)
@@ -72,21 +89,10 @@ void GameScene::Update(void)
 	SetMouseDispFlag(false);
 	auto& ins = InputManager::GetInstance();
 
-	// ESC / STARTでポーズ切り替え
-	bool pauseToggle = ins.IsTrgDown(KEY_INPUT_ESCAPE)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::START);
-	if (pauseToggle)
+	if (ins.IsTriggerd("pause"))
 	{
-		isPaused_ = !isPaused_;
-		pauseMenuIndex_ = -1;
-		
-		sceMng_.GetCamera()->SetInputEnabled(!isPaused_);
-	}
-
-	if (isPaused_)
-	{
-		SetMouseDispFlag(true);
-		UpdatePauseMenu();
+		// ポーズシーンを追加
+		sceMng_.PushScene(SceneManager::SCENE_ID::PAUSE);
 		return;
 	}
 
@@ -94,6 +100,7 @@ void GameScene::Update(void)
 	stage_->Update();
 	itemMng_->Update();
 	player_->Update();
+	camera_->Update();
 	enemyManager_->Update();
 	skyDome_->Update();
 
@@ -101,6 +108,9 @@ void GameScene::Update(void)
 
 void GameScene::Draw(void)
 {
+	// 描画前処理の適用
+	camera_->SetBeforeDraw();
+
 	skyDome_->Draw();
 	stage_->Draw();
 	itemMng_->Draw();
@@ -111,157 +121,6 @@ void GameScene::Draw(void)
 	enemyManager_->Draw();
 	player_->Draw();
 	stage_->DrawUI();
-;	if (isPaused_)
-	{
-		DrawPauseMenu();
-	}
-}
-
-void GameScene::Release(void)
-{
-	stage_->Release();
-	delete stage_;
-
-	itemMng_->Release();
-	delete itemMng_;
-
-	player_->Release();
-	delete player_;
-
-	enemyManager_->Release();
-	delete enemyManager_;
-
-	skyDome_->Release();
-	delete skyDome_;
-}
-
-void GameScene::UpdatePauseMenu(void)
-{
-	auto& ins = InputManager::GetInstance();
-
-	bool up = ins.IsTriggerd("Up");
-	bool down = ins.IsTriggerd("Down");
-
-	constexpr int MENU_MAX = static_cast<int>(PAUSE_MENU::MAX);
-
-	if (up)
-	{
-		pauseMenuIndex_ = (pauseMenuIndex_ <= 0) ? MENU_MAX - 1 : pauseMenuIndex_ - 1;
-	}
-	if (down)
-	{
-		pauseMenuIndex_ = (pauseMenuIndex_ < 0 || pauseMenuIndex_ >= MENU_MAX - 1) ? 0 : pauseMenuIndex_ + 1;
-	}
-
-	// ===== マウスでの選択 =====
-	int screenW, screenH;
-	GetScreenState(&screenW, &screenH, nullptr);
-
-	int mouseX, mouseY;
-	GetMousePoint(&mouseX, &mouseY);
-
-	// マウスが動いた時だけホバー判定を行う
-	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
-
-	if (mouseMoved)
-	{
-		const char* labels[MENU_MAX] = { "Resume", "Option", "Back to Title" };
-
-		int baseY = screenH / 2 - 20;
-		constexpr int ITEM_SPAN = 110;
-		constexpr int MENU_FONT = 70;
-
-		int prevSize = GetFontSize();
-		SetFontSize(MENU_FONT);
-
-		int mouseHoverIndex = -1;
-		for (int i = 0; i < MENU_MAX; i++)
-		{
-			int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
-			int x = (screenW - textW) / 2;
-			int y = baseY + i * ITEM_SPAN;
-
-			if (mouseX >= x - 60 && mouseX <= x + textW &&
-				mouseY >= y && mouseY <= y + ITEM_SPAN)
-			{
-				mouseHoverIndex = i;
-				break;
-			}
-		}
-
-		SetFontSize(prevSize);
-
-		pauseMenuIndex_ = mouseHoverIndex;
-	}
-
-	prevMouseX_ = mouseX;
-	prevMouseY_ = mouseY;
-
-	// 決定（マウス左クリック追加）
-	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN)
-		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
-	if (!decide || pauseMenuIndex_ < 0) return;
-
-	switch (static_cast<PAUSE_MENU>(pauseMenuIndex_))
-	{
-	case PAUSE_MENU::RESUME:
-		isPaused_ = false;
-		break;
-	case PAUSE_MENU::OPTION:
-		break;
-	case PAUSE_MENU::TITLE:
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
-		SoundManager::GetInstance().StopWalk();
-		break;
-	default: break;
-	}
-}
-
-void GameScene::DrawPauseMenu(void)
-{
-	int screenW, screenH;
-	GetScreenState(&screenW, &screenH, nullptr);
-
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
-	DrawBox(0, 0, screenW, screenH, 0x000000, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	int prevSize = GetFontSize();
-
-	constexpr int MENU_MAX = static_cast<int>(PAUSE_MENU::MAX);
-	constexpr int MENU_FONT = 70;
-	SetFontSize(MENU_FONT);
-
-	const char* labels[MENU_MAX] =
-	{
-		"Resume",
-		"Option",
-		"Back to Title",
-	};
-
-	constexpr int ITEM_SPAN = 110;
-	// 3項目を画面縦中央に配置（中央の項目がscreenH/2に来るよう逆算）
-	int totalHeight = ITEM_SPAN * (MENU_MAX - 1);
-	int baseY = (screenH - totalHeight) / 2;
-
-	for (int i = 0; i < MENU_MAX; i++)
-	{
-		bool selected = (i == pauseMenuIndex_);
-		unsigned int color = selected ? 0xffff60 : 0xaaaaaa;
-
-		int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
-		int x = (screenW - textW) / 2;
-		int y = baseY + i * ITEM_SPAN;
-
-		if (selected)
-		{
-			DrawString(x - 60, y, ">", color);
-		}
-		DrawString(x, y, labels[i], color);
-	}
-
-	SetFontSize(prevSize);
 }
 
 

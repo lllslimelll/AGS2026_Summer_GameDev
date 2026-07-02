@@ -25,6 +25,9 @@ public:
 	// 描画
 	void Draw(void) override;
 
+	// カメラTransformを設定
+	void SetCameraTransform(const Transform* cameraTransform);
+	void SetForward(const VECTOR forward);
 protected:
 
 	// リソースロード
@@ -94,6 +97,9 @@ private:
 	// アイテム管理（拾得・投擲）
 	ItemManager* itemMgr_;
 
+	// カメラTransform
+	const Transform* cameraTransform_;
+	VECTOR cameraForward_;
 	// ブーストフラグ
 	bool isBoost_;
 

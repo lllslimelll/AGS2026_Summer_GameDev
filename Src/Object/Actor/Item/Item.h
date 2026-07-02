@@ -6,7 +6,7 @@
 class Item : public ActorBase
 {
 public:
-
+	void SetCameraPos(const VECTOR& pos);
 	// Õ“Ë”»’èí•Ê
 	enum class COLLIDER_TYPE
 	{
@@ -112,7 +112,7 @@ protected:
 	void InitPost(void) override;
 
 private:
-
+	VECTOR camPos_;
 	// í•Ê
 	TYPE type_;
 	// ƒOƒŒ[ƒh

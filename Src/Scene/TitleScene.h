@@ -1,9 +1,15 @@
 #pragma once
+#include <memory>
 #include "../Object/Common/Transform.h"
 #include "Scene.h"
+<<<<<<< HEAD
+=======
+
+class Camera;
+>>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 class SkyDome;
 
-class TitleScene : public SceneBase
+class TitleScene : public Scene
 {
 
 public:
@@ -22,9 +28,6 @@ public:
 
 	// 描画
 	void Draw(void) override;
-
-	// 解放
-	void Release(void) override;
 
 private:
 
@@ -51,16 +54,14 @@ private:
 	// 選択インデックス
 	int selectIndex_ = -1;
 
-	SkyDome* skyDome_;
+	std::unique_ptr<Camera> camera_;
+	std::unique_ptr<SkyDome> skyDome_;
 
 	int imgTitle_;
 	int imgPushSpace_;
 
 	// 球体惑星
 	Transform spherePlanet_;
-
-	// プレイヤー
-	Transform player_;
 
 	// スカイドーム用の空Transform
 	Transform empty_;

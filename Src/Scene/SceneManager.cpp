@@ -8,7 +8,11 @@
 #include "ResultScene.h"
 #include "DebugScene.h"
 #include "../Common/Fader.h"
+<<<<<<< HEAD
 #include "../Manager/Camera.h"
+=======
+#include "../Camera/Camera.h"
+>>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
 #include "SceneManager.h"
@@ -36,12 +40,8 @@ void SceneManager::Init(void)
 	waitSceneId_ = SCENE_ID::NONE;
 
 	// フェード機能の初期化
-	fader_ = new Fader();
+	fader_ = std::make_unique<Fader>();
 	fader_->Init();
-
-	// カメラ
-	camera_ = new Camera();
-	camera_->Init();
 
 	// 画面遷移中判定
 	isSceneChanging_ = false;
@@ -92,17 +92,18 @@ void SceneManager::Init3D(void)
 
 void SceneManager::Update(void)
 {
-
-	if (scenes_.empty()) { return; }
-
 	// デルタタイム
 	auto nowTime = std::chrono::system_clock::now();
 	deltaTime_ = static_cast<float>(
 		std::chrono::duration_cast<std::chrono::nanoseconds>(nowTime - preTime_).count() / 1000000000.0);
 	preTime_ = nowTime;
 
-	// フェード機能の更新
+	// フェードの更新
 	fader_->Update();
+
+	// Effekseerにより再生中のエフェクトを更新
+	UpdateEffekseer3D();
+
 	if (isSceneChanging_)
 	{
 		// フェード状態の切替処理
@@ -114,14 +115,10 @@ void SceneManager::Update(void)
 		scenes_.back()->Update();
 	}
 
-	// カメラ更新
-	camera_->Update();
-
 }
 
 void SceneManager::Draw(void)
 {
-	
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -129,27 +126,17 @@ void SceneManager::Draw(void)
 	// 画面を初期化
 	ClearDrawScreen();
 
-	// カメラ設定
-	camera_->SetBeforeDraw();
-
-	// Effekseerにより再生中のエフェクトを更新する。
-	UpdateEffekseer3D();
-
 	// スタック内のシーンを描画
 	for (auto& scene : scenes_)
 	{
 		scene->Draw();
 	}
 
-	// カメラ描画
-	camera_->DrawDebug();
-
 	// Effekseerにより再生中のエフェクトを描画する。
 	DrawEffekseer3D();
 	
 	// 暗転・明転
 	fader_->Draw();
-
 }
 
 void SceneManager::Destroy(void)
@@ -157,36 +144,24 @@ void SceneManager::Destroy(void)
 	// シーンリストの破棄
 	scenes_.clear();
 
-	// フェード機能の解放
-	delete fader_;
-
-	camera_->Release();
-	delete camera_;
-
-
 	// インスタンスのメモリ解放
 	delete instance_;
-
 }
 
 // シーン遷移
 void SceneManager::ChangeScene(SCENE_ID nextId)
 {
-
 	// フェード処理が終わってからシーンを変える場合もあるため、
 	// 遷移先シーンをメンバ変数に保持
 	waitSceneId_ = nextId;
-
 	// フェードアウト(暗転)を開始する
 	fader_->SetFade(Fader::STATE::FADE_OUT);
 	isSceneChanging_ = true;
-
 }
 
 // シーン遷移実行
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
-
 	// リソースの解放
 	ResourceManager::GetInstance().Release();
 
@@ -196,21 +171,25 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	// シーンリストの破棄
 	scenes_.clear();
 
-	// シーンの生成
+	// シーンの生成と追加
 	switch (sceneId_)
 	{
 	case SCENE_ID::TITLE:
+		// 追加
 		scenes_.push_back(std::make_unique<TitleScene>());
 		SetMouseDispFlag(true);
 		SoundManager::GetInstance().StopWalk();
 		break;
 	case SCENE_ID::GAME:
+		// 追加
 		scenes_.push_back(std::make_unique<GameScene>());
 		SoundManager::GetInstance().StopWalk();
 		SetMouseDispFlag(false);
 		break;
 	case SCENE_ID::DEBUG:
+		// 追加
 		scenes_.push_back(std::make_unique<DebugScene>());
+		SetMouseDispFlag(false);
 		break;
 	}
 
@@ -223,16 +202,18 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	waitSceneId_ = SCENE_ID::NONE;
 }
 
+// シーンの追加（オーバーレイとして）
 void SceneManager::PushScene(SCENE_ID sceneId)
 { 
 	// シーンの変更
 	sceneId_ = sceneId;
-
+	
 	// シーンの生成
 	switch (sceneId_)
 	{
 	case SCENE_ID::PAUSE:
 		scenes_.push_back(std::make_unique<PauseScene>());
+		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::RESULT:
 		scenes_.push_back(std::make_unique<ResultScene>());
@@ -247,10 +228,10 @@ void SceneManager::PushScene(SCENE_ID sceneId)
 	scenes_.back()->Init();
 }
 
-
-
+// シーンの削除
 void SceneManager::PopScene()
 {
+	// スタックが空にならないようガードして削除
 	if (scenes_.size() > 1)
 	{
 		scenes_.pop_back();
@@ -269,11 +250,6 @@ float SceneManager::GetDeltaTime(void) const
 	//return deltaTime_;
 }
 
-Camera* SceneManager::GetCamera(void) const
-{
-	return camera_;
-}
-
 SceneManager::SceneManager(void)
 {
 
@@ -286,9 +262,6 @@ SceneManager::SceneManager(void)
 
 	// デルタタイム
 	deltaTime_ = 1.0f / 60.0f;
-
-	camera_ = nullptr;
-
 }
 
 void SceneManager::ResetDeltaTime(void)

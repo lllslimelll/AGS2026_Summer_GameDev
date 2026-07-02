@@ -16,7 +16,7 @@ ResultScene::~ResultScene()
 
 void ResultScene::Init(void)
 {
-    totalScore_ = SceneManager::GetInstance().GetResultScore();
+    //totalScore_ = SceneManager::GetInstance().GetResultScore();
 }
 
 void ResultScene::Update(void)

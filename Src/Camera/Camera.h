@@ -11,7 +11,7 @@ class Camera : public ActorBase
 {
 
 public:
-	void SetInputEnabled(bool enabled) { isInputEnabled_ = enabled; }
+
 	// カメラの初期座標
 	static constexpr VECTOR DERFAULT_POS = { 0.0f, 200.0f, -500.0f };
 	
@@ -20,7 +20,7 @@ public:
 		0.0f, 175.0f * DX_PI_F / 180.0f, 0.0f
 	};
 
-	// カメラの回転量//
+	// カメラの回転量
 	const float ROT_POW_DEG = 2.0f;
 	const float ROT_POW_RAD = ROT_POW_DEG * DX_PI_F / 180.0f;
 
@@ -67,11 +67,10 @@ public:
 	// 更新
 	void Update(void) override;
 
-	// 描画前のカメラ設定
+	// 描画
+	void Draw(void) override;
+	// 描画前処理の適用
 	void SetBeforeDraw(void);
-
-	// デバッグ用描画
-	void DrawDebug(void);
 
 	// 解放
 	void Release(void) override;
@@ -116,7 +115,7 @@ protected:
 	void InitPost(void) override;
 
 private:
-	bool isInputEnabled_ = true;
+
 	// 衝突時の押し戻し試行回数
 	static constexpr int CNT_TRY_COLLISION_CAMERA = 30;
 
@@ -150,6 +149,11 @@ private:
 	// 
 	std::vector<int> opacityFrames_;
 
+	// モード別更新
+	void UpdateFixedPoint(void);
+	void UpdateFree(void);
+	void UpdateFollow(void);
+
 	// カメラを初期位置に戻す
 	void SetDefault(void);
 
@@ -168,11 +172,6 @@ private:
 
 	// カメラ回転(ゲームパッド)
 	void RotGamePad(bool isLimit);
-
-	// モード別更新ステップ
-	void SetBeforeDrawFixedPoint(void);
-	void SetBeforeDrawFree(void);
-	void SetBeforeDrawFollow(void);
 
 	// 衝突判定
 	void Collision(void);

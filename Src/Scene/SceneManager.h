@@ -5,7 +5,6 @@
 #include <DxLib.h>
 class Scene;
 class Fader;
-class Camera;
 
 class SceneManager
 {
@@ -26,6 +25,7 @@ public:
 		NONE,
 		TITLE,
 		GAME,
+		PAUSE,
 		RESULT,
 		DEBUG,
 	};
@@ -53,6 +53,10 @@ public:
 
 	// 状態遷移
 	void ChangeScene(SCENE_ID nextId);
+	// シーンの追加（オーバーレイとして）
+	void PushScene(SCENE_ID sceneId);
+	// シーンの削除
+	void PopScene();
 
 	// シーンIDの取得
 	SCENE_ID GetSceneID(void);
@@ -60,9 +64,12 @@ public:
 	// デルタタイムの取得
 	float GetDeltaTime(void) const;
 
+<<<<<<< HEAD
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
+=======
+>>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 private:
 
 	// デフォルトコンストラクタをprivateにして、
@@ -85,23 +92,28 @@ private:
 	std::vector<std::unique_ptr<Scene>> scenes_;
 
 	// フェード
+<<<<<<< HEAD
 	Fader* fader_;
 
 	// カメラ
 	Camera* camera_;
+=======
+	std::unique_ptr<Fader> fader_;
+>>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 
 	// シーン遷移中判定
 	bool isSceneChanging_;
 
-	// デルタタイム
+	// 前フレームの時間
 	std::chrono::system_clock::time_point preTime_;
+	// デルタタイム
 	float deltaTime_;
+
+	// シーン遷移実行
+	void DoChangeScene(SCENE_ID sceneId);
 
 	// デルタタイムをリセットする
 	void ResetDeltaTime(void);
-
-	// シーン遷移
-	void DoChangeScene(SCENE_ID sceneId);
 
 	// フェード
 	void Fade(void);

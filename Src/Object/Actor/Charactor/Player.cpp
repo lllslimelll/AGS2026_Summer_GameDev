@@ -1,7 +1,7 @@
 #include "../../../Object/Common/AnimationController.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Manager/SceneManager.h"
-#include "../../../Manager/Camera.h"
+#include "../../../Scene/SceneManager.h"
+#include "../../../Camera/Camera.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SoundManager.h"
@@ -9,7 +9,6 @@
 #include "../Stage.h"
 #include "../item/Item.h"
 #include "../../Common/Transform.h"
-#include "../../../Utility/AsoUtility.h"
 #include "../../Collider/ColliderLine.h"
 #include "../../Collider/ColliderCapsule.h"
 #include "Player.h"
@@ -87,7 +86,7 @@ void Player::ProcessMove(void)
 		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
 		// カメラの回転を取得
-		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
+		Quaternion cameraRot = cameraTransform_->quaRot;
 
 		// カメラの「前」と「右」をベクトルとして取り出す
 		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
@@ -148,7 +147,7 @@ void Player::ProcessMove(void)
 
 		// 入力がない時も、常にカメラの方向を向かせ続ける場合
 		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRot();
+		Quaternion cameraRot = cameraTransform_->quaRot;
 		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
 		float dotF = VDot(camForward, upDir);
 		faceDir_ = VNorm(VSub(camForward, VScale(upDir, dotF)));
@@ -282,7 +281,7 @@ void Player::UpdateItem(void)
 		
 		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_E))
 		{
-			SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
+			//SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
 			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RESULT);
 		}
 	}
@@ -293,8 +292,8 @@ void Player::UpdateAimedItem(void)
 	// 照準に当たっているアイテムを取得
 	// RANGE_PICKUP の長さのレイが届く範囲 = 拾える範囲
 	Item* newAimed = itemMgr_->GetAimedItem(
-		scnMng_.GetCamera()->GetPos(),
-		scnMng_.GetCamera()->GetForward(),
+		transform_.pos,
+		cameraForward_,
 		Item::RANGE_PICKUP);
 
 	// 前フレームと変わった場合のみ SetAimed を呼ぶ
@@ -547,6 +546,16 @@ void Player::Draw(void)
 		transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
 }
 
+void Player::SetCameraTransform(const Transform* cameraTransform)
+{
+	cameraTransform_ = cameraTransform;
+}
+
+void Player::SetForward(const VECTOR forward)
+{
+	cameraForward_ = forward;
+}
+
 // 衝突判定用の調整
 void Player::CollisionReserve(void)
 {
@@ -629,9 +638,9 @@ void Player::ProcessDelivery(void)
 
 bool Player::IsAimingRoket(void) const
 {
-	const VECTOR camPos = scnMng_.GetCamera()->GetPos();
+	const VECTOR camPos = cameraTransform_->pos;
 	const VECTOR rayEnd = VAdd(camPos,
-		VScale(scnMng_.GetCamera()->GetForward(), Item::RANGE_PICKUP));
+		VScale(cameraForward_, Item::RANGE_PICKUP));
 
 	VECTOR pos = VAdd(stage_->GetRoketPos(), { 120,-95, 40 });
 	return AsoUtility::IsHitSphereCapsule(
@@ -685,8 +694,6 @@ void Player::OnDeath(void)
 	isDead_ = true;
 	deathMenuIndex_ = 0;
 
-	
-	scnMng_.GetCamera()->SetInputEnabled(false);  // カメラ操作停止
 	SoundManager::GetInstance().StopWalk();
 }
 

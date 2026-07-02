@@ -1,6 +1,7 @@
 #pragma once
 class ResourceManager;
 class SceneManager;
+class InputManager;
 
 class Scene
 {
@@ -29,5 +30,8 @@ protected:
 
 	// ƒV[ƒ“ŠÇ—
 	SceneManager& sceMng_;
+
+	// “ü—ÍŠÇ—
+	InputManager& inputMng_;
 
 };
