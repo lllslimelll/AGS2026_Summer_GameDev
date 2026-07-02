@@ -5,7 +5,6 @@
 #include <DxLib.h>
 class Scene;
 class Fader;
-class Camera;
 
 class SceneManager
 {
@@ -92,8 +91,9 @@ private:
 	// シーン遷移中判定
 	bool isSceneChanging_;
 
-	// デルタタイム
+	// 前フレームの時間
 	std::chrono::system_clock::time_point preTime_;
+	// デルタタイム
 	float deltaTime_;
 
 	// シーン遷移実行

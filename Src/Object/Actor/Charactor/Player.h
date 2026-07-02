@@ -27,7 +27,7 @@ public:
 
 	// カメラTransformを設定
 	void SetCameraTransform(const Transform* cameraTransform);
-
+	void SetForward(const VECTOR forward);
 protected:
 
 	// リソースロード
@@ -99,7 +99,7 @@ private:
 
 	// カメラTransform
 	const Transform* cameraTransform_;
-
+	VECTOR cameraForward_;
 	// ブーストフラグ
 	bool isBoost_;
 

@@ -152,6 +152,7 @@ void InputManager::Update(void)
 	mouseWheelRot_ = GetMouseWheelRotVol();
 
 	lastInputInfo_ = currentInputInfo_;
+
 	// 生データ取得
 	std::array<char, 256> keyState;
 	GetHitKeyStateAll(keyState.data());
@@ -368,137 +369,6 @@ void InputManager::SetJPadInState(JOYPAD_NO jpNo)
 int InputManager::GetMouseWheelRot(void) const
 {
 	return mouseWheelRot_;
-}
-
-InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
-{
-
-	JOYPAD_IN_STATE ret = JOYPAD_IN_STATE();
-
-	auto type = GetJPadType(no);
-	
-	switch (type)
-	{
-	case InputManager::JOYPAD_TYPE::OTHER:
-		break;
-	case InputManager::JOYPAD_TYPE::XBOX_360:
-	{
-	}
-	case InputManager::JOYPAD_TYPE::XBOX_ONE:
-	{
-
-		auto d = GetJPadDInputState(no);
-		auto x = GetJPadXInputState(no);
-
-		int idx;
-
-		//   Y
-		// X   B
-		//   A
-
-		idx = static_cast<int>(JOYPAD_BTN::TOP);
-		ret.ButtonsNew[idx] = d.Buttons[3];// Y
-
-		idx = static_cast<int>(JOYPAD_BTN::LEFT);
-		ret.ButtonsNew[idx] = d.Buttons[2];// X
-
-		idx = static_cast<int>(JOYPAD_BTN::RIGHT);
-		ret.ButtonsNew[idx] = d.Buttons[1];// B
-
-		idx = static_cast<int>(JOYPAD_BTN::DOWN);
-		ret.ButtonsNew[idx] = d.Buttons[0];// A
-
-		idx = static_cast<int>(JOYPAD_BTN::R_TRIGGER);
-		ret.ButtonsNew[idx] = x.RightTrigger;// R_TRIGGER
-
-		idx = static_cast<int>(JOYPAD_BTN::L_TRIGGER);
-		ret.ButtonsNew[idx] = x.LeftTrigger; // L_TRIGGER
-
-		idx = static_cast<int>(JOYPAD_BTN::R_SHOULDER);
-		ret.ButtonsNew[idx] = d.Buttons[5]; // R_SHOULDER
-
-		idx = static_cast<int>(JOYPAD_BTN::L_SHOULDER);
-		ret.ButtonsNew[idx] = d.Buttons[4]; // L_SHOULDER
-
-		idx = static_cast<int>(JOYPAD_BTN::START);
-		ret.ButtonsNew[idx] = d.Buttons[7]; // L_SHOULDER
-
-		// 左スティック
-		ret.AKeyLX = d.X;
-		ret.AKeyLY = d.Y;
-		
-		// 右スティック
-		ret.AKeyRX = d.Rx;
-		ret.AKeyRY = d.Ry;
-
-	}
-		break;
-	case InputManager::JOYPAD_TYPE::DUAL_SHOCK_4:
-	case InputManager::JOYPAD_TYPE::DUAL_SENSE:
-	{
-		
-		auto d = GetJPadDInputState(no);
-		int idx;
-
-		//   △
-		// □  〇
-		//   ×
-
-		idx = static_cast<int>(JOYPAD_BTN::TOP);
-		ret.ButtonsNew[idx] = d.Buttons[3];// △
-
-		idx = static_cast<int>(JOYPAD_BTN::LEFT);
-		ret.ButtonsNew[idx] = d.Buttons[0];// □
-
-		idx = static_cast<int>(JOYPAD_BTN::RIGHT);
-		ret.ButtonsNew[idx] = d.Buttons[2];// 〇
-
-		idx = static_cast<int>(JOYPAD_BTN::DOWN);
-		ret.ButtonsNew[idx] = d.Buttons[1];// ×
-
-		idx = static_cast<int>(JOYPAD_BTN::R_TRIGGER);
-		ret.ButtonsNew[idx] = d.Buttons[7];// R_TRIGGER
-
-		idx = static_cast<int>(JOYPAD_BTN::L_TRIGGER);
-		ret.ButtonsNew[idx] = d.Buttons[6]; // L_TRIGGER
-
-		// 左スティック
-		ret.AKeyLX = d.X;
-		ret.AKeyLY = d.Y;
-		
-		// 右スティック
-		ret.AKeyRX = d.Z;
-		ret.AKeyRY = d.Rz;
-
-	}
-		break;
-	case InputManager::JOYPAD_TYPE::SWITCH_JOY_CON_L:
-		break;
-	case InputManager::JOYPAD_TYPE::SWITCH_JOY_CON_R:
-		break;
-	case InputManager::JOYPAD_TYPE::SWITCH_PRO_CTRL:
-		break;
-	case InputManager::JOYPAD_TYPE::MAX:
-		break;
-	}
-
-	return ret;
-
-}
-
-bool InputManager::IsPadBtnNew(JOYPAD_NO no, JOYPAD_BTN btn) const
-{
-	return padInfos_[static_cast<int>(no)].IsNew[static_cast<int>(btn)];
-}
-
-bool InputManager::IsPadBtnTrgDown(JOYPAD_NO no, JOYPAD_BTN btn) const
-{
-	return padInfos_[static_cast<int>(no)].IsTrgDown[static_cast<int>(btn)];
-}
-
-bool InputManager::IsPadBtnTrgUp(JOYPAD_NO no, JOYPAD_BTN btn) const
-{
-	return padInfos_[static_cast<int>(no)].IsTrgUp[static_cast<int>(btn)];
 }
 
 VECTOR InputManager::GetDirectionXZAKey(int aKeyX, int aKeyY) const

@@ -25,8 +25,140 @@ void PauseScene::Update()
 		// シーンの削除
 		sceMng_.PopScene();
 	}
+
+	UpdatePauseMenu();
 }
 
 void PauseScene::Draw()
 {
+	DrawPauseMenu();
+}
+
+void PauseScene::UpdatePauseMenu(void)
+{
+	auto& ins = InputManager::GetInstance();
+
+	bool up = ins.IsTriggerd("Up");
+	bool down = ins.IsTriggerd("Down");
+
+	constexpr int MENU_MAX = static_cast<int>(MENU::MAX);
+
+	if (up)
+	{
+		menuIndex_ = (menuIndex_ <= 0) ? MENU_MAX - 1 : menuIndex_ - 1;
+	}
+	if (down)
+	{
+		menuIndex_ = (menuIndex_ < 0 || menuIndex_ >= MENU_MAX - 1) ? 0 : menuIndex_ + 1;
+	}
+
+	// ===== マウスでの選択 =====
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+
+	// マウスが動いた時だけホバー判定を行う
+	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
+
+	if (mouseMoved)
+	{
+		const char* labels[MENU_MAX] = { "Resume", "Option", "Back to Title" };
+
+		int baseY = screenH / 2 - 20;
+		constexpr int ITEM_SPAN = 110;
+		constexpr int MENU_FONT = 70;
+
+		int prevSize = GetFontSize();
+		SetFontSize(MENU_FONT);
+
+		int mouseHoverIndex = -1;
+		for (int i = 0; i < MENU_MAX; i++)
+		{
+			int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
+			int x = (screenW - textW) / 2;
+			int y = baseY + i * ITEM_SPAN;
+
+			if (mouseX >= x - 60 && mouseX <= x + textW &&
+				mouseY >= y && mouseY <= y + ITEM_SPAN)
+			{
+				mouseHoverIndex = i;
+				break;
+			}
+		}
+
+		SetFontSize(prevSize);
+
+		menuIndex_ = mouseHoverIndex;
+	}
+
+	prevMouseX_ = mouseX;
+	prevMouseY_ = mouseY;
+
+	// 決定（マウス左クリック追加）
+	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
+		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN)
+		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
+	if (!decide || menuIndex_ < 0) return;
+
+	switch (static_cast<MENU>(menuIndex_))
+	{
+	case MENU::RESUME:
+		sceMng_.PopScene();
+		break;
+	case MENU::OPTION:
+		break;
+	case MENU::TITLE:
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
+		//SoundManager::GetInstance().StopWalk();
+		break;
+	default: break;
+	}
+}
+
+void PauseScene::DrawPauseMenu(void)
+{
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	DrawBox(0, 0, screenW, screenH, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	int prevSize = GetFontSize();
+
+	constexpr int MENU_MAX = static_cast<int>(MENU::MAX);
+	constexpr int MENU_FONT = 70;
+	SetFontSize(MENU_FONT);
+
+	const char* labels[MENU_MAX] =
+	{
+		"RETURN TO GAME",
+		"OPTIONS",
+		"BACK TO TITLE",
+	};
+
+	constexpr int ITEM_SPAN = 110;
+	// 3項目を画面縦中央に配置（中央の項目がscreenH/2に来るよう逆算）
+	int totalHeight = ITEM_SPAN * (MENU_MAX - 1);
+	int baseY = (screenH - totalHeight) / 2;
+
+	for (int i = 0; i < MENU_MAX; i++)
+	{
+		bool selected = (i == menuIndex_);
+		unsigned int color = selected ? 0xffff60 : 0xaaaaaa;
+
+		int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
+		int x = (screenW - textW) / 2;
+		int y = baseY + i * ITEM_SPAN;
+
+		if (selected)
+		{
+			DrawString(x - 60, y, ">", color);
+		}
+		DrawString(x, y, labels[i], color);
+	}
+
+	SetFontSize(prevSize);
 }

@@ -8,7 +8,7 @@
 #include "ResultScene.h"
 #include "DebugScene.h"
 #include "../Common/Fader.h"
-#include "../Manager/Camera.h"
+#include "../Camera/Camera.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
 #include "SceneManager.h"
@@ -38,10 +38,6 @@ void SceneManager::Init(void)
 	// フェード機能の初期化
 	fader_ = std::make_unique<Fader>();
 	fader_->Init();
-
-	// カメラ
-	camera_ = new Camera();
-	camera_->Init();
 
 	// 画面遷移中判定
 	isSceneChanging_ = false;
@@ -92,17 +88,18 @@ void SceneManager::Init3D(void)
 
 void SceneManager::Update(void)
 {
-
-	if (scenes_.empty()) { return; }
-
 	// デルタタイム
 	auto nowTime = std::chrono::system_clock::now();
 	deltaTime_ = static_cast<float>(
 		std::chrono::duration_cast<std::chrono::nanoseconds>(nowTime - preTime_).count() / 1000000000.0);
 	preTime_ = nowTime;
 
-	// フェード機能の更新
+	// フェードの更新
 	fader_->Update();
+
+	// Effekseerにより再生中のエフェクトを更新
+	UpdateEffekseer3D();
+
 	if (isSceneChanging_)
 	{
 		// フェード状態の切替処理
@@ -114,23 +111,16 @@ void SceneManager::Update(void)
 		scenes_.back()->Update();
 	}
 
-	// カメラ更新
-	camera_->Update();
-
 }
 
 void SceneManager::Draw(void)
 {
-	
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	// 画面を初期化
 	ClearDrawScreen();
-
-	// Effekseerにより再生中のエフェクトを更新する。
-	UpdateEffekseer3D();
 
 	// スタック内のシーンを描画
 	for (auto& scene : scenes_)
@@ -143,7 +133,6 @@ void SceneManager::Draw(void)
 	
 	// 暗転・明転
 	fader_->Draw();
-
 }
 
 void SceneManager::Destroy(void)
@@ -158,21 +147,17 @@ void SceneManager::Destroy(void)
 // シーン遷移
 void SceneManager::ChangeScene(SCENE_ID nextId)
 {
-
 	// フェード処理が終わってからシーンを変える場合もあるため、
 	// 遷移先シーンをメンバ変数に保持
 	waitSceneId_ = nextId;
-
 	// フェードアウト(暗転)を開始する
 	fader_->SetFade(Fader::STATE::FADE_OUT);
 	isSceneChanging_ = true;
-
 }
 
 // シーン遷移実行
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
-
 	// リソースの解放
 	ResourceManager::GetInstance().Release();
 
@@ -200,6 +185,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	case SCENE_ID::DEBUG:
 		// 追加
 		scenes_.push_back(std::make_unique<DebugScene>());
+		SetMouseDispFlag(false);
 		break;
 	}
 
@@ -223,6 +209,7 @@ void SceneManager::PushScene(SCENE_ID sceneId)
 	{
 	case SCENE_ID::PAUSE:
 		scenes_.push_back(std::make_unique<PauseScene>());
+		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::RESULT:
 		scenes_.push_back(std::make_unique<ResultScene>());
@@ -236,7 +223,6 @@ void SceneManager::PushScene(SCENE_ID sceneId)
 	// シーン末尾の初期化
 	scenes_.back()->Init();
 }
-
 
 // シーンの削除
 void SceneManager::PopScene()

@@ -8,6 +8,11 @@
 #include "../../Collider/ColliderModel.h"
 #include "Item.h"
 
+void Item::SetCameraPos(const VECTOR& pos)
+{
+	camPos_ = pos;
+}
+
 Item::Item(const ItemData& data)
     :
     ActorBase(),
@@ -339,8 +344,7 @@ void Item::UpdateThrowMove(void)
 
 void Item::DrawBillboard(void) const
 {
-    VECTOR Vec = VNorm(VSub(scnMng_.GetCamera()->GetTransform().pos, transform_.pos));
-    
+    VECTOR Vec = VNorm(VSub(camPos_, transform_.pos));
 
     switch (type_)
     {

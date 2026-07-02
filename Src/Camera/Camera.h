@@ -69,6 +69,8 @@ public:
 
 	// •`‰æ
 	void Draw(void) override;
+	// •`‰æ‘Oˆ—‚Ì“K—p
+	void SetBeforeDraw(void);
 
 	// ‰ğ•ú
 	void Release(void) override;

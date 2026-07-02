@@ -39,22 +39,27 @@ void Camera::Update(void)
 		UpdateFollow();
 		break;
 	}
-
-	// カメラの設定(位置と注視点による制御)
-	SetCameraPositionAndTargetAndUpVec(
-		transform_.pos,
-		targetPos_,
-		transform_.quaRot.GetUp()
-	);
-
-	// DXライブラリのカメラとEffekseerのカメラを同期する。
-	Effekseer_Sync3DSetting();
 }
 
 void Camera::Draw(void)
 {
 	/*DrawFormatString(0, 200, GetColor(255, 255, 255),
 		"Camera Pos: (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
+}
+
+void Camera::SetBeforeDraw(void)
+{
+	// クリップ距離を設定(SetDrawScreenでリセットされる)
+	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
+
+	// カメラの設定(位置と注視点による制御)
+	SetCameraPositionAndTargetAndUpVec(
+		transform_.pos,
+		targetPos_,
+		transform_.quaRot.GetUp());
+
+	// DXライブラリのカメラとEffekseerのカメラを同期
+	Effekseer_Sync3DSetting();
 }
 
 void Camera::Release(void)
@@ -84,12 +89,6 @@ void Camera::InitPost(void)
 {
 	// カメラモードを初期化
 	ChangeMode(MODE::FIXED_POINT);
-
-	// クリップ距離を設定
-	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
-
-	//プレイヤーにTrasnform情報を渡す
-	
 }
 
 const VECTOR& Camera::GetPos(void) const
@@ -124,7 +123,6 @@ VECTOR Camera::GetForward(void) const
 
 void Camera::ChangeMode(MODE mode)
 {
-
 	// カメラの初期設定
 	SetDefault();
 
@@ -146,7 +144,6 @@ void Camera::ChangeMode(MODE mode)
 
 void Camera::SetDefault(void)
 {
-
 	// カメラの初期設定
 	transform_.pos = DERFAULT_POS;
 
@@ -156,7 +153,6 @@ void Camera::SetDefault(void)
 
 	// 注視点
 	targetPos_ = AsoUtility::VECTOR_ZERO;
-
 }
 
 void Camera::SyncFollow(void)
@@ -352,11 +348,6 @@ void Camera::Collision(void)
 		int typeSphere = static_cast<int>(COLLIDER_TYPE::SPHERE);
 		// 球体コライダがなければ処理を抜ける
 		if (ownColliders_.count(typeSphere) == 0) continue;
-
-		//// 球体コライダ情報
-		//ColliderSphere* colliderSpehre =
-		//	dynamic_cast<ColliderSphere*>(ownColliders_.at(typeSphere));
-		//if (colliderSpehre == nullptr) return;
 
 		// 指定された回数と距離で三角形の法線方向に押し戻す
 		transform_.pos =

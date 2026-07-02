@@ -27,7 +27,6 @@ static constexpr unsigned int COLOR_TITLE = 0xFFFFFF;
 TitleScene::TitleScene(void)
 	:
 	imgPushSpace_(-1),
-	player_(),
 	Scene(),
 	skyDome_()
 {
@@ -145,6 +144,9 @@ void TitleScene::UpdateInput(void)
 // 描画
 void TitleScene::Draw(void)
 {
+	// 描画前処理の適用
+	camera_->SetBeforeDraw();
+
 	// スカイドーム
 	skyDome_->Draw();
 	// 惑星
