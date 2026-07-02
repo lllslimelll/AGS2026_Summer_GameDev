@@ -19,7 +19,7 @@ GameScene::GameScene(void)
 	camera_(nullptr),
 	enemyManager_(nullptr),
 	skyDome_(nullptr),
-	Scene()
+	SceneBase()
 {
 }
 

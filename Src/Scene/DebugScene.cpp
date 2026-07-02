@@ -3,18 +3,14 @@
 #include "../Common/Vector2.h"
 #include "../Manager/InputManager.h"
 #include "SceneManager.h"
-<<<<<<< HEAD
-#include "../Manager//Camera.h"
-=======
 #include "../Camera/Camera.h"
->>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 #include "../Object/Actor/Stage.h"
 #include "../Object/Collider/ColliderModel.h"
 #include "DebugScene.h"
 
 DebugScene::DebugScene(void)
 	:
-	Scene(),
+	SceneBase(),
 	stage_(nullptr)
 {
 }

@@ -6,7 +6,7 @@
 
 ResultScene::ResultScene()
     :
-    Scene()
+    SceneBase()
 {
 }
 

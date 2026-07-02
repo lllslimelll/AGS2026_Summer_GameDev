@@ -25,59 +25,6 @@ InputManager& InputManager::GetInstance(void)
 
 void InputManager::Init(void)
 {
-
-	// ゲームで使用したいキーを、
-	// 事前にここで登録しておいてください
-	InputManager::GetInstance().Add(KEY_INPUT_SPACE);
-	InputManager::GetInstance().Add(KEY_INPUT_E);
-	InputManager::GetInstance().Add(KEY_INPUT_Z);
-
-	InputManager::GetInstance().Add(KEY_INPUT_LEFT);
-	InputManager::GetInstance().Add(KEY_INPUT_RIGHT);
-	InputManager::GetInstance().Add(KEY_INPUT_UP);
-	InputManager::GetInstance().Add(KEY_INPUT_DOWN);
-
-	InputManager::GetInstance().Add(KEY_INPUT_W);
-	InputManager::GetInstance().Add(KEY_INPUT_A);
-	InputManager::GetInstance().Add(KEY_INPUT_S);
-	InputManager::GetInstance().Add(KEY_INPUT_D);
-	InputManager::GetInstance().Add(KEY_INPUT_F);
-	InputManager::GetInstance().Add(KEY_INPUT_C);
-
-	InputManager::GetInstance().Add(KEY_INPUT_LSHIFT);
-
-	InputManager::GetInstance().Add(KEY_INPUT_BACKSLASH);
-
-	GetInstance().Add(KEY_INPUT_1);
-	GetInstance().Add(KEY_INPUT_2);
-	GetInstance().Add(KEY_INPUT_3);
-	GetInstance().Add(KEY_INPUT_4);
-	GetInstance().Add(KEY_INPUT_5);
-
-	GetInstance().Add(KEY_INPUT_0);
-
-	GetInstance().Add(KEY_INPUT_ESCAPE);
-
-	InputManager::MouseInfo info;
-
-	// 左クリック
-	info = InputManager::MouseInfo();
-	info.key = MOUSE_INPUT_LEFT;
-	info.keyOld = false;
-	info.keyNew = false;
-	info.keyTrgDown = false;
-	info.keyTrgUp = false;
-	mouseInfos_.emplace(info.key, info);
-
-	// 右クリック
-	info = InputManager::MouseInfo();
-	info.key = MOUSE_INPUT_RIGHT;
-	info.keyOld = false;
-	info.keyNew = false;
-	info.keyTrgDown = false;
-	info.keyTrgUp = false;
-	mouseInfos_.emplace(info.key, info);
-
 	mouseWheelRot_ = 0;
 
 	inputTable_["Up"] = { //{PeripheralType::KEYBOAD, KEY_INPUT_UP},
@@ -371,15 +318,15 @@ int InputManager::GetMouseWheelRot(void) const
 	return mouseWheelRot_;
 }
 
-VECTOR InputManager::GetDirectionXZAKey(int aKeyX, int aKeyY) const
+// アナログキーの入力値から方向を取得
+VECTOR InputManager::GetDirectionXZAKey(int aKeyX, int aKeyY)
 {
-
 	VECTOR ret = { 0.0f, 0.0f, 0.0f };
 
 	// スティックの個々の入力値は、
 	// -1000.0f ～ 1000.0f の範囲で返ってくるが、
 	// X:1000.0f、Y:1000.0fになることは無い(1000と500くらいが最大)
-	
+
 	// スティックの入力値を -1.0 ～ 1.0 に正規化
 	float dirX = static_cast<float>(aKeyX) / AKEY_VAL_MAX;
 	float dirZ = static_cast<float>(aKeyY) / AKEY_VAL_MAX;
@@ -405,5 +352,5 @@ VECTOR InputManager::GetDirectionXZAKey(int aKeyX, int aKeyY) const
 	ret = VNorm({ dirX, 0.0f, -dirZ });
 
 	return ret;
-
 }
+

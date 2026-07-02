@@ -5,7 +5,7 @@
 
 PauseScene::PauseScene()
 	:
-	Scene()
+	SceneBase()
 {
 }
 

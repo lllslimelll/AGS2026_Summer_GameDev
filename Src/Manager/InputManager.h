@@ -1,5 +1,5 @@
 #pragma once
-#include <array>
+#include <unordered_map>
 #include <vector>
 #include <Dxlib.h>
 #include "../Common/Vector2.h"
@@ -12,8 +12,8 @@ enum class PeripheralType
 	MOUSE    // マウス
 };
 
-// 入力コマンドとデバイスの対応付け
-struct InputBinding
+// 入力状態
+struct InputState
 {
 	PeripheralType type; // 周辺機器種別
 	unsigned int id;     // 実入力の値
@@ -65,9 +65,9 @@ public:
 	// リソースの破棄
 	void Destroy(void);
 
-	bool IsPressed(const std::string& name) const;
-	bool IsTriggerd(const std::string& name) const;
-	bool IsReleased(const std::string& name) const;
+	bool IsPressed(InputCommand cmd) const;
+	bool IsTriggerd(InputCommand cmd) const;
+	bool IsReleased(InputCommand cmd) const;
 
 	// マウス座標の取得
 	Vector2 GetMousePos(void) const;
@@ -81,16 +81,25 @@ public:
 
 private:
 
-	// 入力コマンドと入力バインディングのマッピングテーブル
-	using InputTable_t = std::array<std::vector<InputBinding>, static_cast<int>(InputCommand::MAX)>;
+	// 静的インスタンス
+	static InputManager* instance_;
+
+	// 入力コマンドと入力状態のマッピングテーブル
+	using InputTable_t = std::unordered_map<InputCommand, std::vector<InputState>>;
 	InputTable_t inputTable_;
 
 	// 押されたかどうか記録用
-	std::array<bool, static_cast<int>(InputCommand::MAX)> currentInputInfo_;
-	std::array<bool, static_cast<int>(InputCommand::MAX)> lastInputInfo_;
+	std::unordered_map<InputCommand, bool> currentInputInfo_;
+	std::unordered_map<InputCommand, bool> lastInputInfo_;
 
 	Vector2 mousePos_;	// 座標
 	int mouseWheelRot_; // ホイール回転量
+
+	// アナログキーの最大値
+	static constexpr float AKEY_VAL_MAX = 1000.0f;
+
+	// アナログキーの入力受付しきい値(0.0～1.0)
+	static constexpr float THRESHOLD = 0.35f;
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
@@ -104,6 +113,8 @@ private:
 
 	// 内部処理
 	void SetupBindings(void);
-	bool EvaluateBinding(const InputBinding& binding) const;
+	bool EvaluateBinding(const InputState& binding) const;
 
+	// アナログキーの入力値から方向を取得
+	VECTOR GetDirectionXZAKey(int aKeyX, int aKeyY);
 };

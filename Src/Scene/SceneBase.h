@@ -3,16 +3,16 @@ class ResourceManager;
 class SceneManager;
 class InputManager;
 
-class Scene
+class SceneBase
 {
 
 public:
 
 	// コンストラクタ
-	Scene(void);
+	SceneBase(void);
 
 	// デストラクタ
-	virtual ~Scene(void) = 0;
+	virtual ~SceneBase(void) = 0;
 
 	// 初期化
 	virtual void Init(void) = 0;

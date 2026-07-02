@@ -3,7 +3,8 @@
 #include <vector>
 #include <chrono>
 #include <DxLib.h>
-class Scene;
+
+class SceneBase;
 class Fader;
 
 class SceneManager
@@ -64,12 +65,6 @@ public:
 	// デルタタイムの取得
 	float GetDeltaTime(void) const;
 
-<<<<<<< HEAD
-	// カメラの取得
-	Camera* GetCamera(void) const;
-
-=======
->>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 private:
 
 	// デフォルトコンストラクタをprivateにして、
@@ -89,17 +84,12 @@ private:
 	SCENE_ID waitSceneId_;
 
 	// 各種シーン
-	std::vector<std::unique_ptr<Scene>> scenes_;
+	std::vector<std::unique_ptr<SceneBase>> scenes_;
 
 	// フェード
-<<<<<<< HEAD
 	Fader* fader_;
 
-	// カメラ
-	Camera* camera_;
-=======
 	std::unique_ptr<Fader> fader_;
->>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 
 	// シーン遷移中判定
 	bool isSceneChanging_;

@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.h"
+#include "SceneBase.h"
 #include <vector>
 #include <memory>
 class ActorBase;
@@ -11,7 +11,7 @@ class Camera;
 class EnemyManager;
 
 
-class GameScene : public Scene
+class GameScene : public SceneBase
 {
 
 public:

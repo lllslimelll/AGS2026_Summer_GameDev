@@ -1,15 +1,12 @@
 #pragma once
 #include <memory>
 #include "../Object/Common/Transform.h"
-#include "Scene.h"
-<<<<<<< HEAD
-=======
+#include "SceneBase.h"
 
 class Camera;
->>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 class SkyDome;
 
-class TitleScene : public Scene
+class TitleScene : public SceneBase
 {
 
 public:

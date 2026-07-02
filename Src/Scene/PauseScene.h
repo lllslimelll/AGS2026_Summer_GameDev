@@ -1,25 +1,16 @@
 #pragma once
-<<<<<<< HEAD
-#include "Scene"
+#include "SceneBase"
 
-class PauseScene : public Scene
-{
-=======
-#include "Scene.h"
-
-class PauseScene : public Scene
+class PauseScene : public SceneBase
 {
 public:
 
->>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 	PauseScene();
 	~PauseScene() override;
 
 	void Init() override;
 	void Update() override;
 	void Draw() override;
-<<<<<<< HEAD
-=======
 
 private:
 
@@ -40,5 +31,4 @@ private:
 
 	void UpdatePauseMenu(void);
 	void DrawPauseMenu(void);
->>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 };

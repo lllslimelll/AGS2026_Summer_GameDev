@@ -1,12 +1,9 @@
 #include "../Manager/ResourceManager.h"
-<<<<<<< HEAD
-=======
 #include "../Manager/InputManager.h"
->>>>>>> c43593c588c266bd4e7c5e84d0a77fe0702bb34e
 #include "SceneManager.h"
-#include "Scene.h"
+#include "SceneBase.h"
 
-Scene::Scene(void)
+SceneBase::SceneBase(void)
 	: 
 	resMng_(ResourceManager::GetInstance()),
 	sceMng_(SceneManager::GetInstance()),
@@ -14,18 +11,18 @@ Scene::Scene(void)
 {
 }
 
-Scene::~Scene(void)
+SceneBase::~SceneBase(void)
 {
 }
 
-void Scene::Init(void)
+void SceneBase::Init(void)
 {
 }
 
-void Scene::Update(void)
+void SceneBase::Update(void)
 {
 }
 
-void Scene::Draw(void)
+void SceneBase::Draw(void)
 {
 }
