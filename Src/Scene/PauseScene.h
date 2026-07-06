@@ -1,5 +1,5 @@
 #pragma once
-#include "SceneBase"
+#include "SceneBase.h"
 
 class PauseScene : public SceneBase
 {

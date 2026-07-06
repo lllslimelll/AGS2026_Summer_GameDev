@@ -21,10 +21,12 @@ void ResultScene::Init(void)
 
 void ResultScene::Update(void)
 {
-    // シーン遷移
     auto const& ins = InputManager::GetInstance();
-    bool decide = ins.IsTrgDown(KEY_INPUT_SPACE)
-        || ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT);
+
+    // シーン遷移
+    // 決定
+    bool decide = ins.IsTriggered(InputManager::InputCommand::UI_DECIDE);
+
     if (decide)
     {
         sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);

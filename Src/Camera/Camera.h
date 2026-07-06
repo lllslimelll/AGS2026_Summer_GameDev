@@ -164,9 +164,6 @@ private:
 	void ProcessRot(bool isLimit);
 	void ProcessMove(void);
 
-	// カメラ回転(キーボード)
-	void RotKeyboard(bool isLimit);
-
 	// カメラ回転(マウス)
 	void RotMouse(bool isLimit);
 

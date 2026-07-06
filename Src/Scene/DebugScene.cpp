@@ -78,7 +78,7 @@ void DebugScene::PlaceDebugPoint(void)
 	const auto& ins = InputManager::GetInstance();
 
 	// クリックした場所にデバッグポイント群を設置
-	if (ins.IsTrgMouseLeft())
+	if (ins.IsTriggered(InputManager::InputCommand::SET_POINT))
 	{
 		// マウス座標の取得
 		Vector2 mousePos = ins.GetMousePos();
@@ -116,7 +116,7 @@ void DebugScene::PlaceDebugPoint(void)
 	}
 
 	// 右クリックで最後のデバッグポイントを削除
-	if (ins.IsTrgMouseRight())
+	if (ins.IsTriggered(InputManager::InputCommand::DELETE_POINT))
 	{
 		if (points_.size() > 0)
 		{
@@ -124,9 +124,9 @@ void DebugScene::PlaceDebugPoint(void)
 		}
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	// デバッグポイントの保存
+	if (ins.IsTriggered(InputManager::InputCommand::SAVE_POINT))
 	{
-		// デバッグポイントの保存
 		SavePoints();
 	}
 }

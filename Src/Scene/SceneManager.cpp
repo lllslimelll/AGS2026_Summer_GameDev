@@ -1,7 +1,7 @@
 #include <chrono>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
-#include "Scene.h"
+#include "SceneBase.h"
 #include "TitleScene.h"
 #include "GameScene.h"
 #include "PauseScene.h"
@@ -198,8 +198,8 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	waitSceneId_ = SCENE_ID::NONE;
 }
 
-// シーンの追加（オーバーレイとして）
-void SceneManager::PushScene(SCENE_ID sceneId)
+// オーバーレイの追加（オーバーレイとして）
+void SceneManager::PushOverlay(SCENE_ID sceneId)
 { 
 	// シーンの変更
 	sceneId_ = sceneId;
@@ -224,8 +224,8 @@ void SceneManager::PushScene(SCENE_ID sceneId)
 	scenes_.back()->Init();
 }
 
-// シーンの削除
-void SceneManager::PopScene()
+// オーバーレイの削除
+void SceneManager::PopOverlay()
 {
 	// スタックが空にならないようガードして削除
 	if (scenes_.size() > 1)

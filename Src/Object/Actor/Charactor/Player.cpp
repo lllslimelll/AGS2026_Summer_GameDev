@@ -51,30 +51,21 @@ void Player::ProcessMove(void)
 	// ゲームパッドが接続数で処理を分ける
 	if (GetJoypadNum() == 0)
 	{
-		// WASDで移動する
-		if (ins.IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
-		if (ins.IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
-		if (ins.IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
-		if (ins.IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
-		// 左Shiftでダッシュ
-		if (ins.IsNew(KEY_INPUT_LSHIFT)) { isBoost_ = true; }
+		// 移動
+		if (ins.IsPressed(InputManager::InputCommand::MOVE_FORWARD)) { dir = AsoUtility::DIR_F; }
+		if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK)) { dir = AsoUtility::DIR_B; }
+		if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT)) { dir = AsoUtility::DIR_L; }
+		if (ins.IsPressed(InputManager::InputCommand::MOVE_RIGHT)) { dir = AsoUtility::DIR_R; }
 	}
 	else
 	{
 		// ゲームパッド操作
-		// 接続されているゲームパッド１の情報を取得
-		InputManager::JOYPAD_IN_STATE padState =
-			ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-		// アナログキーの入力値から方向を取得
-		dir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
-
-		// LTでダッシュ
-		if (ins.IsPadBtnNew(
-			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::L_TRIGGER)) {
-			isBoost_ = true;
-		}
+		// 左スティックの方向を取得
+		dir = ins.GetInstance().GetLeftStickDirection();
 	}
+
+	// ブースト
+	if (ins.IsPressed(InputManager::InputCommand::BOOST)) { isBoost_ = true; }
 
 	if(isJump_) SoundManager::GetInstance().StopWalk();
 
@@ -171,15 +162,9 @@ void Player::ProcessJump(void)
 	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 
 	// ジャンプキーが押されたか
-	bool isHitKey = ins.IsTrgDown(KEY_INPUT_SPACE)
-		|| ins.IsPadBtnTrgDown(
-			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::DOWN);
+	bool isHitKey = ins.IsTriggered(InputManager::InputCommand::JUMP);
 	// ジャンプキーが押されているか
-	bool isHitKeyNew = ins.IsNew(KEY_INPUT_SPACE)
-		|| ins.IsPadBtnNew(
-			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::DOWN);
+	bool isHitKeyNew = ins.IsPressed(InputManager::InputCommand::JUMP);
 
 	// 初期ジャンプ処理
 	if (isHitKey && !isJump_)
@@ -279,10 +264,10 @@ void Player::UpdateItem(void)
 	{
 		auto& ins = InputManager::GetInstance();
 		
-		if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP) || ins.IsTrgDown(KEY_INPUT_E))
+		if (ins.IsTriggered(InputManager::InputCommand::RETURN))
 		{
 			//SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
-			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::RESULT);
+			SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::RESULT);
 		}
 	}
 }
@@ -355,11 +340,8 @@ void Player::ProcessPickUp(void)
 	}
 
 	auto& ins = InputManager::GetInstance();
-	bool pressed =
-		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) ||
-		ins.IsTrgDown(KEY_INPUT_F);
 
-	if (!pressed) return;
+	if (!ins.IsTriggered(InputManager::InputCommand::PICK_UP)) return;
 
 	if (CanPickUp())
 	{
@@ -397,24 +379,22 @@ void Player::ChangeSelectedSlot()
 
 	auto& ins = InputManager::GetInstance();
 	
-	// RB/LB
-	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-		InputManager::JOYPAD_BTN::R_SHOULDER))
-	{
-		selectedSlot_ = (selectedSlot_ + 1) % INVENTORY_MAX;
-	}
-	else if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-		InputManager::JOYPAD_BTN::L_SHOULDER))
+	// インベントリスロットの変更
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_LEFT))
 	{
 		selectedSlot_ = (selectedSlot_ - 1 + INVENTORY_MAX) % INVENTORY_MAX;
 	}
+	else if (ins.IsTriggered(InputManager::InputCommand::SLOT_RIGHT))
+	{
+		selectedSlot_ = (selectedSlot_ + 1) % INVENTORY_MAX;
+	}
 
 	// 12345キー
-	if (ins.IsTrgDown(KEY_INPUT_1)) { selectedSlot_ = 0; }
-	else if (ins.IsTrgDown(KEY_INPUT_2)) { selectedSlot_ = 1; }
-	else if (ins.IsTrgDown(KEY_INPUT_3)) { selectedSlot_ = 2; }
-	else if (ins.IsTrgDown(KEY_INPUT_4)) { selectedSlot_ = 3; }
-	else if (ins.IsTrgDown(KEY_INPUT_5)) { selectedSlot_ = 4; }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_1)) { selectedSlot_ = 0; }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_2)) { selectedSlot_ = 1; }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_3)) { selectedSlot_ = 2; }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_4)) { selectedSlot_ = 3; }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_5)) { selectedSlot_ = 4; }
 
 	// マウスホイール
 	int wheel = ins.GetMouseWheelRot();
@@ -625,10 +605,8 @@ void Player::ProcessDelivery(void)
 
 	// ボタン入力（ピックアップと同じキー）
 	auto& ins = InputManager::GetInstance();
-	bool pressed =
-		ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) ||
-		ins.IsTrgDown(KEY_INPUT_F);
-	if (!pressed) return;
+
+	if (!ins.IsPressed(InputManager::InputCommand::PICK_UP)) return;
 
 	// 納品実行
 	stage_->AddDelivery(item->GetValue());
@@ -821,8 +799,8 @@ void Player::UpdateDeathMenu(void)
 	auto& ins = InputManager::GetInstance();
 
 	// 上下で選択
-	bool up = ins.IsTriggerd("Up");
-	bool down = ins.IsTriggerd("Down");
+	bool up = ins.IsTriggered(InputManager::InputCommand::UI_UP);
+	bool down = ins.IsTriggered(InputManager::InputCommand::UI_DOWN);
 
 	constexpr int MENU_MAX = static_cast<int>(DEATH_MENU::MAX);
 	if (up)   deathMenuIndex_ = (deathMenuIndex_ - 1 + MENU_MAX) % MENU_MAX;
@@ -873,10 +851,9 @@ void Player::UpdateDeathMenu(void)
 	prevMouseX_ = mouseX;
 	prevMouseY_ = mouseY;
 
-	// 決定（マウス左クリック追加）
-	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT)
-		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
+	// 決定
+	bool decide = ins.IsTriggered(InputManager::InputCommand::UI_DECIDE);
+
 	if (!decide || deathMenuIndex_ < 0) return;
 
 	switch (static_cast<DEATH_MENU>(deathMenuIndex_))

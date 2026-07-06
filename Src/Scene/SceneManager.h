@@ -54,10 +54,10 @@ public:
 
 	// 状態遷移
 	void ChangeScene(SCENE_ID nextId);
-	// シーンの追加（オーバーレイとして）
-	void PushScene(SCENE_ID sceneId);
-	// シーンの削除
-	void PopScene();
+	// オーバーレイの追加（オーバーレイとして）
+	void PushOverlay(SCENE_ID sceneId);
+	// オーバーレイの削除
+	void PopOverlay();
 
 	// シーンIDの取得
 	SCENE_ID GetSceneID(void);
@@ -87,8 +87,6 @@ private:
 	std::vector<std::unique_ptr<SceneBase>> scenes_;
 
 	// フェード
-	Fader* fader_;
-
 	std::unique_ptr<Fader> fader_;
 
 	// シーン遷移中判定

@@ -89,10 +89,10 @@ void GameScene::Update(void)
 	SetMouseDispFlag(false);
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTriggerd("pause"))
+	if (ins.IsTriggered(InputManager::InputCommand::PAUSE))
 	{
 		// ポーズシーンを追加
-		sceMng_.PushScene(SceneManager::SCENE_ID::PAUSE);
+		sceMng_.PushOverlay(SceneManager::SCENE_ID::PAUSE);
 		return;
 	}
 

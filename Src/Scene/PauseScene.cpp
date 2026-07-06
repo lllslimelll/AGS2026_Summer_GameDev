@@ -19,13 +19,7 @@ void PauseScene::Init()
 
 void PauseScene::Update()
 {
-	auto& ins = InputManager::GetInstance();
-	if (ins.IsTriggerd("pause"))
-	{
-		// シーンの削除
-		sceMng_.PopScene();
-	}
-
+	// ポーズメニューの更新
 	UpdatePauseMenu();
 }
 
@@ -38,8 +32,8 @@ void PauseScene::UpdatePauseMenu(void)
 {
 	auto& ins = InputManager::GetInstance();
 
-	bool up = ins.IsTriggerd("Up");
-	bool down = ins.IsTriggerd("Down");
+	bool up = ins.IsTriggered(InputManager::InputCommand::UI_UP);
+	bool down = ins.IsTriggered(InputManager::InputCommand::UI_DOWN);
 
 	constexpr int MENU_MAX = static_cast<int>(MENU::MAX);
 
@@ -96,16 +90,14 @@ void PauseScene::UpdatePauseMenu(void)
 	prevMouseX_ = mouseX;
 	prevMouseY_ = mouseY;
 
-	// 決定（マウス左クリック追加）
-	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsTrgDown(KEY_INPUT_SPACE)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN)
-		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
+	// 決定
+	bool decide = ins.IsTriggered(InputManager::InputCommand::UI_DECIDE);
 	if (!decide || menuIndex_ < 0) return;
 
 	switch (static_cast<MENU>(menuIndex_))
 	{
 	case MENU::RESUME:
-		sceMng_.PopScene();
+		sceMng_.PopOverlay();
 		break;
 	case MENU::OPTION:
 		break;

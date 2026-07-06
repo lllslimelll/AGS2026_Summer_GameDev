@@ -8,6 +8,7 @@
 #include "../Camera/Camera.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
+#include "SceneManager.h"
 #include "TitleScene.h"
 
 // メニューラベル（MENU_ITEM の順に対応）
@@ -81,12 +82,12 @@ void TitleScene::UpdateInput(void)
 {
 	auto const& ins = InputManager::GetInstance();
 
-	// ↑↓ でカーソル移動（キーボード・パッド両対応）
-	if (ins.IsTriggerd("Up"))
+	// メニュー選択
+	if (ins.IsTriggered(InputManager::InputCommand::UI_UP))
 	{
 		selectIndex_ = (selectIndex_ - 1 + MENU_COUNT) % MENU_COUNT;
 	}
-	if (ins.IsTriggerd("Down"))
+	if (ins.IsTriggered(InputManager::InputCommand::UI_DOWN))
 	{
 		selectIndex_ = (selectIndex_ + 1) % MENU_COUNT;
 	}
@@ -117,11 +118,8 @@ void TitleScene::UpdateInput(void)
 	prevMouseX_ = mouseX;
 	prevMouseY_ = mouseY;
 
-	// 決定（マウス左クリック追加）
-	bool decide = ins.IsTrgDown(KEY_INPUT_RETURN)
-		|| ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::DOWN)
-		|| (GetMouseInput() & MOUSE_INPUT_LEFT);
+	// 決定
+	bool decide = ins.IsTriggered(InputManager::InputCommand::UI_DECIDE);
 
 	if (decide && selectIndex_ != -1)
 	{
