@@ -41,35 +41,28 @@ void Player::ProcessMove(void)
 
 	// 移動量
 	movePow_ = AsoUtility::VECTOR_ZERO;
-
 	// 移動方向
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	VECTOR kDir = AsoUtility::VECTOR_ZERO;
+	VECTOR dDir = AsoUtility::VECTOR_ZERO;
 
-	// ブーストフラグを折る
-	isBoost_ = false;
+	// 移動操作（キーボード）
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_FORWARD)) { kDir = VAdd(kDir, AsoUtility::DIR_F); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK))	 { kDir = VAdd(kDir, AsoUtility::DIR_B); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT))	 { kDir = VAdd(kDir, AsoUtility::DIR_L); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_RIGHT))	 { kDir = VAdd(kDir, AsoUtility::DIR_R); }
+	// 斜め入力時に正規化（長さを1に統一）
+	if (!AsoUtility::EqualsVZero(kDir)) { kDir = VNorm(kDir); }
 
-	// ゲームパッドが接続数で処理を分ける
-	if (GetJoypadNum() == 0)
-	{
-		// 移動
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_FORWARD)) { dir = AsoUtility::DIR_F; }
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK)) { dir = AsoUtility::DIR_B; }
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT)) { dir = AsoUtility::DIR_L; }
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_RIGHT)) { dir = AsoUtility::DIR_R; }
-	}
-	else
-	{
-		// ゲームパッド操作
-		// 左スティックの方向を取得
-		dir = ins.GetInstance().GetLeftStickDirection();
-	}
-
+	// 移動操作（ゲームパッド）
+	dDir = ins.GetInstance().GetLeftStickDirection();
+	
 	// ブースト
-	if (ins.IsPressed(InputManager::InputCommand::BOOST)) { isBoost_ = true; }
+	if (ins.IsTriggered(InputManager::InputCommand::BOOST)) { isBoost_ = true; }
 
 	if(isJump_) SoundManager::GetInstance().StopWalk();
 
-	if (!AsoUtility::EqualsVZero(dir))
+	// 移動入力がある場合
+	if (!AsoUtility::EqualsVZero(kDir) || !AsoUtility::EqualsVZero(dDir))
 	{
 		SoundManager::GetInstance().PlayWalk();
 
@@ -95,44 +88,39 @@ void Player::ProcessMove(void)
 
 		// dirに合わせて移動ベクトルを合成
 		VECTOR moveVec = AsoUtility::VECTOR_ZERO;
-		moveVec = VAdd(moveVec, VScale(surfaceForward, dir.z)); // 左右の移動を加算
-		moveVec = VAdd(moveVec, VScale(surfaceRight, dir.x));	// 前後の移動を加算
+		moveVec = VAdd(moveVec, VScale(surfaceForward, kDir.z)); // 左右の移動を加算（キーボード）
+		moveVec = VAdd(moveVec, VScale(surfaceRight, kDir.x));	 // 前後の移動を加算（キーボード）
+		moveVec = VAdd(moveVec, VScale(surfaceForward, dDir.z)); // 左右の移動を加算（ゲームパッド）
+		moveVec = VAdd(moveVec, VScale(surfaceRight, dDir.x));	 // 前後の移動を加算（ゲームパッド）
 
 		// 移動ベクトルの正規化
-		if(AsoUtility::SqrMagnitudeF(moveVec) > 0.0001f)
+		moveDir_ = VNorm(moveVec);
+
+		if (isBoost_)
 		{
-			moveDir_ = VNorm(moveVec);
+			// ダッシュ速度
+			moveSpeed_ = SPEED_DASH;
+
+			// 速く走るアニメーション再生
+			animController_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
+
+			//SoundManager::GetInstance().PlayBoost();
 		}
-
-		// ジャンプ中はアニメーションを変えない
-		//if (!isJump_)
+		else
 		{
-			if (isBoost_)
-			{
-				// ダッシュ速度
-				moveSpeed_ = SPEED_DASH;
+			// 歩行速度
+			moveSpeed_ = SPEED_MOVE;
 
-				// 速く走るアニメーション再生
-				animController_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
+			// 走るアニメーション再生
+			animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
 
-				//SoundManager::GetInstance().PlayBoost();
-			}
-			else
-			{
-				// 歩行速度
-				moveSpeed_ = SPEED_MOVE;
-
-				// 走るアニメーション再生
-				animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
-
-				//SoundManager::GetInstance().StopBoost();
-			}
+			//SoundManager::GetInstance().StopBoost();
 		}
 
 		// 移動速度を反映
 		movePow_ = VScale(moveDir_, moveSpeed_);
 	}
-	else
+	else // 移動入力がない場合
 	{
 		SoundManager::GetInstance().StopWalk();
 
@@ -144,14 +132,14 @@ void Player::ProcessMove(void)
 		faceDir_ = VNorm(VSub(camForward, VScale(upDir, dotF)));
 
 		// ジャンプ中はアニメーションを変えない
-		if (!isJump_)
-		{
-			animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-		}
+		if (!isJump_) { animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); }
 
 		// ブーストフラグを折る
 		isBoost_ = false;
 	}
+	
+	// 後退中はブーストを無効化
+	if(kDir.z < 0.0f || dDir.z < 0.0f) { isBoost_ = false; }
 }
 
 void Player::ProcessJump(void)
@@ -229,6 +217,7 @@ void Player::UpdateProcess(void)
 void Player::UpdateProcessPost(void)
 {
 	if (isDead_) return;
+
 	// アイテム更新
 	UpdateItem();
 

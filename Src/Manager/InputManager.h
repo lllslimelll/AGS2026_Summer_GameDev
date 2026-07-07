@@ -200,7 +200,7 @@ private:
 	// 入力コマンドとデバイスの対応付けを設定
 	void SetUpBindings(void);
 
-	// 
+	// コントローラーのボタンが押されているか判定する
 	bool IsPadButtonActive(PAD_BUTTON button, PAD_TYPE type,
 		const XINPUT_STATE& xState, const DINPUT_JOYSTATE& dState) const;
 
@@ -219,6 +219,6 @@ private:
 	// コントローラーの入力情報を取得してStickStateに変換する
 	STICK_STATE GetStickState(PAD_NO padNo);
 
-	// スティック状態を更新する（Update()から呼ぶ）
-	void SetPadInState(PAD_NO padNo);
+	// スティック状態を更新する
+	void UpdateStickState(PAD_NO padNo);
 };

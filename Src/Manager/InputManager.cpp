@@ -43,7 +43,7 @@ void InputManager::Update(void)
 	mouseWheelRot_ = GetMouseWheelRotVol();
 
 	// スティック状態の更新
-	SetPadInState(PAD_NO::PAD1);
+	UpdateStickState(PAD_NO::PAD1);
 
 	// 前フレームの入力状態を保存
 	lastInputInfo_ = currentInputInfo_;
@@ -74,7 +74,8 @@ void InputManager::Update(void)
 				currentInputInfo_[cmd] = mouseState & state.id;
 				break;
 			case PeripheralType::PAD:
-				currentInputInfo_[cmd] = xState.Buttons[state.id];
+				currentInputInfo_[cmd] = IsPadButtonActive(
+					static_cast<PAD_BUTTON>(state.id), padType, xState, dState);
 				break;
 			}
 
@@ -158,9 +159,9 @@ InputManager::STICK_STATE InputManager::GetStickState(PAD_NO padNo)
 
 		// XInputの値域（-32768?32767）を-1.0?1.0に正規化
 		ret.leftX  = x.ThumbLX / 32767.0f;  // 左スティックX軸
-		ret.leftY  = x.ThumbLY / 32767.0f;  // 左スティックY軸
+		ret.leftY  = -x.ThumbLY / 32767.0f;  // 左スティックY軸
 		ret.rightX = x.ThumbRX / 32767.0f;  // 右スティックX軸
-		ret.rightY = x.ThumbRY / 32767.0f;  // 右スティックY軸
+		ret.rightY = -x.ThumbRY / 32767.0f;  // 右スティックY軸
 		break;
 	}
 	case PAD_TYPE::DUAL_SHOCK_4:
@@ -171,9 +172,9 @@ InputManager::STICK_STATE InputManager::GetStickState(PAD_NO padNo)
 
 		// DirectInputの値域（-1000?1000）を-1.0?1.0に正規化
 		ret.leftX  = d.X / 1000.0f;	// 左スティックX軸
-		ret.leftY  = d.Y / 1000.0f;	// 左スティックY軸
+		ret.leftY  = -d.Y / 1000.0f;	// 左スティックY軸
 		ret.rightX = d.Z / 1000.0f;	// 右スティックX軸
-		ret.rightY = d.Rz / 1000.0f;	// 右スティックY軸
+		ret.rightY = -d.Rz / 1000.0f;	// 右スティックY軸
 		break;
 	}
 	default:
@@ -183,10 +184,10 @@ InputManager::STICK_STATE InputManager::GetStickState(PAD_NO padNo)
 	return ret;
 }
 
-void InputManager::SetPadInState(PAD_NO padNo)
+void InputManager::UpdateStickState(PAD_NO padNo)
 {
 	// スティック状態を更新
-	stickState_ = GetPadInputState(padNo);
+	stickState_ = GetStickState(padNo);
 }
 
 int InputManager::GetMouseWheelRot(void) const
@@ -228,50 +229,50 @@ void InputManager::SetUpBindings(void)
 	inputTable_[InputCommand::JUMP] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_Z },
-		{ PeripheralType::xINPUT,      XINPUT_BUTTON_A },
+		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::BOTTOM) },
 	};
 	inputTable_[InputCommand::BOOST] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_LSHIFT },
-		{ PeripheralType::xINPUT,      XINPUT_BUTTON_LEFT_THUMB },
+		{ PeripheralType::PAD,       static_cast<int>(PAD_BUTTON::L_THUMB) },
 	};
 	inputTable_[InputCommand::PICK_UP] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_F },
-		{ PeripheralType::xINPUT,      XINPUT_BUTTON_Y },
+		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::TOP) },
 	};
 	inputTable_[InputCommand::RETURN] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_E },
-		{ PeripheralType::xINPUT,      XINPUT_BUTTON_B },
+		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::RIGHT) },
 	};
 
 	// インベントリ
 	inputTable_[InputCommand::SLOT_LEFT] =
 	{
-		{ PeripheralType::xINPUT, XINPUT_BUTTON_LEFT_SHOULDER },
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::L_SHOULDER) },
 	};
 	inputTable_[InputCommand::SLOT_RIGHT] =
 	{
-		{ PeripheralType::xINPUT, XINPUT_BUTTON_RIGHT_SHOULDER },
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::R_SHOULDER) },
 	};
-	inputTable_[InputCommand::SLOT_LEFT] =
+	inputTable_[InputCommand::SLOT_1] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_1 },
 	};
-	inputTable_[InputCommand::SLOT_RIGHT] =
+	inputTable_[InputCommand::SLOT_2] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_2 },
 	};
-	inputTable_[InputCommand::SLOT_LEFT] =
+	inputTable_[InputCommand::SLOT_3] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_3 },
 	};
-	inputTable_[InputCommand::SLOT_RIGHT] =
+	inputTable_[InputCommand::SLOT_4] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_4 },
 	};
-	inputTable_[InputCommand::SLOT_LEFT] =
+	inputTable_[InputCommand::SLOT_5] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_5 },
 	};
@@ -280,34 +281,34 @@ void InputManager::SetUpBindings(void)
 	inputTable_[InputCommand::PAUSE] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_ESCAPE },
-		{ PeripheralType::xINPUT,      XINPUT_BUTTON_START },
+		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::START) },
 	};
 
 	// UI
 	inputTable_[InputCommand::UI_UP] =
 	{
-		{ PeripheralType::xINPUT, XINPUT_BUTTON_DPAD_UP },
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::D_UP)},
 	};
 	inputTable_[InputCommand::UI_DOWN] =
 	{
-		{ PeripheralType::xINPUT, XINPUT_BUTTON_DPAD_DOWN },
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::D_DOWN) },
 	};
 	inputTable_[InputCommand::UI_LEFT] =
 	{
-		{ PeripheralType::xINPUT, XINPUT_BUTTON_DPAD_LEFT },
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::D_LEFT) },
 	};
 	inputTable_[InputCommand::UI_RIGHT] =
 	{
-		{ PeripheralType::xINPUT, XINPUT_BUTTON_DPAD_RIGHT },
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::D_RIGHT) },
 	};
 	inputTable_[InputCommand::UI_DECIDE] =
 	{
 		{ PeripheralType::MOUSE,    MOUSE_INPUT_LEFT },
-		{ PeripheralType::xINPUT,      XINPUT_BUTTON_A },
+		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::BOTTOM) },
 	};
 	inputTable_[InputCommand::UI_CANCEL] =
 	{
-		{ PeripheralType::xINPUT,      XINPUT_BUTTON_B },
+		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::RIGHT) },
 	};
 
 	// デバッグ用
@@ -344,7 +345,7 @@ bool InputManager::IsPadButtonActive(PAD_BUTTON button, PAD_TYPE type, const XIN
 		case PAD_BUTTON::LEFT:       return xState.Buttons[XINPUT_BUTTON_X] != 0;   // X
 		case PAD_BUTTON::L_SHOULDER: return xState.Buttons[XINPUT_BUTTON_LEFT_SHOULDER] != 0;  // LB
 		case PAD_BUTTON::R_SHOULDER: return xState.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] != 0; // RB
-		case PAD_BUTTON::L_TRIGGER:  return xState.LeftTrigger > 128;	// LT
+		case PAD_BUTTON::L_TRIGGER:  return xState.LeftTrigger  > 128;	// LT
 		case PAD_BUTTON::R_TRIGGER:  return xState.RightTrigger > 128;	// RT
 		case PAD_BUTTON::L_THUMB:    return xState.Buttons[XINPUT_BUTTON_LEFT_THUMB] != 0;	// 左スティック押し込み
 		case PAD_BUTTON::R_THUMB:    return xState.Buttons[XINPUT_BUTTON_RIGHT_THUMB] != 0;	// 右スティック押し込み
