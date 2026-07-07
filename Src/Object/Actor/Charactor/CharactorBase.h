@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "../ActorBase.h"
 class AnimationController;
 
@@ -31,7 +32,7 @@ public:
 protected:
 
 	// アニメーション
-	AnimationController* animController_;
+	std::unique_ptr<AnimationController> animCtrl_;
 
 	// カメラの前方向（キャラの前方向）
 	VECTOR faceDir_;

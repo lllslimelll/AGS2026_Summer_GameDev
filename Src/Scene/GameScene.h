@@ -40,7 +40,7 @@ private:
 	// アイテム
 	ItemManager* itemMng_;
 	// プレイヤー
-	Player* player_;
+	std::unique_ptr<Player> player_;
 	// カメラ
 	std::unique_ptr<Camera> camera_;
 	// 敵

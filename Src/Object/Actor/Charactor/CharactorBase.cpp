@@ -16,7 +16,7 @@ CharactorBase::CharactorBase(void)
 	moveSpeed_(),
 	movePow_(AsoUtility::VECTOR_ZERO),
 	isJump_(false),
-	animController_()
+	animCtrl_()
 {
 }
 
@@ -48,7 +48,7 @@ void CharactorBase::Update(void)
 	transform_.Update();
 
 	// アニメーション再生
-	animController_->Update();
+	animCtrl_->Update();
 
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
@@ -66,10 +66,9 @@ void CharactorBase::Draw(void)
 void CharactorBase::Release()
 {
 	// アニメコントローラ解放
-	if (animController_ != nullptr)
+	if (animCtrl_ != nullptr)
 	{
-		animController_->Release();
-		delete animController_;
+		animCtrl_->Release();
 	}
 
 	ActorBase::Release();
