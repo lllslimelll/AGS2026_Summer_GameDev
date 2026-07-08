@@ -66,20 +66,20 @@ void EnemyRat::InitCollider(void)
 void EnemyRat::InitAnimation(void)
 {
 	// アニメーションコントローラークラス生成
-	animController_ = new AnimationController(transform_.modelId);
+	animCtrl_ = new AnimationController(transform_.modelId);
 
 	int type = -1;
 
 	// 待機
 	type = static_cast<int>(ANIM_TYPE::IDLE);
-	animController_->AddInFbx(type, 20.0f, type);
+	animCtrl_->AddInFbx(type, 20.0f, type);
 
 	// 歩く
 	type = static_cast<int>(ANIM_TYPE::WALK);
-	animController_->AddInFbx(type, 30.0, type);
+	animCtrl_->AddInFbx(type, 30.0, type);
 
 	// アニメ再生
-	animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+	animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyRat::InitPost(void)
@@ -163,7 +163,7 @@ void EnemyRat::ChangeStateIdle(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
 	// 待機アニメーション再生
-	animController_->Play(
+	animCtrl_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
@@ -184,7 +184,7 @@ void EnemyRat::ChangeStateWander(void)
 	//moveSpeed_ = 3.0f;
 
 	//// 歩きアニメーション再生
-	//animController_->Play(
+	//animCtrl_->Play(
 	//	static_cast<int>(ANIM_TYPE::WALK), true);
 
 	stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
@@ -213,7 +213,7 @@ void EnemyRat::ChangeStateWander(void)
 	moveSpeed_ = 3.0f;
 
 	// 歩きアニメーション再生
-	animController_->Play(static_cast<int>(ANIM_TYPE::WALK), true);
+	animCtrl_->Play(static_cast<int>(ANIM_TYPE::WALK), true);
 }
 
 void EnemyRat::ChangeStateEnd(void)

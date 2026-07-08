@@ -32,7 +32,7 @@ public:
 protected:
 
 	// アニメーション
-	std::unique_ptr<AnimationController> animCtrl_;
+	AnimationController* animCtrl_;
 
 	// カメラの前方向（キャラの前方向）
 	VECTOR faceDir_;
@@ -86,10 +86,5 @@ protected:
 	void Collision(void);
 	void CollisionGravity(void);
 	void CollisionCapsule(void);
-
-	// 丸影描画
-	void DrawShadow(void);
-	// リアルシャドウ描画
-	void DrawRealShadow(void);
 };
 

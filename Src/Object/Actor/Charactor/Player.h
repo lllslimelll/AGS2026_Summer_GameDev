@@ -10,6 +10,16 @@ class Player : public CharactorBase
 {
 public:
 
+	// 状態
+	enum class STATE
+	{
+		IDLE,
+		WALK,
+		BOOST,
+		DEAD,
+		END,
+	};
+
 	enum class ANIM_TYPE
 	{
 		IDLE,
@@ -18,12 +28,22 @@ public:
 		JUMP,
 	};
 
+	// 最大HP
+	static constexpr int   MAX_HP = 100;
+	// 最大酸素量
+	static constexpr float MAX_OXYGEN = 300.0f;
+
 	Player(ItemManager* itemMng, Stage* stage_);
 
 	~Player(void) override;
 
 	// 描画
 	void Draw(void) override;
+
+	// HP取得
+	int  GetHp(void) const;
+	// 酸素量取得
+	float GetOxygen(void) const;
 
 	// カメラTransformを設定
 	void SetCameraTransform(const Transform* cameraTransform);
@@ -49,6 +69,7 @@ private:
 	// マウス移動検知用（前フレームの座標）
 	int prevMouseX_ = -1;
 	int prevMouseY_ = -1;
+
 	// 移動速度（通常）
 	static constexpr float SPEED_MOVE = 2.5f;
 
@@ -157,8 +178,6 @@ private:
 	bool IsAimingRoket(void) const;
 
 	// ===== HP・酸素 =====
-	static constexpr int   MAX_HP = 100;
-	static constexpr float MAX_OXYGEN = 300.0f;  // 秒
 	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	// 酸素消費倍率（ブースト中）
 	static constexpr float SUFFOCATE_INTERVAL = 0.4f;   // ダメージ周期
 	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
@@ -173,9 +192,8 @@ private:
 	void UpdateOxygenAndHp(void);
 
 	// ダメージ
-	void TakeDamage(int amount);
+	void OnDamaged(int amount);
 
-	// ゲームオーバー処理
 	void OnDeath(void);
 
 	// UI描画
@@ -196,10 +214,5 @@ private:
 	// 死亡メニュー処理
 	void UpdateDeathMenu(void);
 	void DrawDeathMenu(void);
-
-
-	// UIバー画像
-	int hpBarImg_;
-	int o2BarImg_;
 };
 

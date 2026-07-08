@@ -81,31 +81,31 @@ void EnemyRobot::InitCollider(void)
 
 void EnemyRobot::InitAnimation(void)
 {
-	animController_ = new AnimationController(transform_.modelId);
+	animCtrl_ = new AnimationController(transform_.modelId);
 
 	// FBX内のアニメーション設定
 	int type = 01;
 
 	type = static_cast<int>(ANIM_TYPE::DANCE);
-	animController_->AddInFbx(type, 10.0f, type);
+	animCtrl_->AddInFbx(type, 10.0f, type);
 
 	type = static_cast<int>(ANIM_TYPE::IDLE);
-	animController_->AddInFbx(type, 20.0f, type);
+	animCtrl_->AddInFbx(type, 20.0f, type);
 
 	type = static_cast<int>(ANIM_TYPE::WALK);
-	animController_->AddInFbx(type, 30.0f, type);
+	animCtrl_->AddInFbx(type, 30.0f, type);
 
 	type = static_cast<int>(ANIM_TYPE::RUN);
-	animController_->AddInFbx(type, 30.0f, type);
+	animCtrl_->AddInFbx(type, 30.0f, type);
 
 	type = static_cast<int>(ANIM_TYPE::KICK);
-	animController_->AddInFbx(type, 45.0f, type);
+	animCtrl_->AddInFbx(type, 45.0f, type);
 
 	type = static_cast<int>(ANIM_TYPE::SHOOT);
-	animController_->AddInFbx(type, 30.0f, type);
+	animCtrl_->AddInFbx(type, 30.0f, type);
 
 	// 初期アニメーション再生
-	animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+	animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyRobot::InitPost(void)
@@ -246,7 +246,7 @@ void EnemyRobot::ChangeStateIdle(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
 	// 待機アニメーション再生
-	animController_->Play(
+	animCtrl_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
@@ -275,7 +275,7 @@ void EnemyRobot::ChangeStatePatrol(void)
 	moveSpeed_ = 5.0f;
 
 	// 歩きアニメーション再生
-	animController_->Play(
+	animCtrl_->Play(
 		static_cast<int>(ANIM_TYPE::WALK), true);
 }
 
@@ -292,7 +292,7 @@ void EnemyRobot::ChangeStateAlert(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
 	// ダンス（足踏み）アニメーション再生
-	animController_->Play(
+	animCtrl_->Play(
 		static_cast<int>(ANIM_TYPE::DANCE), true);
 }
 

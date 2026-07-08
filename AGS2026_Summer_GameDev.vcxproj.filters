@@ -126,9 +126,6 @@
     <ClCompile Include="Src\Scene\ResultScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\UI\UI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Object\UI\GameUI\GameUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>

@@ -9,6 +9,7 @@
 #include "../Object/Actor/Stage.h"
 #include "../Object/Actor/Item/ItemManager.h"
 #include "../Object/Actor/SkyDome.h"
+#include "../Object/UI/GameUI/StatusUI.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -32,7 +33,6 @@ GameScene::~GameScene(void)
 	delete itemMng_;
 
 	player_->Release();
-	delete player_;
 
 	enemyManager_->Release();
 	delete enemyManager_;
@@ -47,14 +47,16 @@ void GameScene::Init(void)
 
 	itemMng_ = new ItemManager();
 
-	player_ = new Player(itemMng_, stage_);
+	player_ = std::make_unique<Player>(itemMng_, stage_);
 
 	// カメラ
 	camera_ = std::make_unique<Camera>();
 
-	enemyManager_ = new EnemyManager(player_);
+	enemyManager_ = new EnemyManager(player_.get());
 
 	skyDome_ = new SkyDome(player_->GetTransform());
+
+	gameUIs_.emplace_back(std::make_unique<StatusUI>(*player_));
 
 	// 初期化
 	stage_->Init();
@@ -110,34 +112,45 @@ void GameScene::Draw(void)
 {
 	// 描画前処理の適用
 	camera_->SetBeforeDraw();
-
 	skyDome_->Draw();
+
+	// シャドウマップのハンドル
+	int shadowMapHandle = CreateShadowMap();
+	// 描画に使用するシャドウマップを設定
+	SetUseShadowMap(0, shadowMapHandle);
+	
 	stage_->Draw();
 	itemMng_->Draw();
-
-	// 影描画
-	DrawShadow();
-
 	enemyManager_->Draw();
 	player_->Draw();
+
+	// 描画に使用するシャドウマップの設定を解除
+	SetUseShadowMap(0, -1);
+	// シャドウマップの削除
+	DeleteShadowMap(shadowMapHandle);
+
 	stage_->DrawUI();
+
+	for (auto& ui : gameUIs_)
+	{
+		ui->Draw();
+	}
 }
 
-
-// リアルシャドウ描画
-void GameScene::DrawShadow(void)
+// シャドウマップ作成
+int GameScene::CreateShadowMap(void)
 {
 	// シャドウマップハンドルの作成
-	int ShadowMapHandle = MakeShadowMap(1024, 1024);
+	int shadowMapHandle = MakeShadowMap(1024, 1024);
 	// シャドウマップが想定するライトの方向もセット
-	SetShadowMapLightDirection(ShadowMapHandle, { 0.3f, -0.7f, 0.8f });
+	SetShadowMapLightDirection(shadowMapHandle, { 0.3f, -0.7f, 0.8f });
 	// シャドウマップに描画する範囲を設定
-	SetShadowMapDrawArea(ShadowMapHandle, 
+	SetShadowMapDrawArea(shadowMapHandle,
 		VGet(player_->GetTransform().pos.x - 1000.0f, player_->GetTransform().pos.y - 1.0f, player_->GetTransform().pos.z -1000.0f), 
 		VGet(player_->GetTransform().pos.x + 1000.0f, player_->GetTransform().pos.y + 1000.0f, player_->GetTransform().pos.z + 1000.0f));
 
 	// シャドウマップへの描画の準備
-	ShadowMap_DrawSetup(ShadowMapHandle);
+	ShadowMap_DrawSetup(shadowMapHandle);
 
 	// シャドウマップへステージモデルの描画
 	MV1DrawModel(stage_->GetTransform().modelId);
@@ -147,17 +160,5 @@ void GameScene::DrawShadow(void)
 	// シャドウマップへの描画を終了
 	ShadowMap_DrawEnd();
 
-	// 描画に使用するシャドウマップを設定
-	SetUseShadowMap(0, ShadowMapHandle);
-
-	// ステージモデルの描画
-	MV1DrawModel(stage_->GetTransform().modelId);
-	// キャラクターモデルの描画
-	MV1DrawModel(player_->GetTransform().modelId);
-
-	// 描画に使用するシャドウマップの設定を解除
-	SetUseShadowMap(0, -1);
-
-	// シャドウマップの削除
-	DeleteShadowMap(ShadowMapHandle);
+	return shadowMapHandle;
 }

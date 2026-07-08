@@ -9,7 +9,7 @@ class ItemManager;
 class Player;
 class Camera;
 class EnemyManager;
-
+class GameUI;
 
 class GameScene : public SceneBase
 {
@@ -45,7 +45,9 @@ private:
 	std::unique_ptr<Camera> camera_;
 	// 敵
 	EnemyManager* enemyManager_;
+	// ゲームUI
+	std::vector<std::unique_ptr<GameUI>> gameUIs_;
 
-	// リアルシャドウ描画
-	void DrawShadow(void);
+	// シャドウマップ作成
+	int CreateShadowMap(void);
 };

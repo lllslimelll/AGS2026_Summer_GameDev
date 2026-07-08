@@ -172,7 +172,6 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp" />
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
-    <ClCompile Include="Src\Object\UI\UI.cpp" />
     <ClCompile Include="Src\Object\UI\TitleUI\TitleUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\StatusUI.cpp" />
   </ItemGroup>
