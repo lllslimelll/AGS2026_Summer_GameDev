@@ -48,10 +48,10 @@ public:
 	void SetCameraTransform(const Transform* cameraTransform);
 	void SetForward(const VECTOR forward);
 protected:
-
+	
 	// リソースロード
 	virtual void InitLoad(void) override;
-
+	
 	// 大きさ、回転、座標の初期化
 	virtual void InitTransform(void) override;
 
@@ -65,9 +65,6 @@ protected:
 	virtual void InitPost(void) override;
 
 private:
-	// マウス移動検知用（前フレームの座標）
-	int prevMouseX_ = -1;
-	int prevMouseY_ = -1;
 
 	// 移動速度（通常）
 	static constexpr float SPEED_MOVE = 2.5f;
@@ -111,6 +108,9 @@ private:
 	// インベントリ
 	static constexpr int INVENTORY_MAX = 5;
 
+	// 状態
+	STATE state_;
+
 	// ステージ
 	Stage* stage_;
 
@@ -140,6 +140,13 @@ private:
 
 	// 状態遷移
 	void ChangeState(STATE state);
+	void ChangeStateIdle(void);
+	void ChangeStateDead(void);
+	void ChangeStateEnd(void);
+
+	// 更新系
+	void UpdateIdle(void);
+	void UpdateDead(void);
 
 	// アイテム関連更新
 	void UpdateItem(void);
@@ -187,32 +194,15 @@ private:
 	int   hp_;
 	float oxygen_;
 	float suffocateTimer_;  // 酸素切れ後の経過時間
-	bool  isDead_;
 
 
 	// 更新
 	void UpdateOxygenAndHp(void);
 
-	// ダメージ
+	// 被ダメージ
 	void OnDamaged(int amount);
-
-	void OnDeath(void);
 
 	// 操作ヘルプ（右端固定・動的表示）
 	void DrawControlHelp(void);
-
-
-	// 死亡メニュー
-	enum class DEATH_MENU
-	{
-		RETRY,
-		TITLE,
-		MAX,
-	};
-	int deathMenuIndex_ = 0;  // 0=リトライ, 1=タイトル
-
-	// 死亡メニュー処理
-	void UpdateDeathMenu(void);
-	void DrawDeathMenu(void);
 };
 

@@ -209,7 +209,7 @@ void EnemyRobot::Draw(void)
 void EnemyRobot::ChangeState(STATE state)
 {
 	state_ = state;
-	EnemyBase::ChangeState(static_cast<int>(state_));
+	CharactorBase::ChangeState(static_cast<int>(state_));
 }
 
 void EnemyRobot::ChangeStateNone(void)

@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\DeadScene.cpp" />
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\InventoryUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\GameUI.cpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="Src\Object\UI\GameUI\StatusUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\DeadScene.h" />
     <ClInclude Include="Src\Manager\SoundManager.h" />
     <ClInclude Include="Src\Object\UI\GameUI\InventoryUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\GameUI.h" />

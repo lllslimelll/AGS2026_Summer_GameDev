@@ -27,6 +27,7 @@ public:
 		TITLE,
 		GAME,
 		PAUSE,
+		DEAD,
 		RESULT,
 		DEBUG,
 	};

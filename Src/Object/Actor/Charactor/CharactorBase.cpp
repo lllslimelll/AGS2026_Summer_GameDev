@@ -16,8 +16,9 @@ CharactorBase::CharactorBase(void)
 	moveSpeed_(),
 	movePow_(AsoUtility::VECTOR_ZERO),
 	isJump_(false),
-	state_(-1),
+	stateBase_(-1),
 	stateUpdate_(nullptr),
+	isEnd_(false),
 	animCtrl_()
 {
 }
@@ -71,6 +72,7 @@ void CharactorBase::Release()
 	if (animCtrl_ != nullptr)
 	{
 		animCtrl_->Release();
+		delete animCtrl_;
 	}
 
 	ActorBase::Release();
@@ -84,10 +86,10 @@ void CharactorBase::InitLoad(void)
 
 void CharactorBase::ChangeState(int state)
 {
-	state_ = state;
+	stateBase_ = state;
 
 	// ó‘Ô‘JˆÚ‚Ì‰Šúˆ—
-	stateChanges_[state]();
+	stateChanges_[stateBase_]();
 }
 
 void CharactorBase::Rotate(void)

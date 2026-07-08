@@ -7,7 +7,6 @@ EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, Player* player)
 	player_(player),
 	type_(data.type),
 	hp_(data.hp),
-	stateBase_(-1),
 	defaultPos_(data.defaultPos),
 	movableRange_(data.movableRange)
 {
@@ -29,14 +28,6 @@ void EnemyBase::Draw(void)
 	//DrawSphere3D(defaultPos_, movableRange_, 16, 0x000099, 0x000099, false);
 
 #endif // _DEBUG
-}
-
-void EnemyBase::ChangeState(int state)
-{
-	stateBase_ = state;
-
-	// Šeó‘Ô‘JˆÚ‚Ì‰Šúˆ—
-	stateChanges_[stateBase_]();
 }
 
 bool EnemyBase::InMovableRange(void) const

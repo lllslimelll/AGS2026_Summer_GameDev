@@ -36,7 +36,7 @@ protected:
 	AnimationController* animCtrl_;
 
 	// 状態
-	int state_;
+	int stateBase_;
 
 	// 状態遷移時の初期処理
 	std::map<int, std::function<void(void)>> stateChanges_;
@@ -66,6 +66,9 @@ protected:
 	bool isJump_;
 	// ジャンプの入力受付時間
 	float stepJump_;
+
+	// 更新停止フラグ
+	bool isEnd_;
 
 	// 丸影画像
 	int imgShadow_;

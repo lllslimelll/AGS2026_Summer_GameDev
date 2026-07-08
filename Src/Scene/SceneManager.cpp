@@ -5,6 +5,7 @@
 #include "TitleScene.h"
 #include "GameScene.h"
 #include "PauseScene.h"
+#include "DeadScene.h" 
 #include "ResultScene.h"
 #include "DebugScene.h"
 #include "../Common/Fader.h"
@@ -209,6 +210,10 @@ void SceneManager::PushOverlay(SCENE_ID sceneId)
 	{
 	case SCENE_ID::PAUSE:
 		scenes_.push_back(std::make_unique<PauseScene>());
+		SetMouseDispFlag(true);
+		break;
+	case SCENE_ID::DEAD:
+		scenes_.push_back(std::make_unique<DeadScene>());
 		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::RESULT:

@@ -126,7 +126,7 @@ void EnemyRat::ChangeState(STATE state)
 	state_ = state;
 
 	// ó‘Ô‘JˆÚ‚Ì‰Šúˆ—
-	EnemyBase::stateChanges_[static_cast<int>(state_)]();
+	CharactorBase::ChangeState(static_cast<int>(state_));
 }
 
 void EnemyRat::ChangeStateNone(void)

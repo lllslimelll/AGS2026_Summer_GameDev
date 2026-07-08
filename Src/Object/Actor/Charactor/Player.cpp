@@ -23,7 +23,6 @@ Player::Player(ItemManager* itemMng, Stage* stage)
 	oxygen_(MAX_OXYGEN),
 	suffocateTimer_(0.0f),
 	isBoost_(false),
-	isDead_(false),
 	aimedItem_(nullptr),
 	inventory_{},
 	selectedSlot_(0),
@@ -37,7 +36,34 @@ Player::~Player(void)
 
 void Player::ChangeState(STATE state)
 {
-	CharactorBase::ChangeState(static_cast<int>(state));
+	state_ = state;
+	CharactorBase::ChangeState(static_cast<int>(state_));
+}
+void Player::ChangeStateIdle(void)
+{
+	stateUpdate_ = std::bind(&Player::UpdateIdle, this);
+}
+void Player::ChangeStateDead(void)
+{
+	stateUpdate_ = std::bind(&Player::UpdateDead, this);
+
+	SoundManager::GetInstance().StopWalk();
+}
+void Player::ChangeStateEnd(void)
+{
+	// 死亡シーンのオーバーレイを追加
+	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
+}
+
+void Player::UpdateIdle(void)
+{
+	ProcessMove();
+	ProcessJump();
+	CollisionReserve();
+	UpdateOxygenAndHp();
+}
+void Player::UpdateDead(void)
+{
 }
 
 void Player::ProcessMove(void)
@@ -194,34 +220,13 @@ void Player::ProcessJump(void)
 
 void Player::UpdateProcess(void)
 {
-	if (isDead_)
-	{
-		// 移動量と移動方向をリセット
-		movePow_ = AsoUtility::VECTOR_ZERO;
-		jumpPow_ = AsoUtility::VECTOR_ZERO;
-		moveSpeed_ = 0.0f;
-		SetMouseDispFlag(true);
-		UpdateDeathMenu();
-		animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), false);
-		return;
-	}
-
-	// 移動処理
-	ProcessMove();
-
-	// ジャンプ処理
-	ProcessJump();
-
-	// 衝突判定用の調整
-	CollisionReserve();
-
-	// 酸素とHP更新
-	UpdateOxygenAndHp();
+	// 状態別更新
+	stateUpdate_();
 }
 
 void Player::UpdateProcessPost(void)
 {
-	if (isDead_) return;
+	if (state_ == STATE::DEAD) return;
 
 	// アイテム更新
 	UpdateItem();
@@ -505,12 +510,6 @@ void Player::Draw(void)
 
 	DrawControlHelp();
 
-	// 死亡メニュー（最前面）
-	if (isDead_)
-	{
-		DrawDeathMenu();
-	}
-
 
 	/*DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
@@ -629,8 +628,7 @@ bool Player::IsAimingRoket(void) const
 
 void Player::UpdateOxygenAndHp(void)
 {
-	// 死亡済みなら何もしない
-	if (isDead_) return;
+	if (state_ == STATE::DEAD) return;
 
 	const float dt = SceneManager::GetInstance().GetDeltaTime();
 
@@ -656,24 +654,14 @@ void Player::UpdateOxygenAndHp(void)
 	}
 }
 
-void Player::OnDamaged(int amount)
+void Player::OnDamaged(int damage)
 {
-	if (isDead_) return;
-
-	hp_ -= amount;
+	hp_ -= damage;
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
-		OnDeath();
+		ChangeState(STATE::DEAD);
 	}
-}
-
-void Player::OnDeath(void)
-{
-	isDead_ = true;
-	deathMenuIndex_ = 0;
-
-	SoundManager::GetInstance().StopWalk();
 }
 
 void Player::DrawControlHelp(void)
@@ -726,131 +714,6 @@ void Player::DrawControlHelp(void)
 		int y = MARGIN_TOP + i * LINE_SPAN;
 
 		DrawString(x, y, buf, GetColor(255, 255, 255));
-	}
-
-	SetFontSize(prevSize);
-}
-
-void Player::UpdateDeathMenu(void)
-{
-	auto& ins = InputManager::GetInstance();
-
-	// 上下で選択
-	bool up = ins.IsTriggered(InputManager::InputCommand::UI_UP);
-	bool down = ins.IsTriggered(InputManager::InputCommand::UI_DOWN);
-
-	constexpr int MENU_MAX = static_cast<int>(DEATH_MENU::MAX);
-	if (up)   deathMenuIndex_ = (deathMenuIndex_ - 1 + MENU_MAX) % MENU_MAX;
-	if (down) deathMenuIndex_ = (deathMenuIndex_ + 1) % MENU_MAX;
-
-	// ===== マウスでの選択 =====
-	int screenW, screenH;
-	GetScreenState(&screenW, &screenH, nullptr);
-
-	int mouseX, mouseY;
-	GetMousePoint(&mouseX, &mouseY);
-
-	// マウスが動いた時だけホバー判定を行う
-	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
-
-	if (mouseMoved)
-	{
-		const char* labels[MENU_MAX] = { "リトライ", " タイトルへ" };
-
-		int baseY = screenH / 2 - 20;
-		constexpr int ITEM_SPAN = 110;
-		constexpr int MENU_FONT = 70;
-
-		int prevSize = GetFontSize();
-		SetFontSize(MENU_FONT);
-
-		int mouseHoverIndex = -1;
-		for (int i = 0; i < MENU_MAX; i++)
-		{
-			int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
-			int x = (screenW - textW) / 2;
-			int y = baseY + i * ITEM_SPAN;
-
-			if (mouseX >= x - 60 && mouseX <= x + textW &&
-				mouseY >= y && mouseY <= y + ITEM_SPAN)
-			{
-				mouseHoverIndex = i;
-				break;
-			}
-		}
-
-		SetFontSize(prevSize);
-
-		// マウスが動いたら、外れている場合も含めて反映する（未選択(-1)もありえる）
-		deathMenuIndex_ = mouseHoverIndex;
-	}
-
-	prevMouseX_ = mouseX;
-	prevMouseY_ = mouseY;
-
-	// 決定
-	bool decide = ins.IsTriggered(InputManager::InputCommand::UI_DECIDE);
-
-	if (!decide || deathMenuIndex_ < 0) return;
-
-	switch (static_cast<DEATH_MENU>(deathMenuIndex_))
-	{
-	case DEATH_MENU::RETRY:
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::GAME);
-		break;
-	case DEATH_MENU::TITLE:
-		SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
-		break;
-	default: break;
-	}
-}
-
-void Player::DrawDeathMenu(void)
-{
-	int screenW, screenH;
-	GetScreenState(&screenW, &screenH, nullptr);
-
-	// 半透明黒で画面全体を覆う
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	DrawBox(0, 0, screenW, screenH, 0x000000, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	int prevSize = GetFontSize();
-
-	// タイトル
-	constexpr int TITLE_FONT = 140;
-	SetFontSize(TITLE_FONT);
-	const char* title = "調査失敗";
-	int titleW = GetDrawStringWidth(title, (int)strlen(title));
-	DrawString((screenW - titleW) / 2, screenH / 2 - 280, title, 0xff4040);
-
-	// メニュー項目
-	constexpr int MENU_FONT = 70;
-	SetFontSize(MENU_FONT);
-
-	const char* labels[static_cast<int>(DEATH_MENU::MAX)] =
-	{
-		"リトライ",
-		" タイトルへ",
-	};
-
-	int baseY = screenH / 2 - 20;
-	constexpr int ITEM_SPAN = 110;
-
-	for (int i = 0; i < static_cast<int>(DEATH_MENU::MAX); i++)
-	{
-		bool selected = (i == deathMenuIndex_);
-		unsigned int color = selected ? 0xffff60 : 0xaaaaaa;
-
-		int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
-		int x = (screenW - textW) / 2;
-		int y = baseY + i * ITEM_SPAN;
-
-		if (selected)
-		{
-			DrawString(x - 60, y, ">", color);
-		}
-		DrawString(x, y, labels[i], color);
 	}
 
 	SetFontSize(prevSize);
@@ -923,5 +786,18 @@ void Player::InitPost(void)
 	transform_.Update();
 
 	animCtrl_->Play(0, true);
+
+	// 状態遷移初期処理登録
+	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
+		std::bind(&Player::ChangeStateIdle, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::DEAD),
+		std::bind(&Player::ChangeStateDead, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::END),
+		std::bind(&Player::ChangeStateEnd, this));
+
+	// 初期状態設定
+	ChangeState(STATE::IDLE);
 }
 
