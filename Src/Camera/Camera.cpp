@@ -215,16 +215,10 @@ void Camera::SyncFollow(void)
 
 void Camera::ProcessRot(bool isLimit)
 {
-	if (GetJoypadNum() == 0)
-	{
-		// 方向回転によるXYZの移動(マウス)
-		RotMouse(isLimit);
-	}
-	else
-	{
-		// 方向回転によるXYZの移動(ゲームパッド)
-		RotGamePad(isLimit);
-	}
+	// 方向回転によるXYZの移動(マウス)
+	RotMouse(isLimit);
+	// 方向回転によるXYZの移動(ゲームパッド)
+	RotGamePad(isLimit);
 }
 
 void Camera::ProcessMove(void)

@@ -1,5 +1,7 @@
 #pragma once
-class TitleUI
+#include "../UI.h"
+
+class TitleUI : public UI
 {
 };
 

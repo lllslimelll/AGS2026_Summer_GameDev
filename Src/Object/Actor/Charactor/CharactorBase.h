@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+#include <memory>
 #include "../ActorBase.h"
 class AnimationController;
 
@@ -31,7 +33,16 @@ public:
 protected:
 
 	// アニメーション
-	AnimationController* animController_;
+	AnimationController* animCtrl_;
+
+	// 状態
+	int state_;
+
+	// 状態遷移時の初期処理
+	std::map<int, std::function<void(void)>> stateChanges_;
+
+	// 毎フレームの更新処理
+	std::function<void(void)> stateUpdate_;
 
 	// カメラの前方向（キャラの前方向）
 	VECTOR faceDir_;
@@ -69,13 +80,16 @@ protected:
 
 	// リソースロード
 	virtual void InitLoad(void) override;
-
+	
 	// 更新系
 	virtual void UpdateProcess(void) = 0;
 	virtual void UpdateProcessPost(void) = 0;
 
+	// 状態遷移
+	virtual void ChangeState(int state);
+
 	// 移動方向に応じた遅延回転
-	void DelayRotate(void);
+	void Rotate(void);
 
 	// 重力計算
 	void CalcGravityPow(void);
@@ -85,10 +99,5 @@ protected:
 	void Collision(void);
 	void CollisionGravity(void);
 	void CollisionCapsule(void);
-
-	// 丸影描画
-	void DrawShadow(void);
-	// リアルシャドウ描画
-	void DrawRealShadow(void);
 };
 

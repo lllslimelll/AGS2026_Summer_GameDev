@@ -8,15 +8,13 @@ class GameUI : public UI
 {
 public:
 
-    GameUI(std::unique_ptr<Player> player);
+    GameUI(const Player& player);
     virtual ~GameUI(void) = default;
 
-    virtual void Init(void) override;
-    virtual void Draw(void) override;
-    virtual void Release(void) override;
+    virtual void Draw(void) override = 0;
 
-public:
+protected:
 
-    std::unique_ptr<Player> player_;
+    const Player& player_;
 };
 

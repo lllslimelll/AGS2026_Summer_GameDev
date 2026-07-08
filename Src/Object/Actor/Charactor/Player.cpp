@@ -35,41 +35,39 @@ Player::~Player(void)
 {
 }
 
+void Player::ChangeState(STATE state)
+{
+	CharactorBase::ChangeState(static_cast<int>(state));
+}
+
 void Player::ProcessMove(void)
 {
 	auto& ins = InputManager::GetInstance();
 
 	// 移動量
 	movePow_ = AsoUtility::VECTOR_ZERO;
-
 	// 移動方向
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	VECTOR kDir = AsoUtility::VECTOR_ZERO;
+	VECTOR dDir = AsoUtility::VECTOR_ZERO;
 
-	// ブーストフラグを折る
-	isBoost_ = false;
+	// 移動操作（キーボード）
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_FORWARD)) { kDir = VAdd(kDir, AsoUtility::DIR_F); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK))	 { kDir = VAdd(kDir, AsoUtility::DIR_B); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT))	 { kDir = VAdd(kDir, AsoUtility::DIR_L); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_RIGHT))	 { kDir = VAdd(kDir, AsoUtility::DIR_R); }
+	// 斜め入力時に正規化（長さを1に統一）
+	if (!AsoUtility::EqualsVZero(kDir)) { kDir = VNorm(kDir); }
 
-	// ゲームパッドが接続数で処理を分ける
-	if (GetJoypadNum() == 0)
-	{
-		// 移動
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_FORWARD)) { dir = AsoUtility::DIR_F; }
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK)) { dir = AsoUtility::DIR_B; }
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT)) { dir = AsoUtility::DIR_L; }
-		if (ins.IsPressed(InputManager::InputCommand::MOVE_RIGHT)) { dir = AsoUtility::DIR_R; }
-	}
-	else
-	{
-		// ゲームパッド操作
-		// 左スティックの方向を取得
-		dir = ins.GetInstance().GetLeftStickDirection();
-	}
-
+	// 移動操作（ゲームパッド）
+	dDir = ins.GetInstance().GetLeftStickDirection();
+	
 	// ブースト
-	if (ins.IsPressed(InputManager::InputCommand::BOOST)) { isBoost_ = true; }
+	if (ins.IsTriggered(InputManager::InputCommand::BOOST)) { isBoost_ = true; }
 
 	if(isJump_) SoundManager::GetInstance().StopWalk();
 
-	if (!AsoUtility::EqualsVZero(dir))
+	// 移動入力がある場合
+	if (!AsoUtility::EqualsVZero(kDir) || !AsoUtility::EqualsVZero(dDir))
 	{
 		SoundManager::GetInstance().PlayWalk();
 
@@ -95,44 +93,39 @@ void Player::ProcessMove(void)
 
 		// dirに合わせて移動ベクトルを合成
 		VECTOR moveVec = AsoUtility::VECTOR_ZERO;
-		moveVec = VAdd(moveVec, VScale(surfaceForward, dir.z)); // 左右の移動を加算
-		moveVec = VAdd(moveVec, VScale(surfaceRight, dir.x));	// 前後の移動を加算
+		moveVec = VAdd(moveVec, VScale(surfaceForward, kDir.z)); // 左右の移動を加算（キーボード）
+		moveVec = VAdd(moveVec, VScale(surfaceRight, kDir.x));	 // 前後の移動を加算（キーボード）
+		moveVec = VAdd(moveVec, VScale(surfaceForward, dDir.z)); // 左右の移動を加算（ゲームパッド）
+		moveVec = VAdd(moveVec, VScale(surfaceRight, dDir.x));	 // 前後の移動を加算（ゲームパッド）
 
 		// 移動ベクトルの正規化
-		if(AsoUtility::SqrMagnitudeF(moveVec) > 0.0001f)
+		moveDir_ = VNorm(moveVec);
+
+		if (isBoost_)
 		{
-			moveDir_ = VNorm(moveVec);
+			// ダッシュ速度
+			moveSpeed_ = SPEED_DASH;
+
+			// 速く走るアニメーション再生
+			animCtrl_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
+
+			//SoundManager::GetInstance().PlayBoost();
 		}
-
-		// ジャンプ中はアニメーションを変えない
-		//if (!isJump_)
+		else
 		{
-			if (isBoost_)
-			{
-				// ダッシュ速度
-				moveSpeed_ = SPEED_DASH;
+			// 歩行速度
+			moveSpeed_ = SPEED_MOVE;
 
-				// 速く走るアニメーション再生
-				animController_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
+			// 走るアニメーション再生
+			animCtrl_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
 
-				//SoundManager::GetInstance().PlayBoost();
-			}
-			else
-			{
-				// 歩行速度
-				moveSpeed_ = SPEED_MOVE;
-
-				// 走るアニメーション再生
-				animController_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
-
-				//SoundManager::GetInstance().StopBoost();
-			}
+			//SoundManager::GetInstance().StopBoost();
 		}
 
 		// 移動速度を反映
 		movePow_ = VScale(moveDir_, moveSpeed_);
 	}
-	else
+	else // 移動入力がない場合
 	{
 		SoundManager::GetInstance().StopWalk();
 
@@ -144,14 +137,14 @@ void Player::ProcessMove(void)
 		faceDir_ = VNorm(VSub(camForward, VScale(upDir, dotF)));
 
 		// ジャンプ中はアニメーションを変えない
-		if (!isJump_)
-		{
-			animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-		}
+		if (!isJump_) { animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); }
 
 		// ブーストフラグを折る
 		isBoost_ = false;
 	}
+	
+	// 後退中はブーストを無効化
+	if(kDir.z < 0.0f || dDir.z < 0.0f) { isBoost_ = false; }
 }
 
 void Player::ProcessJump(void)
@@ -176,7 +169,7 @@ void Player::ProcessJump(void)
 		isJump_ = true;
 
 		// アニメーション再生
-		animController_->Play(
+		animCtrl_->Play(
 			static_cast<int>(ANIM_TYPE::JUMP), false);
 	}
 
@@ -209,7 +202,7 @@ void Player::UpdateProcess(void)
 		moveSpeed_ = 0.0f;
 		SetMouseDispFlag(true);
 		UpdateDeathMenu();
-		animController_->Play(static_cast<int>(ANIM_TYPE::IDLE), false);
+		animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), false);
 		return;
 	}
 
@@ -229,6 +222,7 @@ void Player::UpdateProcess(void)
 void Player::UpdateProcessPost(void)
 {
 	if (isDead_) return;
+
 	// アイテム更新
 	UpdateItem();
 
@@ -509,9 +503,6 @@ void Player::Draw(void)
 
 	DrawCircle(cx, cy, radius, GetColor(255, 255, 255), isFilled ? TRUE : FALSE);
 
-	
-	DrawStatusUI();
-
 	DrawControlHelp();
 
 	// 死亡メニュー（最前面）
@@ -524,6 +515,16 @@ void Player::Draw(void)
 	/*DrawFormatString(0, 0, GetColor(255, 255, 255),
 		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
 		transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
+}
+
+int Player::GetHp(void) const
+{
+	return hp_;
+}
+
+float Player::GetOxygen(void) const
+{
+	return oxygen_;
 }
 
 void Player::SetCameraTransform(const Transform* cameraTransform)
@@ -540,7 +541,7 @@ void Player::SetForward(const VECTOR forward)
 void Player::CollisionReserve(void)
 {
 	//// アニメーションごとの線分調整
-	//if (animController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
+	//if (animCtrl_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
 	//{
 	//	// ジャンプ中は線分を伸ばす
 	//	if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)) != 0)
@@ -565,7 +566,7 @@ void Player::CollisionReserve(void)
 	// inplaceアニメーションに変えたらここも削除！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 
 	// アニメーションごとのカプセル調整
-	if (animController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
+	if (animCtrl_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
 	{
 		// ジャンプ中はカプセルを伸ばす
 		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
@@ -651,11 +652,11 @@ void Player::UpdateOxygenAndHp(void)
 	if (suffocateTimer_ >= SUFFOCATE_INTERVAL)
 	{
 		suffocateTimer_ -= SUFFOCATE_INTERVAL;  // 余剰時間は次周期に持ち越し
-		TakeDamage(SUFFOCATE_DAMAGE);
+		OnDamaged(SUFFOCATE_DAMAGE);
 	}
 }
 
-void Player::TakeDamage(int amount)
+void Player::OnDamaged(int amount)
 {
 	if (isDead_) return;
 
@@ -673,70 +674,6 @@ void Player::OnDeath(void)
 	deathMenuIndex_ = 0;
 
 	SoundManager::GetInstance().StopWalk();
-}
-
-void Player::DrawStatusUI(void)
-{
-		int screenW, screenH;
-		GetScreenState(&screenW, &screenH, nullptr);
-
-		// ===== インベントリと同じレイアウト計算 =====
-		const int size = 130;
-		const int padding = 35;
-		const int slotSpan = size + padding;
-		const int totalWidth = INVENTORY_MAX * slotSpan - padding;
-		const int startX = (screenW - totalWidth) / 2 + 10 - 0;   // ← 元に戻した
-		const int marginBottom = 70;
-		const int invTopY = screenH - size - marginBottom;
-
-		// ===== ゲージの寸法 =====
-		constexpr int BAR_H = 28;
-		constexpr int GAP = 16;
-		constexpr int MID_GAP = 20;
-		constexpr int FONT_LABEL = 24;
-
-		int barY = invTopY - GAP - BAR_H;
-		int halfW = (totalWidth - MID_GAP) / 2;
-
-		// ===== HPバー（左半分） =====
-		int hpL = startX;
-		int hpR = hpL + halfW;
-		int hpFill = static_cast<int>(halfW * (static_cast<float>(hp_) / MAX_HP));
-
-		DrawBox(hpL, barY, hpL + hpFill, barY + BAR_H, 0xff3030, TRUE);
-		DrawBox(hpL, barY, hpR, barY + BAR_H, 0xffffff, FALSE);
-
-		// ===== O2バー（右半分） =====
-		int oxL = hpR + MID_GAP;
-		int oxR = oxL + halfW;
-		int oxFill = static_cast<int>(halfW * (oxygen_ / MAX_OXYGEN));
-		unsigned int oxColor = (oxygen_ <= 0.0f) ? 0xff8800 : 0x30a0ff;
-
-		DrawBox(oxL, barY, oxL + oxFill, barY + BAR_H, oxColor, TRUE);
-		DrawBox(oxL, barY, oxR, barY + BAR_H, 0xffffff, FALSE);
-
-		// ===== ラベル（バーの上） =====
-		int prevSize = GetFontSize();
-		SetFontSize(FONT_LABEL);
-		int labelY = barY - FONT_LABEL - 2;
-
-		int hpPercent = (int)(static_cast<float>(hp_) / MAX_HP * 100);
-		DrawFormatString(hpL, labelY, 0xffffff, "HP  %d%%", hpPercent);
-
-		DrawString(oxL, labelY, "O", 0xffffff);
-		int oW = GetDrawStringWidth("O", 1);
-
-		constexpr int FONT_SUB = 16;
-		SetFontSize(FONT_SUB);
-		int subY = labelY + (FONT_LABEL - FONT_SUB) + 4;
-		DrawString(oxL + oW, subY, "2", 0xffffff);
-		int twoW = GetDrawStringWidth("2", 1);
-
-		int oxPercent = (int)(oxygen_ / MAX_OXYGEN * 100);
-		SetFontSize(FONT_LABEL);
-		DrawFormatString(oxL + oW + twoW + 4, labelY, 0xffffff, " %d%%", oxPercent);
-
-		SetFontSize(prevSize);
 }
 
 void Player::DrawControlHelp(void)
@@ -971,20 +908,20 @@ void Player::InitCollider(void)
 void Player::InitAnimation(void)
 {
 	// アニメーション
-	animController_ = new AnimationController(transform_.modelId);
-	animController_->Add(static_cast<int>(ANIM_TYPE::IDLE), 20.0f, resMng_.Load(ResourceManager::SRC::IDLE).path_);
+	animCtrl_ = new AnimationController(transform_.modelId);
+	animCtrl_->Add(static_cast<int>(ANIM_TYPE::IDLE), 20.0f, resMng_.Load(ResourceManager::SRC::IDLE).path_);
 
-	animController_->Add(static_cast<int>(ANIM_TYPE::RUN), 20.0f, resMng_.Load(ResourceManager::SRC::RUN).path_);
+	animCtrl_->Add(static_cast<int>(ANIM_TYPE::RUN), 20.0f, resMng_.Load(ResourceManager::SRC::RUN).path_);
 
-	animController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN), 20.0f, resMng_.Load(ResourceManager::SRC::FAST_RUN).path_);
+	animCtrl_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN), 20.0f, resMng_.Load(ResourceManager::SRC::FAST_RUN).path_);
 
-	animController_->Add(static_cast<int>(ANIM_TYPE::JUMP), 20.0f, resMng_.Load(ResourceManager::SRC::JUMP_RISING).path_);
+	animCtrl_->Add(static_cast<int>(ANIM_TYPE::JUMP), 20.0f, resMng_.Load(ResourceManager::SRC::JUMP_RISING).path_);
 }
 
 void Player::InitPost(void)
 {
 	transform_.Update();
 
-	animController_->Play(0, true);
+	animCtrl_->Play(0, true);
 }
 
