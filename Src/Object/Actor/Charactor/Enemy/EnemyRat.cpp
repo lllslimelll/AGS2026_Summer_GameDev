@@ -84,7 +84,7 @@ void EnemyRat::InitAnimation(void)
 
 void EnemyRat::InitPost(void)
 {
-	// ó‘Ô‘JˆÚ‰Šúˆ—“o˜^
+	// ó‘Ô‘JˆÚˆ—‚ÌƒoƒCƒ“ƒh‚ğ“o˜^
 	stateChanges_.emplace(static_cast<int>(STATE::NONE),
 		std::bind(&EnemyRat::ChangeStateNone, this));
 	stateChanges_.emplace(static_cast<int>(STATE::THINK),
@@ -125,7 +125,7 @@ void EnemyRat::ChangeState(STATE state)
 {
 	state_ = state;
 
-	// Šeó‘Ô‘JˆÚ‚Ì‰Šúˆ—
+	// ó‘Ô‘JˆÚ‚Ì‰Šúˆ—
 	EnemyBase::stateChanges_[static_cast<int>(state_)]();
 }
 

@@ -35,6 +35,11 @@ Player::~Player(void)
 {
 }
 
+void Player::ChangeState(STATE state)
+{
+	CharactorBase::ChangeState(static_cast<int>(state));
+}
+
 void Player::ProcessMove(void)
 {
 	auto& ins = InputManager::GetInstance();

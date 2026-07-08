@@ -16,6 +16,8 @@ CharactorBase::CharactorBase(void)
 	moveSpeed_(),
 	movePow_(AsoUtility::VECTOR_ZERO),
 	isJump_(false),
+	state_(-1),
+	stateUpdate_(nullptr),
 	animCtrl_()
 {
 }
@@ -32,8 +34,8 @@ void CharactorBase::Update(void)
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
 
-	// 移動方向に応じた遅延回転
-	DelayRotate();
+	// 移動方向に応じた回転
+	Rotate();
 
 	// 重力による移動量
 	CalcGravityPow();
@@ -80,7 +82,15 @@ void CharactorBase::InitLoad(void)
 	imgShadow_ = resMng_.Load(ResourceManager::SRC::PLAYER_SHADOW).handleId_;
 }
 
-void CharactorBase::DelayRotate(void)
+void CharactorBase::ChangeState(int state)
+{
+	state_ = state;
+
+	// 状態遷移時の初期処理
+	stateChanges_[state]();
+}
+
+void CharactorBase::Rotate(void)
 {
 	// 上方向
 	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));

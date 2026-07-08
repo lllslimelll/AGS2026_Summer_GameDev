@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <array>
 #include "CharactorBase.h"
 
@@ -14,8 +15,6 @@ public:
 	enum class STATE
 	{
 		IDLE,
-		WALK,
-		BOOST,
 		DEAD,
 		END,
 	};
@@ -139,6 +138,9 @@ private:
 	// 照準の現在半径（補間用）
 	float crosshairRadius_;
 
+	// 状態遷移
+	void ChangeState(STATE state);
+
 	// アイテム関連更新
 	void UpdateItem(void);
 
@@ -196,8 +198,6 @@ private:
 
 	void OnDeath(void);
 
-	// UI描画
-	void DrawStatusUI(void);
 	// 操作ヘルプ（右端固定・動的表示）
 	void DrawControlHelp(void);
 
