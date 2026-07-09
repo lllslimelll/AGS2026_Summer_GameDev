@@ -4,7 +4,7 @@
 #include <memory>
 class ActorBase;
 class SkyDome;
-class Stage;
+class StageManager;
 class ItemManager;
 class Player;
 class Camera;
@@ -36,7 +36,7 @@ private:
 	// スカイドーム
 	SkyDome* skyDome_;
 	// ステージ
-	Stage* stage_;
+	std::unique_ptr<StageManager> stageMng_;
 	// アイテム
 	ItemManager* itemMng_;
 	// プレイヤー

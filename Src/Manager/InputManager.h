@@ -22,7 +22,7 @@ public:
 		JUMP,	  // ジャンプ
 		BOOST, 	  // ブースト
 		PICK_UP,  // 拾う
-		PUT_DOWN, // 落とす
+		DROP,	  // 落とす
 		DELIVERY, // 納品
 		RETURN,	  // 帰還
 

@@ -5,7 +5,7 @@
 #include "SceneBase.h"
 
 class Camera;
-class Stage;
+class StageManager;
 
 class DebugScene : public SceneBase
 {
@@ -28,7 +28,7 @@ private:
 	std::unique_ptr<Camera> camera_;
 
 	// ステージ
-	Stage* stage_;
+	StageManager* stageMng_;
 
 	// デバッグポイント群
 	std::vector<VECTOR> points_;

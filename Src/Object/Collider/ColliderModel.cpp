@@ -85,6 +85,13 @@ bool ColliderModel::IsTargetFrame(int frameIdx) const
 	return false;
 }
 
+bool ColliderModel::IsHitRay(const VECTOR& start, const VECTOR& end) const
+{
+	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(
+		follow_->modelId, -1, start, end, -1);
+	return result.HitFlag == 1;
+}
+
 MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 	const VECTOR& start, const VECTOR& end, bool isExclude, bool isTarget) const
 {
@@ -110,7 +117,7 @@ MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 		}
 
 		// 除外フレームは無視する
-		//if (isExclude && IsExcludeFrame(hit.FrameIndex)) continue;
+		if (isExclude && IsExcludeFrame(hit.FrameIndex)) continue;
 
 		// 指定フレーム以外は無視する
 		if (isTarget && !IsTargetFrame(hit.FrameIndex)) continue;

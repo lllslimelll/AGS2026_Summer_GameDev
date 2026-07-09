@@ -7,7 +7,7 @@
 #include "../../../Collider/ColliderModel.h"
 #include "EnemyRobot.h"
 
-EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data, Player* player)
+EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data, Player& player)
 	:
 	EnemyBase(data, player),
 	state_(STATE::NONE),

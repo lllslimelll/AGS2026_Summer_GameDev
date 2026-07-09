@@ -26,6 +26,9 @@ public:
 	float GetRadius(void) const;
 	void SetRadius(float radius);
 
+	// レイとの当たり判定
+	bool IsHitRay(const VECTOR& rayStart, const VECTOR& rayEnd) const;
+
 	// 指定された回数と距離で三角形の法線方向に押し戻した座標を取得
 	VECTOR GetPosPushBackAlongNormal(
 		const MV1_COLL_RESULT_POLY& hitPoly,

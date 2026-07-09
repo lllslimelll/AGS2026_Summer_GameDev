@@ -40,7 +40,7 @@ public:
 	};
 
 	// コンストラクタ
-	EnemyRobot(const EnemyBase::EnemyData& data, Player* player);
+	EnemyRobot(const EnemyBase::EnemyData& data, Player& player);
 	
 	// デストラクタ
 	~EnemyRobot(void) override;

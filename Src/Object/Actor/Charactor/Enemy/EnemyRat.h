@@ -25,7 +25,7 @@ public:
 	};
 
 	// コンストラクタ
-	EnemyRat(const EnemyBase::EnemyData& data, Player* player);
+	EnemyRat(const EnemyBase::EnemyData& data, Player& player);
 	// デストラクタ
 	~EnemyRat(void) override;
 

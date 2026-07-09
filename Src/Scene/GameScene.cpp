@@ -6,15 +6,19 @@
 #include "../Object/Actor/ActorBase.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyManager.h"
-#include "../Object/Actor/Stage.h"
+#include "../Object/Actor/Stage/StageManager.h"
+#include "../Object/Actor/Stage/Planet.h"
+#include "../Object/Actor/Stage/Rocket.h"
 #include "../Object/Actor/Item/ItemManager.h"
 #include "../Object/Actor/SkyDome.h"
 #include "../Object/UI/GameUI/StatusUI.h"
+#include "../Object/UI/GameUI/GuideUI.h"
+#include "../Object/UI/GameUI/InventoryUI.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
 	:
-	stage_(nullptr),
+	stageMng_(nullptr),
 	itemMng_(nullptr),
 	player_(nullptr),
 	camera_(nullptr),
@@ -26,8 +30,7 @@ GameScene::GameScene(void)
 
 GameScene::~GameScene(void)
 {
-	stage_->Release();
-	delete stage_;
+	stageMng_->Release();
 
 	itemMng_->Release();
 	delete itemMng_;
@@ -43,44 +46,54 @@ GameScene::~GameScene(void)
 
 void GameScene::Init(void)
 {
-	stage_ = new Stage();
+	stageMng_ = std::make_unique<StageManager>();
+	stageMng_->Init();
 
 	itemMng_ = new ItemManager();
 
-	player_ = std::make_unique<Player>(itemMng_, stage_);
+	player_ = std::make_unique<Player>(itemMng_, *stageMng_);
+	player_->Init();
 
 	// カメラ
 	camera_ = std::make_unique<Camera>();
 
-	enemyManager_ = new EnemyManager(player_.get());
+	enemyManager_ = new EnemyManager(*player_);
+	enemyManager_->Init();
 
 	skyDome_ = new SkyDome(player_->GetTransform());
 
 	gameUIs_.emplace_back(std::make_unique<StatusUI>(*player_));
+	gameUIs_.emplace_back(std::make_unique<GuideUI>(*player_));
+	gameUIs_.emplace_back(std::make_unique<InventoryUI>(player_->GetInventory()));
+	for (auto& ui : gameUIs_)
+	{
+		ui->Load();
+	}
 
-	// 初期化
-	stage_->Init();
-	// ステージモデルのコライダー
-	const ColliderBase* stageCollider =
-		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
+	// モデルのコライダー
+	const ColliderBase* planetCollider =
+		stageMng_->GetPlanet().GetOwnCollider(static_cast<int>(Planet::COLLIDER_TYPE::MODEL));
+	const ColliderBase* rocketCollider =
+		stageMng_->GetRocket().GetOwnCollider(static_cast<int>(Rocket::COLLIDER_TYPE::MODEL));
+	const ColliderBase* playerCollider =
+		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));
 
 	// アイテム
 	itemMng_->Init();
-	itemMng_->AddHitCollider(stageCollider);
+	itemMng_->AddHitCollider(planetCollider);
 
-	player_->Init();
-	player_->AddHitCollider(stageCollider);	// ステージモデルのコライダー登録
+	player_->AddHitCollider(planetCollider);
+	player_->AddHitCollider(rocketCollider);
 
-	enemyManager_->Init();
-	enemyManager_->AddHitCollider(stageCollider); // ステージモデルのコライダー登録
-	enemyManager_->AddHitCollider(				  // キャラモデルのコライダー登録
-		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
+	enemyManager_->AddHitCollider(planetCollider); // ステージモデルのコライダー登録
+	enemyManager_->AddHitCollider(playerCollider);
 
 	skyDome_->Init();
 	
 	camera_->SetFollow(&player_->GetTransform());// 追従対象の設定
 	camera_->ChangeMode(Camera::MODE::FOLLOW);	 // モード変更
-	camera_->AddHitCollider(stageCollider);		 // ステージモデルのコライダー登録
+	camera_->AddHitCollider(planetCollider);		 // ステージモデルのコライダー登録
+	camera_->AddHitCollider(rocketCollider);
 
 	player_->SetCameraTransform(&camera_->GetTransform()); // カメラのTransformをプレイヤーに渡す
 	player_->SetForward(camera_->GetForward()); // カメラの前方向をプレイヤーに渡す
@@ -99,7 +112,7 @@ void GameScene::Update(void)
 	}
 
 	// 更新
-	stage_->Update();
+	stageMng_->Update();
 	itemMng_->Update();
 	player_->Update();
 	camera_->Update();
@@ -119,7 +132,7 @@ void GameScene::Draw(void)
 	// 描画に使用するシャドウマップを設定
 	SetUseShadowMap(0, shadowMapHandle);
 	
-	stage_->Draw();
+	stageMng_->Draw();
 	itemMng_->Draw();
 	enemyManager_->Draw();
 	player_->Draw();
@@ -129,7 +142,7 @@ void GameScene::Draw(void)
 	// シャドウマップの削除
 	DeleteShadowMap(shadowMapHandle);
 
-	stage_->DrawUI();
+	stageMng_->DrawUI();
 
 	for (auto& ui : gameUIs_)
 	{
@@ -153,7 +166,7 @@ int GameScene::CreateShadowMap(void)
 	ShadowMap_DrawSetup(shadowMapHandle);
 
 	// シャドウマップへステージモデルの描画
-	MV1DrawModel(stage_->GetTransform().modelId);
+	MV1DrawModel(stageMng_->GetTransform().modelId);
 	// シャドウマップへキャラクターモデルの描画
 	MV1DrawModel(player_->GetTransform().modelId);
 

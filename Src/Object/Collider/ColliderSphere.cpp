@@ -40,6 +40,13 @@ void ColliderSphere::SetRadius(float radius)
 	radius_ = radius;
 }
 
+bool ColliderSphere::IsHitRay(const VECTOR& rayStart, const VECTOR& rayEnd) const
+{
+	return MV1CollCheck_Line(
+		rayStart, rayEnd, 0.0f,  // 半径0のカプセル = 線分
+		GetPos(), radius_) == TRUE;
+}
+
 VECTOR ColliderSphere::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hitPoly, int maxTryCnt, float pushDistance) const
 {
 	// 追従先の自身のインスタンスをコピー生成

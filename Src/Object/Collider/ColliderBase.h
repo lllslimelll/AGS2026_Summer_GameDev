@@ -19,8 +19,8 @@ public:
 	// П’УЋОнХ 
 	enum class TAG
 	{
-		STAGE,
-		ROKET,
+		PLANET,
+		ROCKET,
 		PLAYER,
 		CAMERA,
 		ENEMY,

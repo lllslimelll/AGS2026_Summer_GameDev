@@ -188,6 +188,14 @@ void Item::SetNouhin(bool nouhin)
     isNouhinn_ = nouhin;
 }
 
+void Item::OnDrop(const VECTOR& pos)
+{
+    // プレイヤーの足元座標をセット
+    transform_.pos = pos;  
+    
+    ChangeState(STATE::DROPPED);
+}
+
 void Item::InitLoad(void)
 {
     //// モデル読み込み

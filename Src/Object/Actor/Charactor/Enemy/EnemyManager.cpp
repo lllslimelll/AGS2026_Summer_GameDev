@@ -6,7 +6,7 @@
 #include "EnemyRobot.h"
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager(Player* player)
+EnemyManager::EnemyManager(Player& player)
 	:
 	player_(player)
 {

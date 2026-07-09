@@ -10,7 +10,7 @@ class EnemyManager
 public:
 
 	// コンストラクタ
-	EnemyManager(Player* player);
+	EnemyManager(Player& player);
 	// デストラクタ
 	~EnemyManager(void);
 
@@ -38,7 +38,7 @@ public:
 private:
 
 	// プレイヤー
-	Player* player_;
+	Player& player_;
 
 	// エネミーリスト
 	std::vector<EnemyBase*> enemies_;

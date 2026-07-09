@@ -8,7 +8,7 @@
 #include "EnemyRat.h"
 
 
-EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player* player)
+EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player& player)
 	:
 	EnemyBase(data, player),
 	step_(0.0f)

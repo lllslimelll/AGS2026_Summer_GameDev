@@ -18,7 +18,6 @@ CharactorBase::CharactorBase(void)
 	isJump_(false),
 	stateBase_(-1),
 	stateUpdate_(nullptr),
-	isEnd_(false),
 	animCtrl_()
 {
 }
@@ -76,12 +75,6 @@ void CharactorBase::Release()
 	}
 
 	ActorBase::Release();
-}
-
-void CharactorBase::InitLoad(void)
-{
-	// 丸影画像
-	imgShadow_ = resMng_.Load(ResourceManager::SRC::PLAYER_SHADOW).handleId_;
 }
 
 void CharactorBase::ChangeState(int state)
@@ -160,7 +153,7 @@ void CharactorBase::CollisionGravity(void)
 	for (const auto& hitCol : hitColliders_)
 	{
 		// ステージ以外は処理を飛ばす
-		if (hitCol->GetTag() != ColliderBase::TAG::STAGE) continue;
+		if (hitCol->GetTag() != ColliderBase::TAG::PLANET) continue;
 
 		// 派生クラスへキャスト
 		const ColliderModel* colliderModel =

@@ -1,11 +1,11 @@
 #pragma once
 #include <functional>
-#include <array>
 #include "CharactorBase.h"
+#include "../../Inventory/Inventory.h"
 
 class ItemManager;  
 class Item;
-class Stage;
+class StageManager;
 
 class Player : public CharactorBase
 {
@@ -25,14 +25,24 @@ public:
 		RUN,
 		FAST_RUN,
 		JUMP,
+		DEAD
+	};
+
+	struct GUIDE_INFO
+	{
+		bool canPickUp;       // アイテムを拾える状態か
+		bool isAimingRocket;  // ロケットに照準が当たってるか
+		bool hasSelectedItem; // 選択中スロットにアイテムがあるか
+		bool isIdle;          // IDLE状態か（置くボタン表示用）
+		bool isPad;           // パッド使用中か
 	};
 
 	// 最大HP
 	static constexpr int   MAX_HP = 100;
 	// 最大酸素量
-	static constexpr float MAX_OXYGEN = 300.0f;
+	static constexpr float MAX_OXYGEN = 200.0f;
 
-	Player(ItemManager* itemMng, Stage* stage_);
+	Player(ItemManager* itemMng, StageManager& stage_);
 
 	~Player(void) override;
 
@@ -47,6 +57,12 @@ public:
 	// カメラTransformを設定
 	void SetCameraTransform(const Transform* cameraTransform);
 	void SetForward(const VECTOR forward);
+
+	// インベントリ取得
+	const Inventory& GetInventory(void) const;
+
+	GUIDE_INFO GetGuideInfo(void) const;
+
 protected:
 	
 	// リソースロード
@@ -105,35 +121,27 @@ private:
 	// 衝突判定用カプセル
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
 
-	// インベントリ
-	static constexpr int INVENTORY_MAX = 5;
-
 	// 状態
 	STATE state_;
 
 	// ステージ
-	Stage* stage_;
+	StageManager& stageMng_;
 
 	// アイテム管理（拾得・投擲）
 	ItemManager* itemMgr_;
 
+	// インベントリ
+	Inventory inventory_;
+
 	// カメラTransform
 	const Transform* cameraTransform_;
 	VECTOR cameraForward_;
+
 	// ブーストフラグ
 	bool isBoost_;
 
 	// 現在照準に当たっているアイテム
 	Item* aimedItem_;
-	// インベントリ
-	std::array<Item*, INVENTORY_MAX> inventory_;
-
-
-	// 現在選択中のインベントリスロット
-	int selectedSlot_;
-
-	// インベントトリ内アイテムの画像
-	int inventoryItemImgs_[INVENTORY_MAX];
 
 	// 照準の現在半径（補間用）
 	float crosshairRadius_;
@@ -161,9 +169,9 @@ private:
 	void ProcessPickUp(void);
 	// 投擲処理
 	void ProcessThrow(void);
+	// ドロップ処理
+	void ProcessDrop(void);
 
-	// インベントリに追加
-	void AddInventory(Item* item);
 	// 選択中のインベントリスロットの変更
 	void ChangeSelectedSlot();
 	// インベントリが満杯か否か
@@ -195,14 +203,10 @@ private:
 	float oxygen_;
 	float suffocateTimer_;  // 酸素切れ後の経過時間
 
-
 	// 更新
 	void UpdateOxygenAndHp(void);
 
 	// 被ダメージ
 	void OnDamaged(int amount);
-
-	// 操作ヘルプ（右端固定・動的表示）
-	void DrawControlHelp(void);
 };
 

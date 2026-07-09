@@ -8,5 +8,9 @@ public:
 	~StatusUI(void) override = default;
 
 	void Draw(void) override;
+
+private:
+
+	const Player& player_;
 };
 

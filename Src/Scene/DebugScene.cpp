@@ -4,22 +4,23 @@
 #include "../Manager/InputManager.h"
 #include "SceneManager.h"
 #include "../Camera/Camera.h"
-#include "../Object/Actor/Stage.h"
+#include "../Object/Actor/Stage/StageManager.h"
+#include "../Object/Actor/Stage/Planet.h"
 #include "../Object/Collider/ColliderModel.h"
 #include "DebugScene.h"
 
 DebugScene::DebugScene(void)
 	:
 	SceneBase(),
-	stage_(nullptr)
+	stageMng_(nullptr)
 {
 }
 
 DebugScene::~DebugScene(void)
 {
 	// ステージ解放
-	stage_->Release();
-	delete stage_;
+	stageMng_->Release();
+	delete stageMng_;
 
 	// デバッグポイント群
 	points_.clear();
@@ -28,8 +29,8 @@ DebugScene::~DebugScene(void)
 void DebugScene::Init(void)
 {
 	// ステージ生成
-	stage_ = new Stage();
-	stage_->Init();
+	stageMng_ = new StageManager();
+	stageMng_->Init();
 
 	// カメラ
 	camera_ = std::make_unique<Camera>();
@@ -39,7 +40,7 @@ void DebugScene::Init(void)
 void DebugScene::Update(void)
 {
 	// ステージ更新
-	stage_->Update();
+	stageMng_->Update();
 
 	// カメラ更新
 	camera_->Update();
@@ -51,7 +52,7 @@ void DebugScene::Update(void)
 void DebugScene::Draw(void)
 {
 	// ステージ描画
-	stage_->Draw();
+	stageMng_->Draw();
 
 	// デバッグポイント群を球体描画
 	int y = 20;
@@ -94,8 +95,8 @@ void DebugScene::PlaceDebugPoint(void)
 		VECTOR worldPos = ConvScreenPosToWorldPos(screenPos);
 
 		// ステージのモデルコライダを取得
-		const ColliderBase* collder = stage_->GetOwnCollider(
-			static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
+		const ColliderBase* collder = stageMng_->GetPlanet().GetOwnCollider(
+			static_cast<int>(Planet::COLLIDER_TYPE::MODEL));
 		
 		if (collder == nullptr) return;
 

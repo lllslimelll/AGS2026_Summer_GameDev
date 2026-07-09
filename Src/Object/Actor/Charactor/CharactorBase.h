@@ -67,9 +67,6 @@ protected:
 	// ジャンプの入力受付時間
 	float stepJump_;
 
-	// 更新停止フラグ
-	bool isEnd_;
-
 	// 丸影画像
 	int imgShadow_;
 
@@ -81,9 +78,6 @@ protected:
 	// 衝突時の押し戻し量
 	static constexpr float COLLISION_BACK_DIS = 1.0f;
 
-	// リソースロード
-	virtual void InitLoad(void) override;
-	
 	// 更新系
 	virtual void UpdateProcess(void) = 0;
 	virtual void UpdateProcessPost(void) = 0;

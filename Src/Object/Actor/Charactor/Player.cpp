@@ -6,26 +6,26 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SoundManager.h"
 #include "../Item/ItemManager.h"
-#include "../Stage.h"
+#include "../Stage/StageManager.h"
+#include "../Stage/Rocket.h"
 #include "../item/Item.h"
 #include "../../Common/Transform.h"
+#include "../../Collider/ColliderModel.h"
 #include "../../Collider/ColliderLine.h"
 #include "../../Collider/ColliderCapsule.h"
 #include "Player.h"
 
 
-Player::Player(ItemManager* itemMng, Stage* stage)
+Player::Player(ItemManager* itemMng, StageManager& stageMng)
 	:
 	CharactorBase(),
-	stage_(stage),
+	stageMng_(stageMng),
 	itemMgr_(itemMng),
 	hp_(MAX_HP),
 	oxygen_(MAX_OXYGEN),
 	suffocateTimer_(0.0f),
 	isBoost_(false),
 	aimedItem_(nullptr),
-	inventory_{},
-	selectedSlot_(0),
 	crosshairRadius_(5.0f)
 {
 }
@@ -47,23 +47,38 @@ void Player::ChangeStateDead(void)
 {
 	stateUpdate_ = std::bind(&Player::UpdateDead, this);
 
+	animCtrl_->Play(static_cast<int>(ANIM_TYPE::DEAD), false);
+
 	SoundManager::GetInstance().StopWalk();
 }
 void Player::ChangeStateEnd(void)
 {
+	// 
+	stateUpdate_ = []() {};
+
 	// 死亡シーンのオーバーレイを追加
 	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
 }
 
 void Player::UpdateIdle(void)
 {
+	// 移動・ジャンプ
 	ProcessMove();
 	ProcessJump();
+
+	// 当たり判定調整
 	CollisionReserve();
+
+	// 酸素とHP
 	UpdateOxygenAndHp();
 }
 void Player::UpdateDead(void)
 {
+	// 死亡アニメーションが終わったらEND状態へ
+	if (animCtrl_->IsEnd())
+	{
+		ChangeState(STATE::END);
+	}
 }
 
 void Player::ProcessMove(void)
@@ -226,7 +241,7 @@ void Player::UpdateProcess(void)
 
 void Player::UpdateProcessPost(void)
 {
-	if (state_ == STATE::DEAD) return;
+	if (state_ == STATE::DEAD || state_ == STATE::END) return;
 
 	// アイテム更新
 	UpdateItem();
@@ -249,6 +264,9 @@ void Player::UpdateItem(void)
 
 	// 投擲処理
 	ProcessThrow();
+
+	// ドロップ処理
+	ProcessDrop();
 
 	// 照準半径の補間
 	float targetRadius = CanPickUp()|| IsAimingRoket() ? 20.0f : 5.0f;
@@ -276,7 +294,7 @@ void Player::UpdateAimedItem(void)
 	// 照準に当たっているアイテムを取得
 	// RANGE_PICKUP の長さのレイが届く範囲 = 拾える範囲
 	Item* newAimed = itemMgr_->GetAimedItem(
-		transform_.pos,
+		cameraTransform_->pos,
 		cameraForward_,
 		Item::RANGE_PICKUP);
 
@@ -304,33 +322,15 @@ void Player::UpdateFollowItem(void)
 	VECTOR pos = MV1GetFramePosition(transform_.modelId, 36);
 	pos = VAdd(pos, VScale(transform_.GetForward(), 30.0f));
 
-	for (int i = 0; i < INVENTORY_MAX; i++)
+	for (int i = 0; i < Inventory::SLOT_MAX; i++)
 	{
-		if (inventory_[i] != nullptr)
-		{
-			inventory_[i]->SetHeldPos(pos);
-		}
+		Item* item = inventory_.Get(i);
+		if (item != nullptr) { item->SetHeldPos(pos); }
 	}
-
 }
 
 void Player::ProcessPickUp(void)
 {
-	//// 拾える状態じゃなければ処理しない
-	//if (!CanPickUp()) return;
-
-	//auto& ins = InputManager::GetInstance();
-
-	//// 入力があったら
-	//if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::LEFT) || ins.IsTrgDown(KEY_INPUT_F))
-	//{
-	//	// 拾う
-	//	aimedItem_->OnPickedUp();
-
-	//	// インベントリに追加
-	//	AddInventory(aimedItem_);
-	//}
-
 	   // 照準にアイテムが当たってない or ドロップ状態でないなら何もしない
 	if (aimedItem_ == nullptr ||
 		aimedItem_->GetState() != Item::STATE::DROPPED)
@@ -346,7 +346,7 @@ void Player::ProcessPickUp(void)
 	{
 		// 拾う
 		aimedItem_->OnPickedUp();
-		AddInventory(aimedItem_);
+		inventory_.Add(aimedItem_);
 	}
 }
 
@@ -354,57 +354,35 @@ void Player::ProcessThrow(void)
 {
 }
 
-void Player::AddInventory(Item* item)
+void Player::ProcessDrop(void)
 {
-	// 取得したアイテムを空いているスロットに追加
-	for (int i = 0; i < INVENTORY_MAX; i++)
-	{
-		if (inventory_[i] == nullptr)
-		{
-			inventory_[i] = item;
+	auto& ins = InputManager::GetInstance();
+	if (!ins.IsTriggered(InputManager::InputCommand::DROP)) return;
 
-			break;
-		}
-	}
+	Item* item = inventory_.GetSelected();
+	if (item == nullptr) return;
+
+	item->OnDrop(transform_.pos);
+	inventory_.RemoveSelected();
 }
 
 void Player::ChangeSelectedSlot()
 {
-	// 旧選択アイテムをデタッチ
-	if (inventory_[selectedSlot_] != nullptr)
-	{
-		inventory_[selectedSlot_]->SetSelected(false);
-	}
-
 	auto& ins = InputManager::GetInstance();
-	
-	// インベントリスロットの変更
-	if (ins.IsTriggered(InputManager::InputCommand::SLOT_LEFT))
-	{
-		selectedSlot_ = (selectedSlot_ - 1 + INVENTORY_MAX) % INVENTORY_MAX;
-	}
-	else if (ins.IsTriggered(InputManager::InputCommand::SLOT_RIGHT))
-	{
-		selectedSlot_ = (selectedSlot_ + 1) % INVENTORY_MAX;
-	}
 
-	// 12345キー
-	if (ins.IsTriggered(InputManager::InputCommand::SLOT_1)) { selectedSlot_ = 0; }
-	if (ins.IsTriggered(InputManager::InputCommand::SLOT_2)) { selectedSlot_ = 1; }
-	if (ins.IsTriggered(InputManager::InputCommand::SLOT_3)) { selectedSlot_ = 2; }
-	if (ins.IsTriggered(InputManager::InputCommand::SLOT_4)) { selectedSlot_ = 3; }
-	if (ins.IsTriggered(InputManager::InputCommand::SLOT_5)) { selectedSlot_ = 4; }
-
+	// 左右のスロット
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_LEFT)) { inventory_.SelectPrev(); }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_RIGHT)) { inventory_.SelectNext(); }
+	// 12345スロット
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_1)) { inventory_.Select(0); }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_2)) { inventory_.Select(1); }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_3)) { inventory_.Select(2); }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_4)) { inventory_.Select(3); }
+	if (ins.IsTriggered(InputManager::InputCommand::SLOT_5)) { inventory_.Select(4); }
 	// マウスホイール
 	int wheel = ins.GetMouseWheelRot();
-	if (wheel > 0) { selectedSlot_ = (selectedSlot_ - 1 + INVENTORY_MAX) % INVENTORY_MAX; }
-	else if (wheel < 0) { selectedSlot_ = (selectedSlot_ + 1) % INVENTORY_MAX; }
-
-	// 新選択アイテムをアタッチ
-	if (inventory_[selectedSlot_] != nullptr)
-	{
-		inventory_[selectedSlot_]->SetSelected(true);
-	}
+	if (wheel > 0) { inventory_.SelectPrev(); }
+	else if (wheel < 0) { inventory_.SelectNext(); }
 }
 
 bool Player::CanPickUp(void) const
@@ -418,19 +396,8 @@ bool Player::CanPickUp(void) const
 		return false;
 	}
 
-	// インベントリに空きがあるか
-	for (int i = 0; i < INVENTORY_MAX; i++)
-	{
-		// 空きがあれば
-		if (inventory_[i] == nullptr)
-		{
-			// 拾える
-			return true;
-		}
-	}
-
-	// 空きがなければ拾えない
-	return false;
+	// 満杯なら拾えない
+	return !inventory_.IsFull();
 }
 
 void Player::Draw(void)
@@ -441,65 +408,6 @@ void Player::Draw(void)
 	int screenW, screenH;
 	GetScreenState(&screenW, &screenH, nullptr);
 
-	const int size = 130;
-	const int imgSize = 110;
-	const int padding = 30;
-	const int slotSpan = size + padding;
-	const int totalWidth = INVENTORY_MAX * slotSpan - padding;
-	const int startX = (screenW - totalWidth) / 2 + 10;
-	const int marginBottom = 60;
-	const int baseY = screenH - size - marginBottom;
-
-	// 選択中スロットの拡大量
-	const int selectedExpand = 30;
-
-	for (int i = 0; i < INVENTORY_MAX; i++)
-	{
-		int x = startX + i * slotSpan;
-
-		bool isSelected = (i == selectedSlot_);
-
-		int expand = isSelected ? selectedExpand : 0;
-		int drawX = x - expand / 2;
-		int drawY = baseY - expand / 2;
-		int drawSize = size + expand;
-
-		// 枠描画
-		DrawBox(drawX, drawY, drawX + drawSize, drawY + drawSize,
-			GetColor(255, 255, 255), FALSE);
-
-		// アイテム画像
-		Item* item = inventory_[i];
-		if (item != nullptr)
-		{
-			int typeIdx = static_cast<int>(item->GetType());
-			if (typeIdx >= 0 && typeIdx < 3 &&
-				inventoryItemImgs_[typeIdx] != -1)
-			{
-				int margin = 10;              // 枠からの余白
-				int imgDrawSize = drawSize - margin * 2;
-				int imgOffset = margin;
-
-				DrawExtendGraph(
-					drawX + imgOffset,
-					drawY + imgOffset,
-					drawX + imgOffset + imgDrawSize,
-					drawY + imgOffset + imgDrawSize,
-					inventoryItemImgs_[typeIdx], TRUE);
-			}
-
-			SetFontSize(30);
-			// 値段表示
-			int price = item->GetValue();
-			int textW = GetDrawFormatStringWidth("$%d", price);  // 実際の文字列幅を取得
-			DrawFormatString(
-				drawX + (drawSize - textW) / 2,  // 中央揃え
-				drawY + drawSize + 6,
-				GetColor(255, 255, 255),
-				"$%d", price);
-		}
-	}
-
 	// 照準
 	int cx = screenW / 2;
 	int cy = screenH / 2;
@@ -507,13 +415,6 @@ void Player::Draw(void)
 	bool isFilled = (crosshairRadius_ <= 7.0f);
 
 	DrawCircle(cx, cy, radius, GetColor(255, 255, 255), isFilled ? TRUE : FALSE);
-
-	DrawControlHelp();
-
-
-	/*DrawFormatString(0, 0, GetColor(255, 255, 255),
-		"(pPosX:%.1f pPosY:%.1f pPosZ:%.1f)",
-		transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
 }
 
 int Player::GetHp(void) const
@@ -534,6 +435,22 @@ void Player::SetCameraTransform(const Transform* cameraTransform)
 void Player::SetForward(const VECTOR forward)
 {
 	cameraForward_ = forward;
+}
+
+const Inventory& Player::GetInventory(void) const
+{
+	return inventory_;
+}
+
+Player::GUIDE_INFO Player::GetGuideInfo(void) const
+{
+	GUIDE_INFO info;
+	info.canPickUp = CanPickUp();
+	info.isAimingRocket = IsAimingRoket();
+	info.hasSelectedItem = inventory_.GetSelected() != nullptr;
+	info.isIdle = state_ == STATE::IDLE;
+	info.isPad = GetJoypadNum() != 0;
+	return info;
 }
 
 // 衝突判定用の調整
@@ -595,23 +512,20 @@ void Player::ProcessDelivery(void)
 {
 	// 拾える対象がいるならピックアップを優先
 	if (aimedItem_ != nullptr) return;
-
 	// ロケットに照準が当たっているか
 	if (!IsAimingRoket()) return;
 
 	// 選択中スロットが空なら納品できない
-	Item* item = inventory_[selectedSlot_];
+	Item* item = inventory_.GetSelected();
 	if (item == nullptr) return;
 
-	// ボタン入力（ピックアップと同じキー）
 	auto& ins = InputManager::GetInstance();
-
 	if (!ins.IsPressed(InputManager::InputCommand::PICK_UP)) return;
 
 	// 納品実行
-	stage_->AddDelivery(item->GetValue());
+	stageMng_.GetRocket().AddDelivery(item->GetValue());
 	item->OnDelivered();
-	inventory_[selectedSlot_] = nullptr;
+	inventory_.RemoveSelected();
 }
 
 bool Player::IsAimingRoket(void) const
@@ -620,15 +534,18 @@ bool Player::IsAimingRoket(void) const
 	const VECTOR rayEnd = VAdd(camPos,
 		VScale(cameraForward_, Item::RANGE_PICKUP));
 
-	VECTOR pos = VAdd(stage_->GetRoketPos(), { 120,-95, 40 });
-	return AsoUtility::IsHitSphereCapsule(
-		pos, 100.0f,
-		camPos, rayEnd, 0.0f);
+	const ColliderModel* colModel = dynamic_cast<const ColliderModel*>(
+		stageMng_.GetRocket().GetOwnCollider(
+			static_cast<int>(Rocket::COLLIDER_TYPE::MODEL)));
+	
+	if (colModel == nullptr) { return false; }
+
+	return colModel->IsHitRay(camPos, rayEnd);
 }
 
 void Player::UpdateOxygenAndHp(void)
 {
-	if (state_ == STATE::DEAD) return;
+	if (state_ == STATE::DEAD || state_ == STATE::END) return;
 
 	const float dt = SceneManager::GetInstance().GetDeltaTime();
 
@@ -664,75 +581,11 @@ void Player::OnDamaged(int damage)
 	}
 }
 
-void Player::DrawControlHelp(void)
-{
-	int screenW, screenH;
-	GetScreenState(&screenW, &screenH, nullptr);
-
-	bool isPad = (GetJoypadNum() != 0);
-
-	// 表示中のヒントを上から順に積み上げる
-	const char* visibleLabels[3];
-	int visibleCount = 0;
-
-	// 拾う：照準先がドロップ状態のアイテムで、かつ拾える状態の時のみ
-	if (aimedItem_ != nullptr &&
-		aimedItem_->GetState() == Item::STATE::DROPPED &&
-		CanPickUp())
-	{
-		visibleLabels[visibleCount++] = isPad ? "拾う : [X]" : "拾う : [F]";
-	}
-
-	// ロケットに照準が当たっている時のみ
-	if (IsAimingRoket())
-	{
-		// 納品：選択中スロットにアイテムがある時のみ
-		if (inventory_[selectedSlot_] != nullptr)
-		{
-			visibleLabels[visibleCount++] = isPad ? "納品 : [X]" : "納品 : [F]";
-		}
-
-		// 帰還：常時（ロケット照準中であれば）
-		visibleLabels[visibleCount++] = isPad ? "帰還 : [Y]" : "帰還 : [E]";
-	}
-
-	if (visibleCount == 0) return;
-
-	int prevSize = GetFontSize();
-	constexpr int FONT_SIZE = 50;
-	constexpr int LINE_SPAN = 60;
-	constexpr int MARGIN_TOP = 170;   // Stage側のトータル値段表示と重ならないよう下にオフセット
-	constexpr int MARGIN_RIGHT = 60;
-
-	SetFontSize(FONT_SIZE);
-
-	for (int i = 0; i < visibleCount; i++)
-	{
-		const char* buf = visibleLabels[i];
-		int textW = GetDrawStringWidth(buf, (int)strlen(buf));
-		int x = screenW - textW - MARGIN_RIGHT;
-		int y = MARGIN_TOP + i * LINE_SPAN;
-
-		DrawString(x, y, buf, GetColor(255, 255, 255));
-	}
-
-	SetFontSize(prevSize);
-}
-
 void Player::InitLoad(void)
 {
-	// 基底クラスのリソースロード
-	CharactorBase::InitLoad();
-
 	// モデル読み込み
 	transform_.SetModel(resMng_.Load(			// 1個 = Load()  複数 = Depulicate()
 		ResourceManager::SRC::PLAYER).handleId_);
-
-	// インベントリ内アイテムの画像読み込み
-	inventoryItemImgs_[0] = LoadGraph("Data/Image/item1.png");
-	inventoryItemImgs_[1] = LoadGraph("Data/Image/item2.png");
-	inventoryItemImgs_[2] = LoadGraph("Data/Image/item3.png");
-	
 }
 
 void Player::InitTransform(void)

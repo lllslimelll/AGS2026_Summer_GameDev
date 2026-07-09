@@ -228,7 +228,7 @@ void InputManager::SetUpBindings(void)
 	// ƒAƒNƒVƒ‡ƒ“
 	inputTable_[InputCommand::JUMP] =
 	{
-		{ PeripheralType::KEYBOARD, KEY_INPUT_Z },
+		{ PeripheralType::KEYBOARD, KEY_INPUT_SPACE },
 		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::BOTTOM) },
 	};
 	inputTable_[InputCommand::BOOST] =
@@ -239,6 +239,11 @@ void InputManager::SetUpBindings(void)
 	inputTable_[InputCommand::PICK_UP] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_F },
+		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::LEFT) },
+	};
+	inputTable_[InputCommand::DROP] =
+	{
+		{ PeripheralType::KEYBOARD, KEY_INPUT_G },
 		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::TOP) },
 	};
 	inputTable_[InputCommand::RETURN] =

@@ -97,6 +97,7 @@ public:
 	// ”[•i‚µ‚½‚©”Û‚©‚ğİ’è
 	void SetNouhin(bool nouhin);
 
+	void OnDrop(const VECTOR& pos);
 
 protected:
 

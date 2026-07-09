@@ -3,8 +3,8 @@
 #include "StatusUI.h"
 
 StatusUI::StatusUI(const Player& player)
-	:
-	GameUI(player)
+    :
+    player_(player)
 {
 }
 
