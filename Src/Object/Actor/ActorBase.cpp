@@ -100,3 +100,13 @@ void ActorBase::ClearHitCollider(void)
 {
 	hitColliders_.clear();
 }
+
+bool ActorBase::IsOccludedByColliders(const VECTOR& from, const VECTOR& to) const
+{
+	for (const auto& c : hitColliders_)
+	{
+		if (!c->IsOccluder()) continue;
+		if (c->IsOccluded(from, to)) return true;
+	}
+	return false;
+}

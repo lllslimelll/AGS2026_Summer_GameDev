@@ -251,6 +251,16 @@ float SceneManager::GetDeltaTime(void) const
 	//return deltaTime_;
 }
 
+void SceneManager::SetResultScore(int score)
+{
+	resultScore_ = score;
+}
+
+int SceneManager::GetResultScore(void) const
+{
+	return resultScore_;
+}
+
 SceneManager::SceneManager(void)
 {
 

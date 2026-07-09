@@ -16,16 +16,84 @@ void GuideUI::Draw(void)
     int screenW, screenH;
     GetScreenState(&screenW, &screenH, nullptr);
 
+    int prevSize = GetFontSize();
+
+    constexpr int MARGIN_RIGHT = 60;
+    constexpr int MARGIN_TOP = 60;
+    constexpr int GOAL_FONT = 42;
+    constexpr int SCORE_FONT = 50;
+    constexpr int NORMA_FONT = 32;
+    constexpr int LINE_FONT = 36;
+    constexpr int LINE_SPAN = 50;
+
+    int y = MARGIN_TOP;
+
+    // ===== 目的表示 =====
+    SetFontSize(GOAL_FONT);
+
+    const char* goal = info.hasAnyItem ? "ロケットに納品する" : "アイテムを収集する";
+    int goalW = GetDrawStringWidth(goal, (int)strlen(goal));
+    DrawString(screenW - goalW - MARGIN_RIGHT, y, goal, 0xffff80);
+    y += GOAL_FONT + 10;
+
+    // ===== 現在の納品額 =====
+    SetFontSize(SCORE_FONT);
+
+    auto withComma = [](int value, char* out)
+        {
+            char tmp[32];
+            sprintf_s(tmp, 32, "%d", value);
+            int len = (int)strlen(tmp);
+            int o = 0;
+            int firstLen = len % 3;
+            if (firstLen == 0) firstLen = 3;
+            for (int i = 0; i < firstLen; i++) out[o++] = tmp[i];
+            for (int i = firstLen; i < len; i += 3)
+            {
+                out[o++] = ',';
+                out[o++] = tmp[i];
+                out[o++] = tmp[i + 1];
+                out[o++] = tmp[i + 2];
+            }
+            out[o] = '\0';
+        };
+
+    char scoreStr[32];
+    withComma(info.totalDelivered, scoreStr);
+    char scoreBuf[48];
+    sprintf_s(scoreBuf, "$%s", scoreStr);
+
+    int scoreW = GetDrawStringWidth(scoreBuf, (int)strlen(scoreBuf));
+    DrawString(screenW - scoreW - MARGIN_RIGHT, y, scoreBuf, 0xffffff);
+    y += SCORE_FONT + 4;
+
+    // ===== ノルマ金額 =====
+    SetFontSize(NORMA_FONT);
+
+    char quotaStr[32];
+    withComma(info.quota, quotaStr);
+    char quotaBuf[48];
+    sprintf_s(quotaBuf, "/ $%s", quotaStr);
+
+    int quotaW = GetDrawStringWidth(quotaBuf, (int)strlen(quotaBuf));
+    DrawString(screenW - quotaW - MARGIN_RIGHT, y, quotaBuf, 0x888888);
+    y += NORMA_FONT + 16;
+
+    // ===== 横線 =====
+    const int lineR = screenW - MARGIN_RIGHT;
+    const int lineL = lineR - max(max(goalW, scoreW), quotaW) - 20;
+    DrawLine(lineL, y, lineR, y, 0x888888);
+    y += 20;
+
+    // ===== 操作ガイド =====
     const char* labels[MAX_LABELS];
     int count = 0;
 
-    // 拾う
     if (info.canPickUp)
     {
         labels[count++] = info.isPad ? "拾う : [X]" : "拾う : [F]";
     }
 
-    // ロケット照準中
     if (info.isAimingRocket)
     {
         if (info.hasSelectedItem)
@@ -35,24 +103,18 @@ void GuideUI::Draw(void)
         labels[count++] = info.isPad ? "帰還 : [B]" : "帰還 : [E]";
     }
 
-    // 置く
     if (info.hasSelectedItem && info.isIdle)
     {
         labels[count++] = info.isPad ? "置く : [Y]" : "置く : [G]";
     }
 
-    if (count == 0) return;
-
-    int prevSize = GetFontSize();
-    SetFontSize(FONT_SIZE);
+    SetFontSize(LINE_FONT);
 
     for (int i = 0; i < count; i++)
     {
         const char* buf = labels[i];
         int textW = GetDrawStringWidth(buf, (int)strlen(buf));
-        int x = screenW - textW - MARGIN_RIGHT;
-        int y = MARGIN_TOP + i * LINE_SPAN;
-        DrawString(x, y, buf, GetColor(255, 255, 255));
+        DrawString(screenW - textW - MARGIN_RIGHT, y + i * LINE_SPAN, buf, 0xdddddd);
     }
 
     SetFontSize(prevSize);

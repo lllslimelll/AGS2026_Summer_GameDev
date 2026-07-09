@@ -16,7 +16,6 @@ public:
     void Init(void);
     void Update(void);
     void Draw(void);
-    void DrawUI(void);
     void Release(void);
 
     // ƒƒPƒbƒgæ“¾

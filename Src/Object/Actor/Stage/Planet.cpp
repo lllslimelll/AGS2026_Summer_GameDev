@@ -48,6 +48,8 @@ void Planet::InitCollider(void)
         colModel->AddTargetFrameIds(name);
     }
 
+    colModel->SetOccluder(true);
+
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
 }
 

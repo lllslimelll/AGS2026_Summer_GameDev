@@ -54,6 +54,15 @@ bool Inventory::IsFull(void) const
     return true;
 }
 
+bool Inventory::HasAnyItem(void) const
+{
+    for (int i = 0; i < SLOT_MAX; i++)
+    {
+        if (slots_[i] != nullptr) return true;
+    }
+    return false;
+}
+
 void Inventory::SelectNext(void)
 {
     int old = selectedSlot_;

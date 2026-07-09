@@ -283,7 +283,7 @@ void Player::UpdateItem(void)
 		
 		if (ins.IsTriggered(InputManager::InputCommand::RETURN))
 		{
-			//SceneManager::GetInstance().SetResultScore(stage_->GetTotalDelivered());
+			SceneManager::GetInstance().SetResultScore(stageMng_.GetRocket().GetTotalDelivered());
 			SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::RESULT);
 		}
 	}
@@ -450,6 +450,9 @@ Player::GUIDE_INFO Player::GetGuideInfo(void) const
 	info.hasSelectedItem = inventory_.GetSelected() != nullptr;
 	info.isIdle = state_ == STATE::IDLE;
 	info.isPad = GetJoypadNum() != 0;
+	info.hasAnyItem = inventory_.HasAnyItem();
+	info.totalDelivered = stageMng_.GetRocket().GetTotalDelivered();
+	info.quota = Rocket::QUOTA;
 	return info;
 }
 

@@ -47,6 +47,9 @@ public:
 	// 衝突対象となるコライダをクリア
 	void ClearHitCollider(void);
 
+	// 遮蔽判定（fromとtoの間にIsOccluder = trueのコライダーが挟まってるか）
+	bool IsOccludedByColliders(const VECTOR& from, const VECTOR& to) const;
+
 protected:
 
 	// シングルトン参照

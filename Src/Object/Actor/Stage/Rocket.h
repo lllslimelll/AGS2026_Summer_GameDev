@@ -11,7 +11,7 @@ public:
         MODEL = 0,
         MAX,
     };
-
+    static constexpr int QUOTA = 5000;
     ~Rocket(void) override;
 
     void Update(void) override;
@@ -39,7 +39,7 @@ protected:
 
 private:
 
-    static constexpr int QUOTA = 5000;
+
 
     int totalDelivered_ = 0;
 };

@@ -54,6 +54,12 @@ public:
 		int maxTryCnt,
 		float pushDistance) const = 0;
 
+	// 遮蔽判定フラグ
+	bool IsOccluder(void) const { return isOccluder_; }
+	void SetOccluder(bool val) { isOccluder_ = val; }
+	// 遮蔽判定
+	virtual bool IsOccluded(const VECTOR& from, const VECTOR& to) const { return false; }
+
 protected:
 
 	// デバッグ表示の色
@@ -71,6 +77,8 @@ protected:
 
 	// 有効フラグ
 	bool isValid_;
+
+	bool isOccluder_ = false;
 
 	// ローカル座標をワールド座標に変換
 	VECTOR GetRotPos(const VECTOR& localPos) const;

@@ -156,7 +156,7 @@ void TitleScene::Draw(void)
 void TitleScene::DrawTitle(void) const
 {
 	SetFontSize(TITLE_FONT_SIZE);
-	DrawFormatString(MENU_X, 80, 0xFF8C00, "òfêØí≤ç∏");
+	DrawFormatString(MENU_X, 80, 0xFF8C00, "òfêØíTç∏");
 }
 
 void TitleScene::DrawMenu(void) const

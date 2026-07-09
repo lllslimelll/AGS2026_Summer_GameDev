@@ -35,6 +35,9 @@ public:
 		bool hasSelectedItem; // 選択中スロットにアイテムがあるか
 		bool isIdle;          // IDLE状態か（置くボタン表示用）
 		bool isPad;           // パッド使用中か
+		bool hasAnyItem;	  // インベントリに1つでもアイテムがあるか
+		int totalDelivered;
+		int quota;
 	};
 
 	// 最大HP

@@ -137,3 +137,11 @@ MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 
 	return ret;
 }
+
+bool ColliderModel::IsOccluded(const VECTOR& from, const VECTOR& to) const
+{
+	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(
+		follow_->modelId, -1, from, to, -1);
+
+	return result.HitFlag == 1;
+}

@@ -14,6 +14,7 @@
 #include "../Object/UI/GameUI/StatusUI.h"
 #include "../Object/UI/GameUI/GuideUI.h"
 #include "../Object/UI/GameUI/InventoryUI.h"
+#include "../Object/UI/GameUI/RocketLocatorUI.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -65,6 +66,7 @@ void GameScene::Init(void)
 	gameUIs_.emplace_back(std::make_unique<StatusUI>(*player_));
 	gameUIs_.emplace_back(std::make_unique<GuideUI>(*player_));
 	gameUIs_.emplace_back(std::make_unique<InventoryUI>(player_->GetInventory()));
+	gameUIs_.emplace_back(std::make_unique<RocketLocatorUI>(*player_, stageMng_->GetRocket()));
 	for (auto& ui : gameUIs_)
 	{
 		ui->Load();
@@ -96,7 +98,6 @@ void GameScene::Init(void)
 	camera_->AddHitCollider(rocketCollider);
 
 	player_->SetCameraTransform(&camera_->GetTransform()); // カメラのTransformをプレイヤーに渡す
-	player_->SetForward(camera_->GetForward()); // カメラの前方向をプレイヤーに渡す
 }
 
 void GameScene::Update(void)
@@ -119,6 +120,7 @@ void GameScene::Update(void)
 	enemyManager_->Update();
 	skyDome_->Update();
 
+	player_->SetForward(camera_->GetForward()); // カメラの前方向をプレイヤーに渡す
 }
 
 void GameScene::Draw(void)
@@ -141,8 +143,6 @@ void GameScene::Draw(void)
 	SetUseShadowMap(0, -1);
 	// シャドウマップの削除
 	DeleteShadowMap(shadowMapHandle);
-
-	stageMng_->DrawUI();
 
 	for (auto& ui : gameUIs_)
 	{

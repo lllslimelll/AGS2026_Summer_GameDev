@@ -42,9 +42,25 @@ void ColliderSphere::SetRadius(float radius)
 
 bool ColliderSphere::IsHitRay(const VECTOR& rayStart, const VECTOR& rayEnd) const
 {
-	return MV1CollCheck_Line(
-		rayStart, rayEnd, 0.0f,  // 半径0のカプセル = 線分
-		GetPos(), radius_) == TRUE;
+	const VECTOR center = GetPos();
+	const VECTOR dir = VSub(rayEnd, rayStart);
+	const VECTOR toCenter = VSub(rayStart, center);
+
+	const float a = VDot(dir, dir);
+	const float b = 2.0f * VDot(toCenter, dir);
+	const float c = VDot(toCenter, toCenter) - radius_ * radius_;
+
+	// 判別式
+	const float discriminant = b * b - 4.0f * a * c;
+	if (discriminant < 0.0f) return false;
+
+	// ヒットパラメータ
+	const float sqrtD = sqrtf(discriminant);
+	const float len = sqrtf(a);
+	const float t0 = (-b - sqrtD) / (2.0f * a);
+	const float t1 = (-b + sqrtD) / (2.0f * a);
+
+	return (t0 >= 0.0f && t0 <= len) || (t1 >= 0.0f && t1 <= len);
 }
 
 VECTOR ColliderSphere::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hitPoly, int maxTryCnt, float pushDistance) const

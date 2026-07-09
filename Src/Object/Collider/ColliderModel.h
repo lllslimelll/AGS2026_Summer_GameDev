@@ -45,6 +45,8 @@ public:
 		int maxTryCnt,
 		float pushDistance) const override {return VECTOR();}
 
+	bool IsOccluded(const VECTOR& from, const VECTOR& to) const override;
+
 protected:
 
 	// Õ“Ë”»’è‚©‚çœŠO‚·‚éƒtƒŒ[ƒ€”Ô†

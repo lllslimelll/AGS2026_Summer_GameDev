@@ -5,7 +5,7 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SoundManager.h"
 #include "../../Collider/ColliderBase.h"
-#include "../../Collider/ColliderModel.h"
+#include "../../Collider/ColliderSphere.h"
 #include "Item.h"
 
 void Item::SetCameraPos(const VECTOR& pos)
@@ -56,6 +56,7 @@ void Item::Update(void)
 
 void Item::Draw(void)
 {
+    ActorBase::Draw();
    // モデル描画
    //if (transform_.modelId != -1) return;
 
@@ -142,29 +143,22 @@ bool Item::IsAimed(const VECTOR& rayOrigin, const VECTOR& rayEnd) const
 {
     if (state_ != STATE::DROPPED) return false;
 
-    // スフィア判定
+    //if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::SPHERE)) == 0) return false;
+
+    //const ColliderSphere* col = dynamic_cast<const ColliderSphere*>(
+    //    ownColliders_.at(static_cast<int>(COLLIDER_TYPE::SPHERE)));
+
+    //if (col == nullptr || !col->IsHitRay(rayOrigin, rayEnd)) return false;
+
+    // 遮蔽チェック
+    //if (IsOccludedByColliders(rayOrigin, transform_.pos)) return false;
+
+        // 一旦AsoUtilityで確認
     bool hit = AsoUtility::IsHitSphereCapsule(
         transform_.pos, 30.0f,
         rayOrigin, rayEnd, 0.0f);
 
-    if (!hit) return false;
-
-    // 遮蔽チェック
-    for (const auto& c : hitColliders_)
-    {
-        if (c->GetShape() != ColliderBase::SHAPE::MODEL)
-            continue;
-
-        const ColliderModel* model =
-            static_cast<const ColliderModel*>(c);
-
-        auto result = model->GetNearestHitPolyLine(
-            rayOrigin, transform_.pos);
-
-        if (result.HitFlag > 0) return false;
-    }
-
-    return true;
+    return hit;
 }
 
 void Item::SetAimed(bool aimed)
@@ -236,6 +230,12 @@ void Item::InitTransform(void)
 
 void Item::InitCollider(void)
 {
+    // カプセルコライダ
+    ColliderBase* colSphere = new ColliderSphere(
+        ColliderBase::TAG::ITEM, &transform_,
+        AsoUtility::VECTOR_ZERO, 30.0f);
+
+    ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::SPHERE), colSphere);
 }
 
 void Item::InitAnimation(void)

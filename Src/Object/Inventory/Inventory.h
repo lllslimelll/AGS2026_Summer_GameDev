@@ -29,6 +29,8 @@ public:
 
     // 満杯か
     bool IsFull(void) const;
+    // インベントリにアイテムがあるか
+    bool HasAnyItem(void) const;
 
     // スロット選択
     void SelectNext(void);
