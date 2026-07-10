@@ -56,33 +56,18 @@ void Item::Update(void)
 
 void Item::Draw(void)
 {
-    ActorBase::Draw();
-   // モデル描画
+    // モデル描画
    //if (transform_.modelId != -1) return;
 
    //MV1DrawModel(transform_.modelId);
 
 
-	// 落ちてる状態 or インベントリ内で選択されてる状態のとき、アイテムを描画
-    bool shouldDraw = (state_ == STATE::DROPPED) || isSelected_;
+	// 落ちてる状態
+    bool shouldDraw = (state_ == STATE::DROPPED);
 
     if (shouldDraw)
     {
-        int color;
-        switch (type_)
-        {
-        case TYPE::type1: color = 0xffff00; break;
-        case TYPE::type2: color = 0x00ffff; break;
-        case TYPE::type3: color = 0xff00ff; break;
-        default:
-            break;
-        }
-
-        // 落ちてるとき30、持ってるとき10
-        float radius = (state_ == STATE::DROPPED) ? 30.0f : 10.0f;
-
-        DrawSphere3D(transform_.pos, radius, 8, color, color, TRUE);
-
+        ActorBase::Draw();
     }
 
     // 状態別描画
@@ -175,6 +160,7 @@ void Item::SetHeldPos(const VECTOR& pos)
 {
     if (state_ != STATE::HELD) return;
     transform_.pos = pos;
+    transform_.Update();
 }
 
 void Item::SetNouhin(bool nouhin)
@@ -186,7 +172,15 @@ void Item::OnDrop(const VECTOR& pos)
 {
     // プレイヤーの足元座標をセット
     transform_.pos = pos;  
-    
+
+    VECTOR up = VNorm(VSub(pos, { 0.0f, 0.0f, 0.0f }));
+    VECTOR forward = AsoUtility::DIR_F;
+    float dot = VDot(forward, up);
+    if (fabsf(dot) > 0.99f) { forward = AsoUtility::DIR_R; }
+    forward = VNorm(VSub(forward, VScale(up, dot)));
+    transform_.quaRot = Quaternion::LookRotation(forward, up);
+
+    transform_.Update();
     ChangeState(STATE::DROPPED);
 }
 
@@ -196,14 +190,17 @@ void Item::InitLoad(void)
     //transform_.SetModel(resMng_.Dupulicate(			// 1個 = Load()  複数 = Depulicate()
     //    ResourceManager::SRC::MAIN_STAGE).handleId_);
 
-	// アイテム価値のビルボード画像読み込み
-    valueBillImg_[0] = LoadGraph("Data/Image/$100.png");
-	valueBillImg_[1] = LoadGraph("Data/Image/$500.png");
-	valueBillImg_[2] = LoadGraph("Data/Image/$1,000.png");
-
-    if (valueBillImg_[0] == -1)
+    switch (type_)
     {
-        printfDx("$100.png のロード失敗\n");
+    case TYPE::type1:
+        transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal1.mv1"));
+        break;
+    case TYPE::type2:
+        transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal2.mv1"));
+        break;
+    //case TYPE::type3:
+    //    transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal3.mv1"));
+    //    break;
     }
 }
 
@@ -212,7 +209,7 @@ void Item::InitTransform(void)
     // モデルの基本設定
 
     // 大きさ
-    transform_.scl = AsoUtility::VECTOR_ONE;
+    transform_.scl = { 50.0f,50.0f ,50.0f };
 
     // モデル本来の向き
     transform_.quaRot = Quaternion::Identity();
@@ -225,6 +222,14 @@ void Item::InitTransform(void)
     VECTOR upVec = VNorm((VSub(transform_.pos, { 0,0,0 })));
     transform_.pos = VAdd(transform_.pos, VScale(upVec, 34));
 
+    // 月面の法線方向を上として向きを設定
+    VECTOR up = VNorm(VSub(transform_.pos, { 0.0f, 0.0f, 0.0f }));
+    VECTOR forward = AsoUtility::DIR_F;
+    float dot = VDot(forward, up);
+    if (fabsf(dot) > 0.99f) { forward = AsoUtility::DIR_R; }
+    forward = VNorm(VSub(forward, VScale(up, dot)));
+    transform_.quaRot = Quaternion::LookRotation(forward, up);
+
     transform_.Update();
 }
 
@@ -233,7 +238,7 @@ void Item::InitCollider(void)
     // カプセルコライダ
     ColliderBase* colSphere = new ColliderSphere(
         ColliderBase::TAG::ITEM, &transform_,
-        AsoUtility::VECTOR_ZERO, 30.0f);
+        AsoUtility::VECTOR_ZERO, 50.0f);
 
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::SPHERE), colSphere);
 }

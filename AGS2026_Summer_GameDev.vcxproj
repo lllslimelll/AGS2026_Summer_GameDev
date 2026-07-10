@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\RocketLocatorUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\GuideUI.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Rocket.cpp" />
@@ -182,6 +183,7 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.h" />
     <ClInclude Include="Src\Object\UI\GameUI\RocketLocatorUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\GuideUI.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Rocket.h" />

@@ -4,6 +4,7 @@
 #include "../../../../Utility/AsoUtility.h"
 #include "EnemyRat.h"
 #include "EnemyRobot.h"
+#include "EnemyGiant.h"
 #include "EnemyManager.h"
 
 EnemyManager::EnemyManager(Player& player)
@@ -113,6 +114,9 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 		break;
 	case EnemyBase::TYPE::ROBOT:
 		enemy = new EnemyRobot(data, player_);
+		break;
+	case EnemyBase::TYPE::GIANT:
+		enemy = new EnemyGiant(data, player_);
 		break;
 	default:
 		break;

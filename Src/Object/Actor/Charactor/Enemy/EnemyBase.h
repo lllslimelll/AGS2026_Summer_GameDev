@@ -9,8 +9,9 @@ public:
 
 	enum class TYPE
 	{
-		RAT, // ネズミ
-		ROBOT, // ロボット
+		RAT = 2, // ネズミ
+		ROBOT = 1, // ロボット
+		GIANT = 0
 	};
 
 	// エネミーデータ

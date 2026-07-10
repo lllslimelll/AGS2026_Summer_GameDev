@@ -31,12 +31,14 @@ void SoundManager::Init(void)
 	walkH_ = LoadSoundMem(WALK_PATH);
 	pickUpH_ = LoadSoundMem(PICKUP_PATH);
 	boostH_ = LoadSoundMem(BOOST_PATH);
+	damagedH_ = LoadSoundMem(DAMAGED_PATH);
 
 	// 音量調整
 	ChangeVolumeSoundMem(BGM_TITLE_VOLUME, bgmTitleH_);
 	ChangeVolumeSoundMem(WALK_VOLUME, walkH_);
 	ChangeVolumeSoundMem(PICKUP_VOLUME, pickUpH_);
 	ChangeVolumeSoundMem(BOOST_VOLUME, boostH_);
+	ChangeVolumeSoundMem(DAMAGED_VOLUME, damagedH_);
 
 }
 
@@ -50,6 +52,7 @@ void SoundManager::Destroy(void)
 	DeleteSoundMem(walkH_);
 	DeleteSoundMem(pickUpH_);
 	DeleteSoundMem(boostH_);
+	DeleteSoundMem(damagedH_);
 
 	// インスタンスのメモリ解放
 	delete instance_;
@@ -87,6 +90,11 @@ void SoundManager::PlayBoost()
 	}
 }
 
+void SoundManager::PlayDamaged()
+{
+	PlaySoundMem(damagedH_, DX_PLAYTYPE_BACK, true);
+}
+
 void SoundManager::StopBGMTitle()
 {
 	StopSoundMem(bgmTitleH_);
@@ -105,4 +113,9 @@ void SoundManager::StopPickUp()
 void SoundManager::StopBoost()
 {
 	StopSoundMem(boostH_);
+}
+
+void SoundManager::StopDamaged()
+{
+	StopSoundMem(damagedH_);
 }

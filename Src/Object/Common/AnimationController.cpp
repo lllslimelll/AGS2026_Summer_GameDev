@@ -3,11 +3,15 @@
 #include "AnimationController.h"
 
 AnimationController::AnimationController(int modelId)
-	:
-	modelId_(modelId),
-	playType_(-1),
-	playAnim_(),
-	isLoop_(true)
+    :
+    modelId_(modelId),
+    playType_(-1),
+    playAnim_(),
+    isLoop_(true),
+    prevType_(-1),
+    prevAnim_(),
+    blendRate_(1.0f),
+    blendTime_(0.2f)  // デフォルト0.2秒でブレンド
 {
 }
 
@@ -17,151 +21,152 @@ AnimationController::~AnimationController(void)
 
 void AnimationController::Add(int type, float speed, const std::string path)
 {
-	Animation animation;
-	animation.model = MV1LoadModel(path.c_str());
-	animation.animIndex = -1;
-
-	Add(type, speed, animation);
+    Animation animation;
+    animation.model = MV1LoadModel(path.c_str());
+    animation.animIndex = -1;
+    Add(type, speed, animation);
 }
 
 void AnimationController::AddInFbx(int type, float speed, int animIndex)
 {
-	Animation animation;
-	animation.model = -1;
-	animation.animIndex = animIndex;
-
-	Add(type, speed, animation);
+    Animation animation;
+    animation.model = -1;
+    animation.animIndex = animIndex;
+    Add(type, speed, animation);
 }
 
 void AnimationController::Play(int type, bool isLoop)
 {
+    if (playType_ == type) { return; }
 
-	if (playType_ == type)
-	{
-		// 同じアニメーションだったら再生を継続する
-		return;
-	}
+    // 前のアニメーションをブレンド用に保存
+    if (playType_ != -1)
+    {
+        // 既にブレンド中なら前のブレンド先をデタッチ
+        if (prevType_ != -1 && prevAnim_.attachNo != -1)
+        {
+            MV1DetachAnim(modelId_, prevAnim_.attachNo);
+        }
+        prevAnim_ = playAnim_;
+        prevType_ = playType_;
+        blendRate_ = 0.0f;  // ブレンド開始
+    }
+    else
+    {
+        blendRate_ = 1.0f;  // 最初の再生はブレンドなし
+    }
 
-	if (playType_ != -1)
-	{
-		// モデルからアニメーションを外す
-		MV1DetachAnim(modelId_, playAnim_.attachNo);
-	}
+    // 新しいアニメーションをセット
+    playType_ = type;
+    playAnim_ = animations_[type];
+    playAnim_.step = 0.0f;
+    isLoop_ = isLoop;
 
-	// アニメーション種別を変更
-	playType_ = type;
-	playAnim_ = animations_[type];
+    Attach(playAnim_);
+    playAnim_.totalTime = MV1GetAttachAnimTotalTime(modelId_, playAnim_.attachNo);
 
-	// 初期化
-	playAnim_.step = 0.0f;
-
-	// モデルにアニメーションを付ける
-	if (playAnim_.model == -1)
-	{
-		// モデルと同じファイルからアニメーションをアタッチする
-		playAnim_.attachNo = MV1AttachAnim(modelId_, playAnim_.animIndex);
-	}
-	else
-	{
-		// 別のモデルファイルからアニメーションをアタッチする
-		// DxModelViewerを確認すること(大体0か1)
-		int animIdx = 0;
-		playAnim_.attachNo = MV1AttachAnim(modelId_, animIdx, playAnim_.model);
-	}
-
-	// アニメーション総時間の取得
-	playAnim_.totalTime = MV1GetAttachAnimTotalTime(modelId_, playAnim_.attachNo);
-
-	// アニメーションループ
-	isLoop_ = isLoop;
-
+    // ブレンドウェイト初期設定
+    if (prevType_ != -1)
+    {
+        MV1SetAttachAnimBlendRate(modelId_, prevAnim_.attachNo, 1.0f - blendRate_);
+        MV1SetAttachAnimBlendRate(modelId_, playAnim_.attachNo, blendRate_);
+    }
 }
 
 void AnimationController::Update(void)
 {
+    const float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 
-	// 経過時間の取得
-	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
+    // ブレンド更新
+    if (blendRate_ < 1.0f && prevType_ != -1)
+    {
+        blendRate_ += deltaTime / blendTime_;
+        if (blendRate_ >= 1.0f)
+        {
+            blendRate_ = 1.0f;
+            // ブレンド完了：前のアニメーションをデタッチ
+            if (prevAnim_.attachNo != -1)
+            {
+                MV1DetachAnim(modelId_, prevAnim_.attachNo);
+                prevAnim_.attachNo = -1;
+            }
+            prevType_ = -1;
+        }
 
-	// 再生
-	playAnim_.step += (deltaTime * playAnim_.speed);
+        MV1SetAttachAnimBlendRate(modelId_, prevAnim_.attachNo, 1.0f - blendRate_);
+        MV1SetAttachAnimBlendRate(modelId_, playAnim_.attachNo, blendRate_);
 
-	// アニメーションが終了したら
-	if (playAnim_.step > playAnim_.totalTime)
-	{
-		if (isLoop_)
-		{
-			// ループ再生
-			playAnim_.step = 0.0f;
-		}
-		else
-		{
-			// ループしない
-			playAnim_.step = playAnim_.totalTime;
-		}
-	}
+        // 前アニメのステップ更新
+        if (prevAnim_.attachNo != -1)
+        {
+            prevAnim_.step += deltaTime * prevAnim_.speed;
+            if (prevAnim_.step > prevAnim_.totalTime) { prevAnim_.step = 0.0f; }
+            MV1SetAttachAnimTime(modelId_, prevAnim_.attachNo, prevAnim_.step);
+        }
+    }
 
-	// アニメーション設定
-	MV1SetAttachAnimTime(modelId_, playAnim_.attachNo, playAnim_.step);
+    // 現在のアニメーション更新
+    playAnim_.step += deltaTime * playAnim_.speed;
 
+    if (playAnim_.step > playAnim_.totalTime)
+    {
+        if (isLoop_) { playAnim_.step = 0.0f; }
+        else { playAnim_.step = playAnim_.totalTime; }
+    }
+
+    MV1SetAttachAnimTime(modelId_, playAnim_.attachNo, playAnim_.step);
 }
 
 void AnimationController::Release(void)
 {
-
-	// 外部FBXのモデル(アニメーション)解放
-	for (const std::pair<int, Animation>& pair : animations_)
-	{
-		if (pair.second.model != -1)
-		{
-			MV1DeleteModel(pair.second.model);
-		}
-	}
-	
-	// 可変長配列をクリアする
-	animations_.clear();
-	
+    for (const std::pair<int, Animation>& pair : animations_)
+    {
+        if (pair.second.model != -1)
+        {
+            MV1DeleteModel(pair.second.model);
+        }
+    }
+    animations_.clear();
 }
 
 int AnimationController::GetPlayType(void) const
 {
-	return playType_;
+    return playType_;
 }
 
 bool AnimationController::IsEnd(void) const
 {
-
-	bool ret = false;
-
-	if (isLoop_)
-	{
-		// ループ設定されているなら、
-		// 無条件で終了しないを返す
-		return ret;
-	}
-
-	if (playAnim_.step >= playAnim_.totalTime)
-	{
-		// 再生時間を過ぎたらtrue
-		return true;
-	}
-
-	return ret;
-
+    if (isLoop_) return false;
+    return playAnim_.step >= playAnim_.totalTime;
 }
 
 const AnimationController::Animation& AnimationController::GetPlayAnim(void) const
 {
-	return playAnim_;
+    return playAnim_;
+}
+
+bool AnimationController::IsBlending(void) const
+{
+    return blendRate_ < 1.0f;
 }
 
 void AnimationController::Add(int type, float speed, Animation& animation)
 {
-	animation.speed = speed;
+    animation.speed = speed;
+    if (animations_.count(type) == 0)
+    {
+        animations_.emplace(type, animation);
+    }
+}
 
-	if (animations_.count(type) == 0)
-	{
-		// 追加
-		animations_.emplace(type, animation);
-	}
+void AnimationController::Attach(Animation& anim)
+{
+    if (anim.model == -1)
+    {
+        anim.attachNo = MV1AttachAnim(modelId_, anim.animIndex);
+    }
+    else
+    {
+        anim.attachNo = MV1AttachAnim(modelId_, 0, anim.model);
+    }
 }

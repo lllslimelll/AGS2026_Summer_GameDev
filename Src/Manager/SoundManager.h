@@ -3,8 +3,10 @@
 
 #define BGM_TITLE_PATH "Data/Sound/BGM_Title.mp3"
 #define WALK_PATH "Data/Sound/Walk.mp3"
-#define PICKUP_PATH "Data/Sound/PickUp.wav"
 #define BOOST_PATH "Data/Sound/Boost.mp3"
+#define PICKUP_PATH "Data/Sound/PickUp.wav"
+#define DAMAGED_PATH "Data/Sound/Damaged.wav"
+
 
 class SoundManager
 {
@@ -15,6 +17,7 @@ public:
 	static constexpr int WALK_VOLUME = 200;		 // 歩き
 	static constexpr int PICKUP_VOLUME = 255;	 // 取得
 	static constexpr int BOOST_VOLUME = 200;	 // ブースト
+	static constexpr int DAMAGED_VOLUME = 200;	 // ブースト
 
 
 	// インスタンスの生成
@@ -32,12 +35,14 @@ public:
 	void PlayWalk();	// 歩き
 	void PlayPickUp();	// 取得
 	void PlayBoost();	// ブースト
+	void PlayDamaged();
 
 	//音源停止	
 	void StopBGMTitle();		// タイトルBGM
 	void StopWalk();	// 歩き
 	void StopPickUp();	// 取得
 	void StopBoost();	// ブースト
+	void StopDamaged();	// ブースト
 
 
 private:
@@ -59,4 +64,5 @@ private:
 	int walkH_;
 	int pickUpH_;
 	int boostH_;
+	int damagedH_;
 };

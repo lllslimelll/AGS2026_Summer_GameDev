@@ -19,6 +19,7 @@ public:
 		IDLE,
 		RUN,
 		FAST_RUN,
+		ATTACK,
 		JUMP_RISING,
 		MAIN_STAGE,
 		ROKET,
@@ -26,6 +27,7 @@ public:
 		PLAYER_SHADOW,
 		ENEMY_RAT,
 		ENEMY_ROBOT,
+		ENEMY_GIANT,
 		VIEW_RANGE
 	};
 

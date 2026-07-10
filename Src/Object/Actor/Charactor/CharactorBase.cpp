@@ -87,6 +87,9 @@ void CharactorBase::ChangeState(int state)
 
 void CharactorBase::Rotate(void)
 {
+	// faceDir_‚ª‚Ù‚Úƒ[ƒ‚È‚ç‰ñ“]‚µ‚È‚¢
+	if (VSize(faceDir_) < 0.01f) return;
+
 	// ã•ûŒü
 	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
 

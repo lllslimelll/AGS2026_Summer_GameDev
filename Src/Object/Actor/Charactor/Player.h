@@ -66,6 +66,11 @@ public:
 
 	GUIDE_INFO GetGuideInfo(void) const;
 
+
+	// 被ダメージ
+	void OnDamaged(int amount);
+
+
 protected:
 	
 	// リソースロード
@@ -175,6 +180,8 @@ private:
 	// ドロップ処理
 	void ProcessDrop(void);
 
+	void DrawFrameRecursive(int modelId, int frameIdx);
+
 	// 選択中のインベントリスロットの変更
 	void ChangeSelectedSlot();
 	// インベントリが満杯か否か
@@ -208,8 +215,5 @@ private:
 
 	// 更新
 	void UpdateOxygenAndHp(void);
-
-	// 被ダメージ
-	void OnDamaged(int amount);
 };
 

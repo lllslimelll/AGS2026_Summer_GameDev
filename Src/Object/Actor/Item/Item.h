@@ -113,6 +113,7 @@ protected:
 	void InitPost(void) override;
 
 private:
+
 	VECTOR camPos_;
 	// Ží•Ê
 	TYPE type_;

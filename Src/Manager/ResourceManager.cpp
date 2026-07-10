@@ -56,6 +56,9 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/FastRun.mv1");
 	resourcesMap_.emplace(SRC::FAST_RUN, res);
 
+	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Attack.mv1");
+	resourcesMap_.emplace(SRC::ATTACK, res);
+
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/JumpRising.mv1");
 	resourcesMap_.emplace(SRC::JUMP_RISING, res);
 
@@ -75,6 +78,9 @@ void ResourceManager::Init(void)
 	// ロボット
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Robot.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_ROBOT, res);
+
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Giant/Giant.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_GIANT, res);
 
 	// 視野（円錐）
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");

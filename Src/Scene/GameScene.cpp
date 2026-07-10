@@ -84,6 +84,11 @@ void GameScene::Init(void)
 	itemMng_->Init();
 	itemMng_->AddHitCollider(planetCollider);
 
+	for (auto& e : enemyManager_->GetEnemies())
+	{
+		player_->AddHitCollider(
+			e->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
+	}
 	player_->AddHitCollider(planetCollider);
 	player_->AddHitCollider(rocketCollider);
 

@@ -48,16 +48,17 @@ void Player::ChangeStateDead(void)
 	stateUpdate_ = std::bind(&Player::UpdateDead, this);
 
 	animCtrl_->Play(static_cast<int>(ANIM_TYPE::DEAD), false);
+	stateUpdate_ = []() {};
+
+	// 死亡シーンのオーバーレイを追加
+	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
 
 	SoundManager::GetInstance().StopWalk();
 }
 void Player::ChangeStateEnd(void)
 {
 	// 
-	stateUpdate_ = []() {};
-
-	// 死亡シーンのオーバーレイを追加
-	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
+	
 }
 
 void Player::UpdateIdle(void)
@@ -150,7 +151,8 @@ void Player::ProcessMove(void)
 			// 速く走るアニメーション再生
 			animCtrl_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
 
-			//SoundManager::GetInstance().PlayBoost();
+			SoundManager::GetInstance().StopWalk();
+			SoundManager::GetInstance().PlayBoost();
 		}
 		else
 		{
@@ -159,8 +161,6 @@ void Player::ProcessMove(void)
 
 			// 走るアニメーション再生
 			animCtrl_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
-
-			//SoundManager::GetInstance().StopBoost();
 		}
 
 		// 移動速度を反映
@@ -169,6 +169,7 @@ void Player::ProcessMove(void)
 	else // 移動入力がない場合
 	{
 		SoundManager::GetInstance().StopWalk();
+		SoundManager::GetInstance().StopBoost();
 
 		// 入力がない時も、常にカメラの方向を向かせ続ける場合
 		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
@@ -274,7 +275,7 @@ void Player::UpdateItem(void)
 		(targetRadius - crosshairRadius_) * 15.0f * scnMng_.GetDeltaTime();
 
 	// 選択中アイテムの追従
-	UpdateFollowItem();
+	//UpdateFollowItem();
 
 	// 帰還
 	if (IsAimingRoket())
@@ -366,6 +367,19 @@ void Player::ProcessDrop(void)
 	inventory_.RemoveSelected();
 }
 
+void Player::DrawFrameRecursive(int modelId, int frameIdx)
+{
+	MV1DrawFrame(modelId, frameIdx);
+
+	// 子フレームを再帰的に描画
+	int childNum = MV1GetFrameChildNum(modelId, frameIdx);
+	for (int i = 0; i < childNum; i++)
+	{
+		int childIdx = MV1GetFrameChild(modelId, frameIdx, i);
+		DrawFrameRecursive(modelId, childIdx);
+	}
+}
+
 void Player::ChangeSelectedSlot()
 {
 	auto& ins = InputManager::GetInstance();
@@ -402,8 +416,7 @@ bool Player::CanPickUp(void) const
 
 void Player::Draw(void)
 {
-	// 基底クラスの描画
-	CharactorBase::Draw();
+	//ActorBase::Draw();
 
 	int screenW, screenH;
 	GetScreenState(&screenW, &screenH, nullptr);
@@ -413,7 +426,7 @@ void Player::Draw(void)
 	int cy = screenH / 2;
 	int radius = static_cast<int>(crosshairRadius_);
 	bool isFilled = (crosshairRadius_ <= 7.0f);
-
+	
 	DrawCircle(cx, cy, radius, GetColor(255, 255, 255), isFilled ? TRUE : FALSE);
 }
 
@@ -577,6 +590,8 @@ void Player::UpdateOxygenAndHp(void)
 void Player::OnDamaged(int damage)
 {
 	hp_ -= damage;
+	SoundManager::GetInstance().PlayDamaged();
+
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
@@ -655,5 +670,25 @@ void Player::InitPost(void)
 
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
+
+	{
+		// 上方向（星の中心→プレイヤー）
+		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+
+		// faceDir_ を接平面へ投影して、表面に沿った前方向にする
+		float dotFU = VDot(faceDir_, upDir);
+		VECTOR f = VSub(faceDir_, VScale(upDir, dotFU));
+
+		// 万一 faceDir_ が upDir とほぼ平行で潰れた場合の保険
+		if (VSize(f) < 0.0001f)
+		{
+			f = VCross(upDir, AsoUtility::AXIS_X);
+			if (VSize(f) < 0.0001f) { f = VCross(upDir, AsoUtility::AXIS_Z); }
+		}
+
+		faceDir_ = VNorm(f);
+		transform_.quaRot = Quaternion::LookRotation(faceDir_, upDir);
+		transform_.Update();
+	}
 }
 
