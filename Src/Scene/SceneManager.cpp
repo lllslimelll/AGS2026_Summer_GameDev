@@ -12,6 +12,7 @@
 #include "../Camera/Camera.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
+#include "../Manager/ScreenManager.h"
 #include "SceneManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
@@ -117,8 +118,8 @@ void SceneManager::Update(void)
 void SceneManager::Draw(void)
 {
 	// 描画先グラフィック領域の指定
-	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
-	SetDrawScreen(DX_SCREEN_BACK);
+	int mainScreen = ScreenManager::GetInstance().GetMainScreen();
+	SetDrawScreen(mainScreen);
 
 	// 画面を初期化
 	ClearDrawScreen();

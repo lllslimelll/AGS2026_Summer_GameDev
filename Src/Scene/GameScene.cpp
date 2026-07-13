@@ -45,6 +45,10 @@ GameScene::~GameScene(void)
 	delete skyDome_;
 }
 
+void GameScene::Load(void)
+{
+}
+
 void GameScene::Init(void)
 {
 	stageMng_ = std::make_unique<StageManager>();

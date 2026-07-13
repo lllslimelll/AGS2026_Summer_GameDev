@@ -2,6 +2,7 @@
 #include <EffekseerForDXLib.h>
 #include "Manager/InputManager.h"
 #include "Manager/ResourceManager.h"
+#include "Manager/ScreenManager.h"
 #include "Scene/SceneManager.h"
 #include "Manager/SoundManager.h"
 #include "Common/FpsController.h"
@@ -73,6 +74,9 @@ void Application::Init(void)
 	// サウンド管理初期化
 	SoundManager::CreateInstance();
 
+	// スクリーン管理初期化
+	ScreenManager::CreateInstance();
+
 	// シーン管理初期化
 	SceneManager::CreateInstance();
 
@@ -121,6 +125,8 @@ void Application::Destroy(void)
 	SceneManager::GetInstance().Destroy();
 	// サウンド管理破棄
 	SoundManager::GetInstance().Destroy();
+	// スクリーン管理破棄
+	ScreenManager::GetInstance().Destroy();
 
 	// Effekseerを終了する。
 	Effkseer_End();

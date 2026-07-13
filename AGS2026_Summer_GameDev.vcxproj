@@ -131,6 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Collision\CollisionProfile.cpp" />
+    <ClCompile Include="Src\PostEffect\PostEffect.cpp" />
+    <ClCompile Include="Src\Manager\ScreenManager.cpp" />
+    <ClCompile Include="Src\Renderer\Material\Material.cpp" />
+    <ClCompile Include="Src\Renderer\ModelRenderer.cpp" />
+    <ClCompile Include="Src\Renderer\PixelRenderer.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\RocketLocatorUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\GuideUI.cpp" />
@@ -165,11 +171,11 @@
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyRobot.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Player.cpp" />
     <ClCompile Include="Src\Object\Actor\SkyDome.cpp" />
-    <ClCompile Include="Src\Object\Collider\ColliderBase.cpp" />
-    <ClCompile Include="Src\Object\Collider\ColliderCapsule.cpp" />
-    <ClCompile Include="Src\Object\Collider\ColliderLine.cpp" />
-    <ClCompile Include="Src\Object\Collider\ColliderModel.cpp" />
-    <ClCompile Include="Src\Object\Collider\ColliderSphere.cpp" />
+    <ClCompile Include="Src\Collision\ColliderBase.cpp" />
+    <ClCompile Include="Src\Collision\ColliderCapsule.cpp" />
+    <ClCompile Include="Src\Collision\ColliderLine.cpp" />
+    <ClCompile Include="Src\Collision\ColliderModel.cpp" />
+    <ClCompile Include="Src\Collision\ColliderSphere.cpp" />
     <ClCompile Include="Src\Object\Common\AnimationController.cpp" />
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
@@ -183,6 +189,16 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Collision\CollisionChannel.h" />
+    <ClInclude Include="Src\Collision\CollisionProfile.h" />
+    <ClInclude Include="Src\Collision\CollisionProfileType.h" />
+    <ClInclude Include="Src\Collision\CollisionResponse.h" />
+    <ClInclude Include="Src\Collision\HitResult.h" />
+    <ClInclude Include="Src\PostEffect\PostEffect.h" />
+    <ClInclude Include="Src\Manager\ScreenManager.h" />
+    <ClInclude Include="Src\Renderer\Material\Material.h" />
+    <ClInclude Include="Src\Renderer\ModelRenderer.h" />
+    <ClInclude Include="Src\Renderer\PixelRenderer.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.h" />
     <ClInclude Include="Src\Object\UI\GameUI\RocketLocatorUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\GuideUI.h" />
@@ -217,11 +233,11 @@
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyRobot.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Player.h" />
     <ClInclude Include="Src\Object\Actor\SkyDome.h" />
-    <ClInclude Include="Src\Object\Collider\ColliderBase.h" />
-    <ClInclude Include="Src\Object\Collider\ColliderCapsule.h" />
-    <ClInclude Include="Src\Object\Collider\ColliderLine.h" />
-    <ClInclude Include="Src\Object\Collider\ColliderModel.h" />
-    <ClInclude Include="Src\Object\Collider\ColliderSphere.h" />
+    <ClInclude Include="Src\Collision\ColliderBase.h" />
+    <ClInclude Include="Src\Collision\ColliderCapsule.h" />
+    <ClInclude Include="Src\Collision\ColliderLine.h" />
+    <ClInclude Include="Src\Collision\ColliderModel.h" />
+    <ClInclude Include="Src\Collision\ColliderSphere.h" />
     <ClInclude Include="Src\Object\Common\AnimationController.h" />
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Scene\DebugScene.h" />
@@ -234,6 +250,7 @@
     <ClInclude Include="Src\Object\UI\TitleUI\TitleUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\StatusUI.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageManager.h" />
+    <ClInclude Include="Src\Utility\Palette.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Csv\EnemyData.csv" />
