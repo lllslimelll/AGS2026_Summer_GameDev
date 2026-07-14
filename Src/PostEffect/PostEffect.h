@@ -37,8 +37,6 @@ protected:
         int texAddress = DX_TEXADDRESS_CLAMP);
 
     // 定数バッファの値をセットする
-    //  effectIndex : Add() した順番のインデックス
-    //  bufIndex    : 定数バッファ内のインデックス
     void SetConstBuffer(int effectIndex, int bufIndex, float x);
     void SetConstBuffer(int effectIndex, int bufIndex, float x, float y);
     void SetConstBuffer(int effectIndex, int bufIndex, float x, float y, float z);

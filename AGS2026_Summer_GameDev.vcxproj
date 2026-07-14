@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Collision\CollisionProfileManager.cpp" />
     <ClCompile Include="Src\Collision\CollisionProfile.cpp" />
     <ClCompile Include="Src\PostEffect\PostEffect.cpp" />
     <ClCompile Include="Src\Manager\ScreenManager.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Collision\CollisionProfileManager.h" />
     <ClInclude Include="Src\Collision\CollisionChannel.h" />
     <ClInclude Include="Src\Collision\CollisionProfile.h" />
     <ClInclude Include="Src\Collision\CollisionProfileType.h" />

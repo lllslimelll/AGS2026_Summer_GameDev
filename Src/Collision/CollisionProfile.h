@@ -8,10 +8,10 @@
 struct CollisionProfile
 {
 	// プロファイルの種別
-	CollisionProfileType type_ = CollisionProfileType::NONE;
+	CollisionProfileType type_;
 
 	// 自分が所属するチャンネル
-	CollisionChannel channel_ = CollisionChannel::NONE;
+	CollisionChannel channel_;
 
 	// コンストラクタ
 	CollisionProfile(void) = default;
@@ -26,7 +26,7 @@ struct CollisionProfile
 private:
 
 	// チャンネルの数
-	static constexpr int CHANNEL_COUNT = 8;
+	static constexpr int CHANNEL_COUNT = static_cast<int>(CollisionChannel::MAX);
 
 	// 相手チャンネルごとの反応
 	std::array<CollisionResponse, CHANNEL_COUNT> responses_;
