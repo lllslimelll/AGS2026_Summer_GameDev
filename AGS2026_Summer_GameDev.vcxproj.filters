@@ -15,407 +15,413 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Common\Fader.cpp">
+    <ClCompile Include="Source\Common\Fader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Common\FpsController.cpp">
+    <ClCompile Include="Source\Common\FpsController.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Common\Quaternion.cpp">
+    <ClCompile Include="Source\Core\Quaternion.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Common\Vector2.cpp">
+    <ClCompile Include="Source\Core\Vector2.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Camera\Camera.cpp">
+    <ClCompile Include="Source\Camera\Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Manager\InputManager.cpp">
+    <ClCompile Include="Source\Manager\InputManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Manager\Resource.cpp">
+    <ClCompile Include="Source\Manager\Resource.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Manager\ResourceManager.cpp">
+    <ClCompile Include="Source\Manager\ResourceManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\SceneManager.cpp">
+    <ClCompile Include="Source\Game\Scene\SceneManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.cpp">
+    <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyManager.cpp">
+    <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyRat.cpp">
+    <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyRat.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyRobot.cpp">
+    <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyRobot.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Charactor\CharactorBase.cpp">
+    <ClCompile Include="Source\Game\Actor\Charactor\CharactorBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Charactor\Player.cpp">
+    <ClCompile Include="Source\Game\Actor\Charactor\Player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\ActorBase.cpp">
+    <ClCompile Include="Source\Game\Actor\ActorBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\SkyDome.cpp">
+    <ClCompile Include="Source\Game\Actor\SkyDome.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\ColliderBase.cpp">
+    <ClCompile Include="Source\Collision\ColliderBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\ColliderCapsule.cpp">
+    <ClCompile Include="Source\Collision\ColliderCapsule.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\ColliderLine.cpp">
+    <ClCompile Include="Source\Collision\ColliderLine.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\ColliderModel.cpp">
+    <ClCompile Include="Source\Collision\ColliderModel.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\ColliderSphere.cpp">
+    <ClCompile Include="Source\Collision\ColliderSphere.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Common\AnimationController.cpp">
+    <ClCompile Include="Source\Common\AnimationController.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Common\Transform.cpp">
+    <ClCompile Include="Source\Common\Transform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\DebugScene.cpp">
+    <ClCompile Include="Source\Game\Scene\DebugScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\GameScene.cpp">
+    <ClCompile Include="Source\Game\Scene\GameScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\SceneBase.cpp">
+    <ClCompile Include="Source\Game\Scene\SceneBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\TitleScene.cpp">
+    <ClCompile Include="Source\Game\Scene\TitleScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Utility\AsoUtility.cpp">
+    <ClCompile Include="Source\Utility\AsoUtility.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Utility\MatrixUtility.cpp">
+    <ClCompile Include="Source\Utility\MatrixUtility.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application.cpp">
+    <ClCompile Include="Source\Application.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\main.cpp">
+    <ClCompile Include="Source\main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Item\Item.cpp">
+    <ClCompile Include="Source\Game\Actor\Item\Item.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Item\ItemManager.cpp">
+    <ClCompile Include="Source\Game\Actor\Item\ItemManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Item\Item1.cpp">
+    <ClCompile Include="Source\Game\Actor\Item\Item1.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\ResultScene.cpp">
+    <ClCompile Include="Source\Game\Scene\ResultScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\UI\GameUI\GameUI.cpp">
+    <ClCompile Include="Source\Game\UI\GameUI\GameUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\UI\GameUI\InventoryUI.cpp">
+    <ClCompile Include="Source\Game\UI\GameUI\InventoryUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Manager\SoundManager.cpp">
+    <ClCompile Include="Source\Manager\SoundManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\UI\TitleUI\TitleUI.cpp">
+    <ClCompile Include="Source\Game\UI\TitleUI\TitleUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\PauseScene.cpp">
+    <ClCompile Include="Source\Game\Scene\PauseScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\UI\GameUI\StatusUI.cpp">
+    <ClCompile Include="Source\Game\UI\GameUI\StatusUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Scene\DeadScene.cpp">
+    <ClCompile Include="Source\Game\Scene\DeadScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Inventory\Inventory.cpp">
+    <ClCompile Include="Source\Game\Inventory\Inventory.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Stage\StageManager.cpp">
+    <ClCompile Include="Source\Game\Actor\Stage\StageManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Stage\Planet.cpp">
+    <ClCompile Include="Source\Game\Actor\Stage\Planet.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Stage\Rocket.cpp">
+    <ClCompile Include="Source\Game\Actor\Stage\Rocket.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\UI\GameUI\GuideUI.cpp">
+    <ClCompile Include="Source\Game\UI\GameUI\GuideUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\UI\GameUI\RocketLocatorUI.cpp">
+    <ClCompile Include="Source\Game\UI\GameUI\RocketLocatorUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.cpp">
+    <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyGiant.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\ModelRenderer.cpp">
+    <ClCompile Include="Source\Renderer\ModelRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\PixelRenderer.cpp">
+    <ClCompile Include="Source\Renderer\PixelRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\Material\Material.cpp">
+    <ClCompile Include="Source\Renderer\Material\Material.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Manager\ScreenManager.cpp">
+    <ClCompile Include="Source\Manager\ScreenManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PostEffect\PostEffect.cpp">
+    <ClCompile Include="Source\PostEffect\PostEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\CollisionProfile.cpp">
+    <ClCompile Include="Source\Collision\CollisionProfile.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Collision\CollisionProfileManager.cpp">
+    <ClCompile Include="Source\Collision\CollisionProfileManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\Vector3.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Common\Fader.h">
+    <ClInclude Include="Source\Common\Fader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Common\FpsController.h">
+    <ClInclude Include="Source\Common\FpsController.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Common\Quaternion.h">
+    <ClInclude Include="Source\Core\Quaternion.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Common\Vector2.h">
+    <ClInclude Include="Source\Core\Vector2.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Camera\Camera.h">
+    <ClInclude Include="Source\Camera\Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Manager\InputManager.h">
+    <ClInclude Include="Source\Manager\InputManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Manager\Resource.h">
+    <ClInclude Include="Source\Manager\Resource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Manager\ResourceManager.h">
+    <ClInclude Include="Source\Manager\ResourceManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\SceneManager.h">
+    <ClInclude Include="Source\Game\Scene\SceneManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.h">
+    <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyManager.h">
+    <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyRat.h">
+    <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyRat.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyRobot.h">
+    <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyRobot.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Charactor\CharactorBase.h">
+    <ClInclude Include="Source\Game\Actor\Charactor\CharactorBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Charactor\Player.h">
+    <ClInclude Include="Source\Game\Actor\Charactor\Player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\ActorBase.h">
+    <ClInclude Include="Source\Game\Actor\ActorBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\SkyDome.h">
+    <ClInclude Include="Source\Game\Actor\SkyDome.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\ColliderBase.h">
+    <ClInclude Include="Source\Collision\ColliderBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\ColliderCapsule.h">
+    <ClInclude Include="Source\Collision\ColliderCapsule.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\ColliderLine.h">
+    <ClInclude Include="Source\Collision\ColliderLine.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\ColliderModel.h">
+    <ClInclude Include="Source\Collision\ColliderModel.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\ColliderSphere.h">
+    <ClInclude Include="Source\Collision\ColliderSphere.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Common\AnimationController.h">
+    <ClInclude Include="Source\Common\AnimationController.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Common\Transform.h">
+    <ClInclude Include="Source\Common\Transform.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\DebugScene.h">
+    <ClInclude Include="Source\Game\Scene\DebugScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\GameScene.h">
+    <ClInclude Include="Source\Game\Scene\GameScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\SceneBase.h">
+    <ClInclude Include="Source\Game\Scene\SceneBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\TitleScene.h">
+    <ClInclude Include="Source\Game\Scene\TitleScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Utility\AsoUtility.h">
+    <ClInclude Include="Source\Utility\AsoUtility.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Utility\MatrixUtility.h">
+    <ClInclude Include="Source\Utility\MatrixUtility.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application.h">
+    <ClInclude Include="Source\Application.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\main.h">
+    <ClInclude Include="Source\main.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Item\Item.h">
+    <ClInclude Include="Source\Game\Actor\Item\Item.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Item\ItemManager.h">
+    <ClInclude Include="Source\Game\Actor\Item\ItemManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Item\Item1.h">
+    <ClInclude Include="Source\Game\Actor\Item\Item1.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\ResultScene.h">
+    <ClInclude Include="Source\Game\Scene\ResultScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\UI\UI.h">
+    <ClInclude Include="Source\Game\UI\UI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\UI\GameUI\GameUI.h">
+    <ClInclude Include="Source\Game\UI\GameUI\GameUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\UI\GameUI\InventoryUI.h">
+    <ClInclude Include="Source\Game\UI\GameUI\InventoryUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Manager\SoundManager.h">
+    <ClInclude Include="Source\Manager\SoundManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\UI\TitleUI\TitleUI.h">
+    <ClInclude Include="Source\Game\UI\TitleUI\TitleUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\PauseScene.h">
+    <ClInclude Include="Source\Game\Scene\PauseScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\UI\GameUI\StatusUI.h">
+    <ClInclude Include="Source\Game\UI\GameUI\StatusUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Scene\DeadScene.h">
+    <ClInclude Include="Source\Game\Scene\DeadScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Inventory\Inventory.h">
+    <ClInclude Include="Source\Game\Inventory\Inventory.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Stage\StageManager.h">
+    <ClInclude Include="Source\Game\Actor\Stage\StageManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Stage\Planet.h">
+    <ClInclude Include="Source\Game\Actor\Stage\Planet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Stage\Rocket.h">
+    <ClInclude Include="Source\Game\Actor\Stage\Rocket.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\UI\GameUI\GuideUI.h">
+    <ClInclude Include="Source\Game\UI\GameUI\GuideUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\UI\GameUI\RocketLocatorUI.h">
+    <ClInclude Include="Source\Game\UI\GameUI\RocketLocatorUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.h">
+    <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyGiant.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\ModelRenderer.h">
+    <ClInclude Include="Source\Renderer\ModelRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\PixelRenderer.h">
+    <ClInclude Include="Source\Renderer\PixelRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\Material\Material.h">
+    <ClInclude Include="Source\Renderer\Material\Material.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Manager\ScreenManager.h">
+    <ClInclude Include="Source\Manager\ScreenManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\PostEffect\PostEffect.h">
+    <ClInclude Include="Source\PostEffect\PostEffect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Utility\Palette.h">
+    <ClInclude Include="Source\Utility\Palette.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\HitResult.h">
+    <ClInclude Include="Source\Collision\HitResult.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\CollisionChannel.h">
+    <ClInclude Include="Source\Collision\CollisionChannel.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\CollisionResponse.h">
+    <ClInclude Include="Source\Collision\CollisionResponse.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\CollisionProfile.h">
+    <ClInclude Include="Source\Collision\CollisionProfile.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\CollisionProfileType.h">
+    <ClInclude Include="Source\Collision\CollisionProfileType.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Collision\CollisionProfileManager.h">
+    <ClInclude Include="Source\Collision\CollisionProfileManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Vector3.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="Data\Csv\EnemyData.csv" />
-    <None Include="Data\Csv\EnemyData.xlsx" />
-    <None Include="Data\Csv\ItemData.csv" />
-    <None Include="Data\Csv\ItemData.xlsx" />
+    <None Include="Resource\Csv\EnemyData.csv" />
+    <None Include="Resource\Csv\EnemyData.xlsx" />
+    <None Include="Resource\Csv\ItemData.csv" />
+    <None Include="Resource\Csv\ItemData.xlsx" />
     <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
-    <None Include="Data\Model\Stage\MainStage\planet.mv1" />
+    <None Include="Resource\Model\Stage\MainStage\planet.mv1" />
     <None Include="Data\Model\SkyDome\SpaceDome.mv1" />
-    <None Include="Data\Model\SpaceDome\SpaceDome.mv1" />
-    <None Include="Data\Model\Stage\roket.mv1" />
+    <None Include="Resource\Model\SpaceDome\SpaceDome.mv1" />
+    <None Include="Resource\Model\Stage\roket.mv1" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Data\Csv\PointSave.txt" />
+    <Text Include="Resource\Csv\PointSave.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Data\Image\$100.png">
+    <Image Include="Resource\Image\%24100.png">
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="Data\Image\100$.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="Data\Image\Congratulations.png">
+    <Image Include="Resource\Image\Congratulations.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="Data\Image\PushSpace.png">
+    <Image Include="Resource\Image\PushSpace.png">
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="Data\Image\roket.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="Data\Image\Shadow.png">
+    <Image Include="Resource\Image\Shadow.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="Data\Image\SpeechBalloon.png">
+    <Image Include="Resource\Image\SpeechBalloon.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="Data\Image\Title.png">
+    <Image Include="Resource\Image\Title.png">
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="Data\Model\Stage\MainStage\lroc_color_poles_8k.tif_0.png">
@@ -426,10 +432,10 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="Data\Sound\BGM_Title.mp3" />
-    <Media Include="Data\Sound\PickUp.wav">
+    <Media Include="Resource\Sound\BGM_Title.mp3" />
+    <Media Include="Resource\Sound\PickUp.wav">
       <Filter>リソース ファイル</Filter>
     </Media>
-    <Media Include="Data\Sound\Walk.mp3" />
+    <Media Include="Resource\Sound\Walk.mp3" />
   </ItemGroup>
 </Project>
