@@ -1,10 +1,7 @@
 #pragma once
 #include <string>
 
-struct ColorF;
-
-// DxLib描画用カラー（0xRRGGBB / 0xAARRGGBB）
-// Unreal の FColor に相当
+// カラー
 struct Color
 {
     unsigned int value = 0x000000;
@@ -21,9 +18,6 @@ struct Color
     unsigned char B(void) const;
     unsigned char A(void) const;
 
-    // ColorF との変換
-    ColorF ToColorF(void) const;
-
     // 演算子オーバーロード
     bool operator==(const Color& other) const;
     bool operator!=(const Color& other) const;
@@ -32,26 +26,23 @@ struct Color
     std::string ToString(void) const;
 
     // 基本色定数
-    static constexpr Color WHITE = { 0xFFFFFF };
-    static constexpr Color BLACK = { 0x000000 };
-    static constexpr Color RED = { 0xFF0000 };
-    static constexpr Color GREEN = { 0x00FF00 };
-    static constexpr Color BLUE = { 0x0000FF };
-    static constexpr Color YELLOW = { 0xFFFF00 };
-    static constexpr Color CYAN = { 0x00FFFF }; // 青緑
-    static constexpr Color MAGENTA = { 0xFF00FF }; // 赤紫
-    static constexpr Color ORANGE = { 0xFF8000 }; // 橙
-    static constexpr Color PURPLE = { 0x800080 }; // 紫
-    static constexpr Color PINK = { 0xFF69B4 }; // 桃色
-    static constexpr Color BROWN = { 0x8B4513 }; // 茶色
-    static constexpr Color GRAY = { 0x808080 }; // 中間グレー
-    static constexpr Color SILVER = { 0xC0C0C0 }; // 明るいグレー
+    static const Color WHITE;
+    static const Color BLACK;
+    static const Color RED;
+    static const Color GREEN;
+    static const Color BLUE;
+    static const Color YELLOW;
+    static const Color CYAN;    // 青緑
+    static const Color MAGENTA; // 赤紫
+    static const Color ORANGE;  // 橙
+    static const Color PURPLE;  // 紫
+    static const Color PINK;    // 桃色
+    static const Color BROWN;   // 茶色
+    static const Color GRAY;    // 中間グレー
+    static const Color SILVER;  // 明るいグレー
 
-    // UI用定数
-    static constexpr Color HP_HIGH = { 0x00FF00 }; // HP高い
-    static constexpr Color HP_MID = { 0xFFFF00 }; // HP中
-    static constexpr Color HP_LOW = { 0xFF0000 }; // HP低い
-
-    // エフェクト用定数
-    static constexpr Color DAMAGE = { 0xFF4444 }; // ダメージ（柔らかい赤）
+    // UI用定数（cpp に定義）
+    static const Color HP_HIGH; // HP高い
+    static const Color HP_MID;  // HP中
+    static const Color HP_LOW;  // HP低い
 };

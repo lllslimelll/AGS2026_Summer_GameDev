@@ -1,8 +1,24 @@
+// Core/Vector3.cpp
 #include <cmath>
 #include <algorithm>
 #include <sstream>
 #include "Vector3.h"
 
+// ---------------------------------------------------------------
+// 定数の定義
+// ---------------------------------------------------------------
+const Vector3 Vector3::ZERO = { 0.0f, 0.0f, 0.0f };
+const Vector3 Vector3::ONE = { 1.0f, 1.0f, 1.0f };
+const Vector3 Vector3::UP = { 0.0f, 1.0f, 0.0f };
+const Vector3 Vector3::DOWN = { 0.0f,-1.0f, 0.0f };
+const Vector3 Vector3::FORWARD = { 0.0f, 0.0f, 1.0f };
+const Vector3 Vector3::BACK = { 0.0f, 0.0f,-1.0f };
+const Vector3 Vector3::RIGHT = { 1.0f, 0.0f, 0.0f };
+const Vector3 Vector3::LEFT = { -1.0f, 0.0f, 0.0f };
+
+// ---------------------------------------------------------------
+// コンストラクタ
+// ---------------------------------------------------------------
 Vector3::Vector3(float x, float y, float z)
     : x(x), y(y), z(z)
 {
@@ -95,7 +111,7 @@ void Vector3::Normalize(void)
     }
 }
 
-Vector3 Vector3::GetNormalized(void) const
+Vector3 Vector3::Normalized(void) const
 {
     float len = Length();
     if (len > 0.0f)
@@ -103,68 +119,6 @@ Vector3 Vector3::GetNormalized(void) const
         return { x / len, y / len, z / len };
     }
     return ZERO;
-}
-
-// ---------------------------------------------------------------
-// 内積 / 外積
-// ---------------------------------------------------------------
-float Vector3::Dot(const Vector3& other) const
-{
-    return x * other.x + y * other.y + z * other.z;
-}
-
-Vector3 Vector3::Cross(const Vector3& other) const
-{
-    return
-    {
-        y * other.z - z * other.y,
-        z * other.x - x * other.z,
-        x * other.y - y * other.x,
-    };
-}
-
-// ---------------------------------------------------------------
-// 距離
-// ---------------------------------------------------------------
-float Vector3::Distance(const Vector3& other) const
-{
-    return (*this - other).Length();
-}
-
-float Vector3::DistanceSquared(const Vector3& other) const
-{
-    return (*this - other).LengthSquared();
-}
-
-// 静的バージョン
-float Vector3::Distance(const Vector3& a, const Vector3& b)
-{
-    return a.Distance(b);
-}
-
-float Vector3::DistanceSquared(const Vector3& a, const Vector3& b)
-{
-    return a.DistanceSquared(b);
-}
-
-// ---------------------------------------------------------------
-// 線形補間
-// ---------------------------------------------------------------
-Vector3 Vector3::Lerp(const Vector3& other, float t) const
-{
-    t = std::clamp(t, 0.0f, 1.0f);
-    return
-    {
-        x + (other.x - x) * t,
-        y + (other.y - y) * t,
-        z + (other.z - z) * t,
-    };
-}
-
-// 静的バージョン
-Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, float t)
-{
-    return a.Lerp(b, t);
 }
 
 // ---------------------------------------------------------------
@@ -181,21 +135,19 @@ Vector3 Vector3::Clamp(const Vector3& min, const Vector3& max) const
 }
 
 // ---------------------------------------------------------------
-// 反射ベクトル
-// v - 2(v・n)n
+// 反射ベクトル（v - 2(v・n)n）
 // ---------------------------------------------------------------
 Vector3 Vector3::Reflect(const Vector3& normal) const
 {
-    return *this - normal * (2.0f * Dot(normal));
+    return *this - normal * (2.0f * Dot(*this, normal));
 }
 
 // ---------------------------------------------------------------
-// 射影
-// (v・n)n
+// 射影（(v・n)n）
 // ---------------------------------------------------------------
 Vector3 Vector3::Project(const Vector3& normal) const
 {
-    return normal * Dot(normal);
+    return normal * Dot(*this, normal);
 }
 
 // ---------------------------------------------------------------
@@ -229,16 +181,42 @@ std::string Vector3::ToString(void) const
 }
 
 // ---------------------------------------------------------------
-// DxLib との変換
+// 静的メソッド
 // ---------------------------------------------------------------
-VECTOR Vector3::ToVECTOR(void) const
+float Vector3::Dot(const Vector3& a, const Vector3& b)
 {
-    return VGet(x, y, z);
+    return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-Vector3 Vector3::FromVECTOR(const VECTOR& v)
+Vector3 Vector3::Cross(const Vector3& a, const Vector3& b)
 {
-    return { v.x, v.y, v.z };
+    return
+    {
+        a.y * b.z - a.z * b.y,
+        a.z * b.x - a.x * b.z,
+        a.x * b.y - a.y * b.x,
+    };
+}
+
+float Vector3::Distance(const Vector3& a, const Vector3& b)
+{
+    return (a - b).Length();
+}
+
+float Vector3::DistanceSquared(const Vector3& a, const Vector3& b)
+{
+    return (a - b).LengthSquared();
+}
+
+Vector3 Vector3::Lerp(const Vector3& a, const Vector3& b, float t)
+{
+    t = std::clamp(t, 0.0f, 1.0f);
+    return
+    {
+        a.x + (b.x - a.x) * t,
+        a.y + (b.y - a.y) * t,
+        a.z + (b.z - a.z) * t,
+    };
 }
 
 // ---------------------------------------------------------------

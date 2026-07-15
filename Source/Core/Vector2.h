@@ -15,7 +15,7 @@ struct Vector2
     Vector2  operator- (const Vector2& other) const;
     Vector2  operator* (float scalar)          const;
     Vector2  operator/ (float scalar)          const;
-    Vector2  operator- (void)                  const;  // 単項マイナス
+    Vector2  operator- (void)                  const;
     Vector2& operator+=(const Vector2& other);
     Vector2& operator-=(const Vector2& other);
     Vector2& operator*=(float scalar);
@@ -23,23 +23,16 @@ struct Vector2
     bool     operator==(const Vector2& other)  const;
     bool     operator!=(const Vector2& other)  const;
 
+    // --- メンバメソッド（自分への操作）---
+
     // 長さ
     float Length(void)        const;
     float LengthSquared(void) const;
 
-    // 正規化
+    // 正規化（自分自身を変える）
     void    Normalize(void);
-    Vector2 GetNormalized(void) const;
-
-    // 内積
-    float Dot(const Vector2& other) const;
-
-    // 距離
-    float Distance(const Vector2& other)        const;
-    float DistanceSquared(const Vector2& other) const;
-
-    // 線形補間
-    Vector2 Lerp(const Vector2& other, float t) const;
+    // 正規化したベクトルを返す（自分は変わらない）
+    Vector2 Normalized(void)  const;
 
     // 判定
     bool IsZero(void)                          const;
@@ -49,17 +42,22 @@ struct Vector2
     // デバッグ用文字列化
     std::string ToString(void) const;
 
-    // 静的メソッド
+    // --- 静的メソッド（2つ以上への操作）---
+
+    // 内積
+    static float   Dot(const Vector2& a, const Vector2& b);
+    // 距離
     static float   Distance(const Vector2& a, const Vector2& b);
     static float   DistanceSquared(const Vector2& a, const Vector2& b);
+    // 線形補間
     static Vector2 Lerp(const Vector2& a, const Vector2& b, float t);
 
-    // 定数
-    static constexpr Vector2 ZERO = { 0.0f, 0.0f };
-    static constexpr Vector2 ONE = { 1.0f, 1.0f };
-    static constexpr Vector2 UP = { 0.0f, 1.0f };
-    static constexpr Vector2 RIGHT = { 1.0f, 0.0f };
+    // 定数（cpp に定義）
+    static const Vector2 ZERO;
+    static const Vector2 ONE;
+    static const Vector2 UP;
+    static const Vector2 RIGHT;
 };
 
-// スカラーを左に書けるようにする
+// スカラーを左に書けるようにする（2.0f * v）
 Vector2 operator*(float scalar, const Vector2& v);

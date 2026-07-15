@@ -4,6 +4,28 @@
 #include "Color.h"
 #include "ColorF.h"
 
+// ---------------------------------------------------------------
+// ’è”‚Ì’è‹`
+// ---------------------------------------------------------------
+const Color Color::WHITE = { 0xFFFFFF };
+const Color Color::BLACK = { 0x000000 };
+const Color Color::RED = { 0xFF0000 };
+const Color Color::GREEN = { 0x00FF00 };
+const Color Color::BLUE = { 0x0000FF };
+const Color Color::YELLOW = { 0xFFFF00 };
+const Color Color::CYAN = { 0x00FFFF };
+const Color Color::MAGENTA = { 0xFF00FF };
+const Color Color::ORANGE = { 0xFF8000 };
+const Color Color::PURPLE = { 0x800080 };
+const Color Color::PINK = { 0xFF69B4 };
+const Color Color::BROWN = { 0x8B4513 };
+const Color Color::GRAY = { 0x808080 };
+const Color Color::SILVER = { 0xC0C0C0 };
+
+const Color Color::HP_HIGH = { 0x00FF00 };
+const Color Color::HP_MID = { 0xFFFF00 };
+const Color Color::HP_LOW = { 0xFF0000 };
+
 Color::Color(unsigned int value)
     : value(value)
 {
@@ -37,17 +59,6 @@ unsigned char Color::B(void) const
 unsigned char Color::A(void) const
 {
     return (value >> 24) & 0xFF;
-}
-
-ColorF Color::ToColorF(void) const
-{
-    return
-    {
-        R() / 255.0f,
-        G() / 255.0f,
-        B() / 255.0f,
-        A() / 255.0f,
-    };
 }
 
 bool Color::operator==(const Color& other) const

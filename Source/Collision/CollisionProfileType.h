@@ -2,7 +2,7 @@
 
 enum class CollisionProfileType
 {
-	PAWN,		// キャラクター全般
+	PAWN,		   // キャラクター全般
 	WORLD_STATIC,  // 静的オブジェクト
 	WORLD_DYNAMIC, // 動的オブジェクト
 	PHYSICS_BODY,  // 物理演算で動くもの

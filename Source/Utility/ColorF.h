@@ -2,9 +2,7 @@
 #pragma once
 #include <string>
 
-struct Color;
-
-// カラー（0.0f?1.0f）
+// カラー
 struct ColorF
 {
     float r = 0.0f;
@@ -25,39 +23,36 @@ struct ColorF
     bool    operator==(const ColorF& other)  const;
     bool    operator!=(const ColorF& other)  const;
 
-    // 線形補間（t: 0.0f?1.0f）
+    // 線形補間
     ColorF Lerp(const ColorF& other, float t) const;
-
-    // Color との変換
-    Color ToColor(void) const;
 
     // デバッグ用文字列化
     std::string ToString(void) const;
 
     // 静的メソッド
     static ColorF Lerp(const ColorF& a, const ColorF& b, float t);
-
+    
     // 基本色定数
-    static constexpr ColorF WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
-    static constexpr ColorF BLACK = { 0.0f, 0.0f, 0.0f, 1.0f };
-    static constexpr ColorF RED = { 1.0f, 0.0f, 0.0f, 1.0f };
-    static constexpr ColorF GREEN = { 0.0f, 1.0f, 0.0f, 1.0f };
-    static constexpr ColorF BLUE = { 0.0f, 0.0f, 1.0f, 1.0f };
-    static constexpr ColorF YELLOW = { 1.0f, 1.0f, 0.0f, 1.0f };
-    static constexpr ColorF CYAN = { 0.0f, 1.0f, 1.0f, 1.0f }; // 青緑
-    static constexpr ColorF MAGENTA = { 1.0f, 0.0f, 1.0f, 1.0f }; // 赤紫
-    static constexpr ColorF ORANGE = { 1.0f, 0.5f, 0.0f, 1.0f }; // 橙
-    static constexpr ColorF PURPLE = { 0.5f, 0.0f, 0.5f, 1.0f }; // 紫
-    static constexpr ColorF PINK = { 1.0f, 0.41f,0.71f,1.0f }; // 桃色
-    static constexpr ColorF BROWN = { 0.55f,0.27f,0.07f,1.0f }; // 茶色
-    static constexpr ColorF GRAY = { 0.5f, 0.5f, 0.5f, 1.0f }; // 中間グレー
-    static constexpr ColorF SILVER = { 0.75f,0.75f,0.75f,1.0f }; // 明るいグレー
+    static const ColorF WHITE;
+    static const ColorF BLACK;
+    static const ColorF RED;
+    static const ColorF GREEN;
+    static const ColorF BLUE;
+    static const ColorF YELLOW;
+    static const ColorF CYAN;    // 青緑
+    static const ColorF MAGENTA; // 赤紫
+    static const ColorF ORANGE;  // 橙
+    static const ColorF PURPLE;  // 紫
+    static const ColorF PINK;    // 桃色
+    static const ColorF BROWN;   // 茶色
+    static const ColorF GRAY;    // 中間グレー
+    static const ColorF SILVER;  // 明るいグレー
 
     // UI用定数
-    static constexpr ColorF HP_HIGH = { 0.0f, 1.0f, 0.0f, 1.0f }; // HP高い
-    static constexpr ColorF HP_MID = { 1.0f, 1.0f, 0.0f, 1.0f }; // HP中
-    static constexpr ColorF HP_LOW = { 1.0f, 0.0f, 0.0f, 1.0f }; // HP低い
+    static const ColorF HP_HIGH; // HP高い
+    static const ColorF HP_MID;  // HP中
+    static const ColorF HP_LOW;  // HP低い
 
     // エフェクト用定数
-    static constexpr ColorF DAMAGE = { 1.0f, 0.27f,0.27f,1.0f }; // ダメージ
+    static const ColorF DAMAGE;  // ダメージ
 };

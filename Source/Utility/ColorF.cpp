@@ -4,6 +4,31 @@
 #include "ColorF.h"
 #include "Color.h"
 
+// ---------------------------------------------------------------
+// íËêîÇÃíËã`
+// ---------------------------------------------------------------
+const ColorF ColorF::WHITE = { 1.0f,  1.0f,  1.0f,  1.0f };
+const ColorF ColorF::BLACK = { 0.0f,  0.0f,  0.0f,  1.0f };
+const ColorF ColorF::RED = { 1.0f,  0.0f,  0.0f,  1.0f };
+const ColorF ColorF::GREEN = { 0.0f,  1.0f,  0.0f,  1.0f };
+const ColorF ColorF::BLUE = { 0.0f,  0.0f,  1.0f,  1.0f };
+const ColorF ColorF::YELLOW = { 1.0f,  1.0f,  0.0f,  1.0f };
+const ColorF ColorF::CYAN = { 0.0f,  1.0f,  1.0f,  1.0f };
+const ColorF ColorF::MAGENTA = { 1.0f,  0.0f,  1.0f,  1.0f };
+const ColorF ColorF::ORANGE = { 1.0f,  0.5f,  0.0f,  1.0f };
+const ColorF ColorF::PURPLE = { 0.5f,  0.0f,  0.5f,  1.0f };
+const ColorF ColorF::PINK = { 1.0f,  0.41f, 0.71f, 1.0f };
+const ColorF ColorF::BROWN = { 0.55f, 0.27f, 0.07f, 1.0f };
+const ColorF ColorF::GRAY = { 0.5f,  0.5f,  0.5f,  1.0f };
+const ColorF ColorF::SILVER = { 0.75f, 0.75f, 0.75f, 1.0f };
+
+const ColorF ColorF::HP_HIGH = { 0.0f,  1.0f,  0.0f,  1.0f };
+const ColorF ColorF::HP_MID = { 1.0f,  1.0f,  0.0f,  1.0f };
+const ColorF ColorF::HP_LOW = { 1.0f,  0.0f,  0.0f,  1.0f };
+
+const ColorF ColorF::DAMAGE = { 1.0f,  0.27f, 0.27f, 1.0f };
+
+
 ColorF::ColorF(float r, float g, float b)
     : r(r), g(g), b(b), a(1.0f)
 {
@@ -80,15 +105,6 @@ ColorF ColorF::Lerp(const ColorF& other, float t) const
 ColorF ColorF::Lerp(const ColorF& a, const ColorF& b, float t)
 {
     return a.Lerp(b, t);
-}
-
-Color ColorF::ToColor(void) const
-{
-    return Color(
-        static_cast<unsigned char>(r * 255.0f),
-        static_cast<unsigned char>(g * 255.0f),
-        static_cast<unsigned char>(b * 255.0f),
-        static_cast<unsigned char>(a * 255.0f));
 }
 
 std::string ColorF::ToString(void) const

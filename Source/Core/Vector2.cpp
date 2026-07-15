@@ -3,11 +3,25 @@
 #include <sstream>
 #include "Vector2.h"
 
+// ---------------------------------------------------------------
+// 定数の定義
+// ---------------------------------------------------------------
+const Vector2 Vector2::ZERO = { 0.0f, 0.0f };
+const Vector2 Vector2::ONE = { 1.0f, 1.0f };
+const Vector2 Vector2::UP = { 0.0f, 1.0f };
+const Vector2 Vector2::RIGHT = { 1.0f, 0.0f };
+
+// ---------------------------------------------------------------
+// コンストラクタ
+// ---------------------------------------------------------------
 Vector2::Vector2(float x, float y)
     : x(x), y(y)
 {
 }
 
+// ---------------------------------------------------------------
+// 演算子オーバーロード
+// ---------------------------------------------------------------
 Vector2 Vector2::operator+(const Vector2& other) const
 {
     return { x + other.x, y + other.y };
@@ -67,6 +81,9 @@ bool Vector2::operator!=(const Vector2& other) const
     return !(*this == other);
 }
 
+// ---------------------------------------------------------------
+// 長さ
+// ---------------------------------------------------------------
 float Vector2::Length(void) const
 {
     return std::sqrt(LengthSquared());
@@ -77,6 +94,9 @@ float Vector2::LengthSquared(void) const
     return x * x + y * y;
 }
 
+// ---------------------------------------------------------------
+// 正規化
+// ---------------------------------------------------------------
 void Vector2::Normalize(void)
 {
     float len = Length();
@@ -86,7 +106,7 @@ void Vector2::Normalize(void)
     }
 }
 
-Vector2 Vector2::GetNormalized(void) const
+Vector2 Vector2::Normalized(void) const
 {
     float len = Length();
     if (len > 0.0f)
@@ -96,31 +116,9 @@ Vector2 Vector2::GetNormalized(void) const
     return ZERO;
 }
 
-float Vector2::Dot(const Vector2& other) const
-{
-    return x * other.x + y * other.y;
-}
-
-float Vector2::Distance(const Vector2& other) const
-{
-    return (*this - other).Length();
-}
-
-float Vector2::DistanceSquared(const Vector2& other) const
-{
-    return (*this - other).LengthSquared();
-}
-
-Vector2 Vector2::Lerp(const Vector2& other, float t) const
-{
-    t = std::clamp(t, 0.0f, 1.0f);
-    return
-    {
-        x + (other.x - x) * t,
-        y + (other.y - y) * t,
-    };
-}
-
+// ---------------------------------------------------------------
+// 判定
+// ---------------------------------------------------------------
 bool Vector2::IsZero(void) const
 {
     return x == 0.0f && y == 0.0f;
@@ -137,6 +135,9 @@ bool Vector2::IsNormalized(float tolerance) const
     return std::abs(LengthSquared() - 1.0f) <= tolerance;
 }
 
+// ---------------------------------------------------------------
+// デバッグ用文字列化
+// ---------------------------------------------------------------
 std::string Vector2::ToString(void) const
 {
     std::ostringstream oss;
@@ -144,21 +145,37 @@ std::string Vector2::ToString(void) const
     return oss.str();
 }
 
+// ---------------------------------------------------------------
+// 静的メソッド
+// ---------------------------------------------------------------
+float Vector2::Dot(const Vector2& a, const Vector2& b)
+{
+    return a.x * b.x + a.y * b.y;
+}
+
 float Vector2::Distance(const Vector2& a, const Vector2& b)
 {
-    return a.Distance(b);
+    return (a - b).Length();
 }
 
 float Vector2::DistanceSquared(const Vector2& a, const Vector2& b)
 {
-    return a.DistanceSquared(b);
+    return (a - b).LengthSquared();
 }
 
 Vector2 Vector2::Lerp(const Vector2& a, const Vector2& b, float t)
 {
-    return a.Lerp(b, t);
+    t = std::clamp(t, 0.0f, 1.0f);
+    return
+    {
+        a.x + (b.x - a.x) * t,
+        a.y + (b.y - a.y) * t,
+    };
 }
 
+// ---------------------------------------------------------------
+// スカラーを左に書けるようにする
+// ---------------------------------------------------------------
 Vector2 operator*(float scalar, const Vector2& v)
 {
     return v * scalar;

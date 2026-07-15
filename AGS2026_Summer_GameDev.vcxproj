@@ -105,6 +105,7 @@
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,6 +124,7 @@
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Utility\Math.cpp" />
     <ClCompile Include="Source\Utility\ColorF.cpp" />
     <ClCompile Include="Source\Collision\CollisionProfileManager.cpp" />
     <ClCompile Include="Source\Collision\CollisionProfile.cpp" />
@@ -193,6 +196,7 @@
     <ClCompile Include="Source\Core\Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Utility\Math.h" />
     <ClInclude Include="Source\Utility\ColorF.h" />
     <ClInclude Include="Source\Collision\CollisionProfileManager.h" />
     <ClInclude Include="Source\Collision\CollisionChannel.h" />
