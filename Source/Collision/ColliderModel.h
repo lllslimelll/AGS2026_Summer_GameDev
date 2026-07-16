@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "../Common/Transform.h"
 #include "ColliderBase.h"
 
 class ColliderModel : public ColliderBase
@@ -9,7 +8,8 @@ class ColliderModel : public ColliderBase
 public:
 
 	// コンストラクタ
-	ColliderModel(TAG tag, const Transform* follow);
+	ColliderModel(CollisionProfileType type,ActorBase* owner);
+
 	// デストラクタ
 	~ColliderModel(void) override;
 

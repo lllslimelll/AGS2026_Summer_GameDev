@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
-#include "../Common/Transform.h"
+#include "../../Common/Transform.h"
 class ResourceManager;
 class SceneManager;
 class ColliderBase;
@@ -41,15 +41,6 @@ public:
 	// 特定の自身の衝突情報
 	const ColliderBase* GetOwnCollider(int key) const;
 
-	// 衝突対象となるコライダを登録
-	void AddHitCollider(const ColliderBase* hitCollider);
-
-	// 衝突対象となるコライダをクリア
-	void ClearHitCollider(void);
-
-	// 遮蔽判定（fromとtoの間にIsOccluder = trueのコライダーが挟まってるか）
-	bool IsOccludedByColliders(const VECTOR& from, const VECTOR& to) const;
-
 protected:
 
 	// シングルトン参照
@@ -80,7 +71,7 @@ protected:
 	// 初期化後の個別処理
 	virtual void InitPost(void) = 0;
 
-	// 衝突相手の情報
-	std::vector<const ColliderBase*> hitColliders_;
+	// コライダーを CollisionManager に登録する
+	void RegisterCollider(ColliderBase* collider, int key);
 
 };

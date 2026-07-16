@@ -1,10 +1,10 @@
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
-#include "../../../../Scene/SceneManager.h"
-#include "../../../Common/AnimationController.h"
-#include "../../../Collider/ColliderLine.h"
-#include "../../../Collider/ColliderCapsule.h"
-#include "../../../Collider/ColliderModel.h"
+#include "../../../Scene/SceneManager.h"
+#include "../../../../Common/AnimationController.h"
+#include "../../../../Collision/ColliderLine.h"
+#include "../../../../Collision/ColliderCapsule.h"
+#include "../../../../Collision/ColliderModel.h"
 #include "EnemyRobot.h"
 
 EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data, Player& player)
@@ -30,10 +30,6 @@ void EnemyRobot::InitLoad(void)
 	// モデルのロード
 	transform_.SetModel(
 		resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_ROBOT));
-
-	// 視野（円錐）モデルのロード
-	viewRangeTransform_.SetModel(
-		resMng_.LoadModelDuplicate(ResourceManager::SRC::VIEW_RANGE));
 }
 
 void EnemyRobot::InitTransform(void)
@@ -42,41 +38,24 @@ void EnemyRobot::InitTransform(void)
 	transform_.quaRot = Quaternion();
 	transform_.quaRotLocal = Quaternion::Euler(DEFAULT_LOCAL_ROT);
 	transform_.Update();
-
-	// 視野用円錐モデル
-	viewRangeTransform_.scl = VIEW_RANGE_SCL;
-	viewRangeTransform_.pos =
-		MV1GetFramePosition(transform_.modelId, VIEW_RANGE_SYNC_FRAME_IDX);
-	viewRangeTransform_.quaRot =
-		transform_.quaRot.Mult(
-			Quaternion::AngleAxis(VIEW_RANGE_ROT_X, AsoUtility::AXIS_X));
-	viewRangeTransform_.quaRotLocal =
-		Quaternion::AngleAxis(VIEW_RANGE_LOCAL_ROT_X, AsoUtility::AXIS_X);
-	viewRangeTransform_.Update();
 }
 
 void EnemyRobot::InitCollider(void)
 {
-	// 主に地面との衝突で使用する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
-	ownColliders_.emplace(
-		static_cast<int>(COLLIDER_TYPE::GROUND_LINE), colLine);
+		CollisionProfileType::PAWN,
+		this,
+		COL_LINE_START_LOCAL_POS,
+		COL_LINE_END_LOCAL_POS);
+	RegisterCollider(colLine, static_cast<int>(COLLIDER_TYPE::GROUND_LINE));
 
-	// 主に壁や木などの衝突で使用するカプセルコライダ
 	ColliderCapsule* colCapsule = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
+		CollisionProfileType::PAWN,
+		this,
+		COL_CAPSULE_TOP_LOCAL_POS,
+		COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
-	// DxLib側の衝突情報セットアップ
-	MV1SetupCollInfo(viewRangeTransform_.modelId);
-	// モデルのコライダ
-	ColliderModel* colModel =
-		new ColliderModel(ColliderBase::TAG::VIEW_RANGE, &viewRangeTransform_);
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::VIEW_RANGE), colModel);
+	RegisterCollider(colCapsule, static_cast<int>(COLLIDER_TYPE::CAPSULE));
 }
 
 void EnemyRobot::InitAnimation(void)
@@ -169,28 +148,12 @@ void EnemyRobot::UpdateProcess(void)
 void EnemyRobot::UpdateProcessPost(void)
 {
 	EnemyBase::UpdateProcessPost();
-
-	// 視野用円錐モデル同期
-	viewRangeTransform_.pos =
-		MV1GetFramePosition(transform_.modelId, VIEW_RANGE_SYNC_FRAME_IDX);
-	viewRangeTransform_.quaRot =
-		transform_.quaRot.Mult(
-			Quaternion::AngleAxis(VIEW_RANGE_ROT_X, AsoUtility::AXIS_X));
-	viewRangeTransform_.Update();
 }
 
 void EnemyRobot::Draw(void)
 {
 	// 基底クラスの描画処理
 	CharactorBase::Draw();
-
-#pragma region 視野（円錐）の描画
-
-	SetUseLighting(FALSE);
-	MV1DrawModel(viewRangeTransform_.modelId);
-	SetUseLighting(TRUE);
-
-#pragma endregion
 
 #ifdef _DEBUG
 
@@ -350,7 +313,7 @@ void EnemyRobot::UpdateIdle(void)
 	}
 
 	// 索敵処理
-	if (InSearchConeModel())
+	if (InSearchCone())
 	{
 		// プレイヤーを発見
 		ChangeState(STATE::ALERT);
@@ -378,7 +341,7 @@ void EnemyRobot::UpdatePatrol(void)
 	movePow_ = VScale(moveDir_, moveSpeed_);
 
 	// 索敵処理
-	if (InSearchConeModel())
+	if (InSearchCone())
 	{
 		// プレイヤーを発見
 		ChangeState(STATE::ALERT);
@@ -435,43 +398,7 @@ void EnemyRobot::SetMoveDirPatrol(void)
 	moveDir_ = VNorm(VSub(tmpPos, pos));
 }
 
-bool EnemyRobot::InSearchConeModel(void)
+bool EnemyRobot::InSearchCone(void)
 {
-	bool ret = false;
-
-	// 視野モデルコライダ
-	int viewRangeType = static_cast<int>(COLLIDER_TYPE::VIEW_RANGE);
-
-	// 視野モデルがなければ処理を抜ける
-	if (ownColliders_.count(viewRangeType) == 0) return ret;
-
-	// モデルコライダ情報
-	ColliderModel* colliderModel =
-		dynamic_cast<ColliderModel*>(ownColliders_.at(viewRangeType));
-	if (colliderModel == nullptr) return ret;
-
-	// 衝突情報の更新
-	MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
-
-	// 登録されている衝突物をすべてチェック
-	for (const auto& hitCol : hitColliders_)
-	{
-		// プレイヤーカプセル以外は処理を飛ばす
-		if (hitCol->GetTag() != ColliderBase::TAG::PLAYER) continue;
-
-		// 派生クラスへキャスト
-		const ColliderCapsule* colldierCapsule =
-			dynamic_cast<const ColliderCapsule*>(hitCol);
-
-		if (colldierCapsule == nullptr) continue;
-
-		// モデルとカプセルの衝突判定
-		if (colldierCapsule->IsHit(colliderModel, false, false))
-		{
-			// 視野内にプレイヤーがいる
-			return true;
-		}
-	}
-
-	return ret;
+	return EnemyBase::InSearchCone(VIEW_RANGE_PATROL, VIEW_HALF_FOV_PATROL);
 }

@@ -1,8 +1,5 @@
-
-
 #include <DxLib.h>
 #include "ColliderBase.h"
-class Transform;
 class ColliderModel;
 
 class ColliderCapsule : public ColliderBase
@@ -10,8 +7,12 @@ class ColliderCapsule : public ColliderBase
 public:
 
 	// コンストラクタ
-	ColliderCapsule(TAG tag, const Transform* follow,
-		const VECTOR& localPosTop, const VECTOR& localPosDown, float radius);
+	ColliderCapsule(
+		CollisionProfileType type,
+		ActorBase* owner,
+		const VECTOR& localPosTop,
+		const VECTOR& localPosDown,
+		float radius);
 
 	// デストラクタ
 	~ColliderCapsule(void);

@@ -8,11 +8,11 @@
 #include "DeadScene.h" 
 #include "ResultScene.h"
 #include "DebugScene.h"
-#include "../Common/Fader.h"
+#include "../../Common/Fader.h"
 #include "../Camera/Camera.h"
-#include "../Manager/ResourceManager.h"
-#include "../Manager/SoundManager.h"
-#include "../Manager/ScreenManager.h"
+#include "../../Manager/ResourceManager.h"
+#include "../../Manager/SoundManager.h"
+#include "../../Manager/ScreenManager.h"
 #include "SceneManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;

@@ -23,7 +23,7 @@ struct HitResult
 	VECTOR pushBackPos = { 0.0f,0.0f,0.0f };
 
 	// Õ“Ë‚Ö‚Ì”½‰
-	CollisionResponse response = CollisionResponse::IGNORE;
+	CollisionResponse response = CollisionResponse::NONE;
 
 	// Õ“Ë‚µ‚Ä‚¢‚é‚©
 	bool isHit = false;

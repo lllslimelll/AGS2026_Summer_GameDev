@@ -30,10 +30,6 @@ public:
 	// アイテム生成
 	Item* Create(const Item::ItemData& data);
 
-	// 衝突対象となるコライダを登録
-	// EnemyManagerと同じ流儀：Init()後に呼ぶ
-	void AddHitCollider(const ColliderBase* collider);
-
 	// 照準に当たっているアイテムを返す
 	// 壁で遮られている場合は nullptr
 	// rayOrigin : レイの始点（カメラ位置）

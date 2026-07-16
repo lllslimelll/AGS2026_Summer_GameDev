@@ -4,7 +4,7 @@
 // 値の大きいほうが優先される（BLOCK > OVERLAP > IGNORE）
 enum class CollisionResponse
 {
-	IGNORE  = 0, // 判定しない
+	NONE  = 0, // 判定しない
 
 	OVERLAP = 1, // 検知のみ
 

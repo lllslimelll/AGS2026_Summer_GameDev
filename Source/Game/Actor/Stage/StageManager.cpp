@@ -1,5 +1,5 @@
 #include <DxLib.h>
-#include "../../Collider/ColliderBase.h"
+#include "../../../Collision/ColliderBase.h"
 #include "Planet.h"
 #include "Rocket.h"
 #include "StageManager.h"

@@ -1,6 +1,6 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../Collider/ColliderModel.h"
+#include "../../../Collision/ColliderModel.h"
 #include "Rocket.h"
 
 Rocket::~Rocket(void)
@@ -61,7 +61,7 @@ void Rocket::InitCollider(void)
     MV1SetupCollInfo(transform_.modelId);
 
     ColliderModel* colModel =
-        new ColliderModel(ColliderBase::TAG::ROCKET, &transform_);
+        new ColliderModel(CollisionProfileType::WORLD_DYNAMIC, this);
 
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
 }

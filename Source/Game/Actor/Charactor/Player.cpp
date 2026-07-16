@@ -1,7 +1,7 @@
-#include "../../../Object/Common/AnimationController.h"
+#include "../../../Common/AnimationController.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Scene/SceneManager.h"
-#include "../../../Camera/Camera.h"
+#include "../../Scene/SceneManager.h"
+#include "../../Camera/Camera.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SoundManager.h"
@@ -9,10 +9,10 @@
 #include "../Stage/StageManager.h"
 #include "../Stage/Rocket.h"
 #include "../item/Item.h"
-#include "../../Common/Transform.h"
-#include "../../Collider/ColliderModel.h"
-#include "../../Collider/ColliderLine.h"
-#include "../../Collider/ColliderCapsule.h"
+#include "../../../Common/Transform.h"
+#include "../../../Collision/ColliderModel.h"
+#include "../../../Collision/ColliderLine.h"
+#include "../../../Collision/ColliderCapsule.h"
 #include "Player.h"
 
 
@@ -626,17 +626,22 @@ void Player::InitCollider(void)
 {
 	// 主に地面との衝突で使用する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
-		ColliderBase::TAG::PLAYER, &transform_,
-		COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
+		CollisionProfileType::PAWN,
+		this,
+		COL_LINE_START_LOCAL_POS,
+		COL_LINE_END_LOCAL_POS);
 
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::GROUND_LINE), colLine);
+	RegisterCollider(colLine, static_cast<int>(COLLIDER_TYPE::GROUND_LINE));
 
 	// 主に壁や木などの衝突で使用するカプセルコライダ
 	ColliderCapsule* colCapsule = new ColliderCapsule(
-		ColliderBase::TAG::PLAYER, &transform_,
-		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS, COL_CAPSULE_RADIUS);
+		CollisionProfileType::PAWN,
+		this,
+		COL_CAPSULE_TOP_LOCAL_POS,
+		COL_CAPSULE_DOWN_LOCAL_POS,
+		COL_CAPSULE_RADIUS);
 
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+	RegisterCollider(colCapsule, static_cast<int>(COLLIDER_TYPE::CAPSULE));
 }
 
 void Player::InitAnimation(void)

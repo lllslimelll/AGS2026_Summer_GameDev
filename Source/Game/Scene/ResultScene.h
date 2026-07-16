@@ -9,6 +9,9 @@ public:
 	ResultScene();
 	~ResultScene() override;
 
+	// ƒ[ƒh
+	void Load(void) override {};
+
 	// ‰Šú‰»
 	void Init(void) override;
 

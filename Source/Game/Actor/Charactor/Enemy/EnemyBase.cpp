@@ -30,6 +30,26 @@ void EnemyBase::Draw(void)
 #endif // _DEBUG
 }
 
+bool EnemyBase::InSearchCone(float dist, float halfFovRad) const
+{
+	// Step1: 距離チェック
+	VECTOR toPlayer = VSub(player_.GetTransform().pos, transform_.pos);
+	float distToPlayer = VSize(toPlayer);
+	if (distToPlayer > dist) return false;
+
+	// Step2: 角度チェック（内積）
+	VECTOR forward = transform_.GetForward();
+	VECTOR dirToPlayer = VNorm(toPlayer);
+	float dot = VDot(forward, dirToPlayer);
+
+	// cos(halfFov) より小さければ視野外
+	if (dot < cosf(halfFovRad)) return false;
+
+	// Step3: 遮蔽チェック（TODO: LineTrace 実装後に追加）
+
+	return true;
+}
+
 bool EnemyBase::InMovableRange(void) const
 {
 	bool ret = false;

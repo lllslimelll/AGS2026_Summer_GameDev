@@ -1,20 +1,21 @@
 #include <DxLib.h>
 #include "../Scene/SceneManager.h"
-#include "../Manager/InputManager.h"
-#include "../Manager/SoundManager.h"
+#include "../../Manager/InputManager.h"
+#include "../../Manager/SoundManager.h"
+#include "../../Collision/CollisionManager.h"
 #include "../Camera/Camera.h"
-#include "../Object/Actor/ActorBase.h"
-#include "../Object/Actor/Charactor/Player.h"
-#include "../Object/Actor/Charactor/Enemy/EnemyManager.h"
-#include "../Object/Actor/Stage/StageManager.h"
-#include "../Object/Actor/Stage/Planet.h"
-#include "../Object/Actor/Stage/Rocket.h"
-#include "../Object/Actor/Item/ItemManager.h"
-#include "../Object/Actor/SkyDome.h"
-#include "../Object/UI/GameUI/StatusUI.h"
-#include "../Object/UI/GameUI/GuideUI.h"
-#include "../Object/UI/GameUI/InventoryUI.h"
-#include "../Object/UI/GameUI/RocketLocatorUI.h"
+#include "../Actor/ActorBase.h"
+#include "../Actor/Charactor/Player.h"
+#include "../Actor/Charactor/Enemy/EnemyManager.h"
+#include "../Actor/Stage/StageManager.h"
+#include "../Actor/Stage/Planet.h"
+#include "../Actor/Stage/Rocket.h"
+#include "../Actor/Item/ItemManager.h"
+#include "../Actor/SkyDome.h"
+#include "../UI/GameUI/StatusUI.h"
+#include "../UI/GameUI/GuideUI.h"
+#include "../UI/GameUI/InventoryUI.h"
+#include "../UI/GameUI/RocketLocatorUI.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -31,6 +32,9 @@ GameScene::GameScene(void)
 
 GameScene::~GameScene(void)
 {
+	// シーン終了時に CollisionManager をクリア
+	CollisionManager::GetInstance().Clear();
+
 	stageMng_->Release();
 
 	itemMng_->Release();
@@ -76,35 +80,13 @@ void GameScene::Init(void)
 		ui->Load();
 	}
 
-	// モデルのコライダー
-	const ColliderBase* planetCollider =
-		stageMng_->GetPlanet().GetOwnCollider(static_cast<int>(Planet::COLLIDER_TYPE::MODEL));
-	const ColliderBase* rocketCollider =
-		stageMng_->GetRocket().GetOwnCollider(static_cast<int>(Rocket::COLLIDER_TYPE::MODEL));
-	const ColliderBase* playerCollider =
-		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));
-
 	// アイテム
 	itemMng_->Init();
-	itemMng_->AddHitCollider(planetCollider);
-
-	for (auto& e : enemyManager_->GetEnemies())
-	{
-		player_->AddHitCollider(
-			e->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
-	}
-	player_->AddHitCollider(planetCollider);
-	player_->AddHitCollider(rocketCollider);
-
-	enemyManager_->AddHitCollider(planetCollider); // ステージモデルのコライダー登録
-	enemyManager_->AddHitCollider(playerCollider);
 
 	skyDome_->Init();
 	
 	camera_->SetFollow(&player_->GetTransform());// 追従対象の設定
 	camera_->ChangeMode(Camera::MODE::FOLLOW);	 // モード変更
-	camera_->AddHitCollider(planetCollider);		 // ステージモデルのコライダー登録
-	camera_->AddHitCollider(rocketCollider);
 
 	player_->SetCameraTransform(&camera_->GetTransform()); // カメラのTransformをプレイヤーに渡す
 }
@@ -120,6 +102,9 @@ void GameScene::Update(void)
 		sceMng_.PushOverlay(SceneManager::SCENE_ID::PAUSE);
 		return;
 	}
+
+	// 当たり判定を全て実行
+	CollisionManager::GetInstance().Update();
 
 	// 更新
 	stageMng_->Update();

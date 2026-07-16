@@ -1,9 +1,11 @@
-#include "../../Utility/AsoUtility.h"
+#include "../Utility/AsoUtility.h"
+#include "../Game/Actor/ActorBase.h"
+#include "../Common/Transform.h"
 #include "ColliderModel.h"
 
-ColliderModel::ColliderModel(TAG tag, const Transform* follow)
+ColliderModel::ColliderModel(CollisionProfileType type, ActorBase* owner)
 	:
-	ColliderBase(SHAPE::MODEL, tag, follow)
+	ColliderBase(SHAPE::MODEL, type, owner)
 {
 }
 
@@ -14,11 +16,11 @@ ColliderModel::~ColliderModel(void)
 void ColliderModel::AddExcludeFrameIds(const std::string& name)
 {
 	// フレーム数を取得
-	int num = MV1GetFrameNum(follow_->modelId);
+	int num = MV1GetFrameNum(owner_->GetTransform().modelId);
 	for (int i = 0; i < num; i++)
 	{
 		// フレーム名称を取得
-		std::string frameName = MV1GetFrameName(follow_->modelId, i);
+		std::string frameName = MV1GetFrameName(owner_->GetTransform().modelId, i);
 
 		if (frameName.find(name) != std::string::npos)
 		{
@@ -51,11 +53,11 @@ bool ColliderModel::IsExcludeFrame(int frameIdx) const
 void ColliderModel::AddTargetFrameIds(const std::string& name)
 {
 	// フレーム数を取得
-	int num = MV1GetFrameNum(follow_->modelId);
+	int num = MV1GetFrameNum(owner_->GetTransform().modelId);
 	for (int i = 0; i < num; i++)
 	{
 		// フレーム名称を取得
-		std::string frameName = MV1GetFrameName(follow_->modelId, i);
+		std::string frameName = MV1GetFrameName(owner_->GetTransform().modelId, i);
 
 		if (frameName.find(name) != std::string::npos)
 		{
@@ -88,7 +90,7 @@ bool ColliderModel::IsTargetFrame(int frameIdx) const
 bool ColliderModel::IsHitRay(const VECTOR& start, const VECTOR& end) const
 {
 	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(
-		follow_->modelId, -1, start, end, -1);
+		owner_->GetTransform().modelId, -1, start, end, -1);
 	return result.HitFlag == 1;
 }
 
@@ -99,22 +101,13 @@ MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 
 	// 線分で衝突判定
 	auto hits = MV1CollCheck_LineDim(
-		follow_->modelId,
-		-1,
-		start,
-		end);
+		owner_->GetTransform().modelId, -1, start, end);
 
 	// 追従対象に一番近い衝突点を探す
 	double minDist = DBL_MAX;
 	for (int i = 0; i < hits.HitNum; i++)
 	{
 		const auto& hit = hits.Dim[i];
-
-		// 指定のフレーム以外を半透明に
-		if (!IsTargetFrame(hit.FrameIndex))
-		{
-		//	MV1SetFrameOpacityRate(GetFollow()->modelId, hit.FrameIndex, 0.5f);
-		}
 
 		// 除外フレームは無視する
 		if (isExclude && IsExcludeFrame(hit.FrameIndex)) continue;
@@ -141,7 +134,7 @@ MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 bool ColliderModel::IsOccluded(const VECTOR& from, const VECTOR& to) const
 {
 	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(
-		follow_->modelId, -1, from, to, -1);
+		owner_->GetTransform().modelId, -1, from, to, -1);
 
 	return result.HitFlag == 1;
 }

@@ -1,6 +1,11 @@
 #pragma once
 #include <DxLib.h>
+#include "CollisionProfile.h"
+#include "CollisionProfileType.h"
+
+class ActorBase;
 class Transform;
+class HitResult;
 
 class ColliderBase
 {
@@ -16,55 +21,45 @@ public:
 		MODEL,
 	};
 
-	// 衝突種別
-	enum class TAG
-	{
-		PLANET,
-		ROCKET,
-		PLAYER,
-		CAMERA,
-		ENEMY,
-		VIEW_RANGE,
-		ITEM,
-	};
-
-	// 衝突タイプ
-	enum class TYPE
-	{
-		BLOCK
-	};
-
 	// コンストラクタ
-	ColliderBase(SHAPE shape, TAG tag, const Transform* follow);
+	//  shape  : 形状
+	//  type   : プロファイルの種別
+	//  owner  : このコライダーを持つ Actor
+	ColliderBase(
+		SHAPE shape,
+		CollisionProfileType type,
+		ActorBase* owner);
+
 	// デストラクタ
 	virtual ~ColliderBase(void);
 
 	// 描画
 	void Draw(void);
 
-	// 追従先の取得
-	const Transform* GetFollow(void) const { return follow_; }
+	// 形状の取得
+	SHAPE GetShape(void) const { return shape_; }
+
+	// プロファイルの取得
+	const CollisionProfile& GetProfile(void) const { return profile_; }
+
+	// チャンネルの取得
+	CollisionChannel GetChannel(void) const { return profile_.channel_; }
+
+	// 所有者 Acotr の取得
+	ActorBase* GetOwner(void) const { return owner_; }
+
+	// 有効フラグ
+	bool IsValid(void) const { return isValid_; }
+	void SetValid(bool valid) { isValid_ = valid; }
 
 	// 追従先の再設定
 	void SetFollow(Transform* follow);
 
-	// 形状
-	SHAPE GetShape(void) const { return shape_; }
-
-	// 衝突種別
-	TAG GetTag(void) const { return tag_; }
-
-	// 指定された回数と距離で三角形の法線方向に押し戻した座標を取得
+	// 押し戻し後の座標を取得
 	virtual VECTOR GetPosPushBackAlongNormal(
 		const MV1_COLL_RESULT_POLY& hitPoly,
 		int maxTryCnt,
 		float pushDistance) const = 0;
-
-	// 遮蔽判定フラグ
-	bool IsOccluder(void) const { return isOccluder_; }
-	void SetOccluder(bool val) { isOccluder_ = val; }
-	// 遮蔽判定
-	virtual bool IsOccluded(const VECTOR& from, const VECTOR& to) const { return false; }
 
 protected:
 
@@ -74,21 +69,15 @@ protected:
 
 	// 形状
 	SHAPE shape_;
-
-	// 衝突種別
-	TAG tag_;
-
-	// 追従先
-	const Transform* follow_;
-
+	// プロファイル
+	CollisionProfile profile_;
+	// オーナー
+	ActorBase* owner_;
 	// 有効フラグ
-	bool isValid_;
+	bool isValid_ = true;
 
-	bool isOccluder_ = false;
-
-	// ローカル座標をワールド座標に変換
+	// owner_ から Transform を取得してワールド座標に変換
 	VECTOR GetRotPos(const VECTOR& localPos) const;
 
-	// デバッグ用描画
 	virtual void DrawDebug(int color) = 0;
 };

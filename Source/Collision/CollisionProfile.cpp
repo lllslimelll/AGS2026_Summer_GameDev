@@ -6,7 +6,7 @@ CollisionProfile::CollisionProfile(CollisionProfileType type, CollisionChannel c
 	channel_(channel)
 {
 	// ‘Sƒ`ƒƒƒ“ƒlƒ‹”»’è”½‰–³‹‚É‰Šú‰»
-	responses_.fill(CollisionResponse::IGNORE);
+	responses_.fill(CollisionResponse::NONE);
 }
 
 void CollisionProfile::SetResponse(CollisionChannel channel, CollisionResponse response)

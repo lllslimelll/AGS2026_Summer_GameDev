@@ -1,7 +1,6 @@
 #pragma once
 #include <DxLib.h>
 #include "ColliderBase.h"
-class Transform;
 
 class ColliderSphere : public ColliderBase
 {
@@ -9,7 +8,11 @@ public:
 
 	// コンストラクタ
 	ColliderSphere(
-		TAG tag, const Transform* follow, const VECTOR& localPos, float radius);
+		CollisionProfileType type,
+		ActorBase* owner,
+		const VECTOR& localPos,
+		float radius);
+
 	// デストラクタ
 	~ColliderSphere(void);
 

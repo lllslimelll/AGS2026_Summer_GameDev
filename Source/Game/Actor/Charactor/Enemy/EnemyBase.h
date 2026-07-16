@@ -64,6 +64,11 @@ protected:
 	// 更新系
 	virtual void UpdateProcessPost(void) override {};
 
+	// 計算による視野判定
+	// dist    : 視野距離
+	// halfFov : 視野角の半分（ラジアン）
+	bool InSearchCone(float dist, float halfFovRad) const;
+
 	// 移動可能範囲判定
 	bool InMovableRange(void) const;
 };

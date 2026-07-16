@@ -1,11 +1,14 @@
-#include "../Common//Transform.h"
+#include "../Common/Transform.h"
+#include "../Game/Actor/ActorBase.h"
 #include "ColliderSphere.h"
 
 ColliderSphere::ColliderSphere(
-	TAG tag, const Transform* follow,
-	const VECTOR& localPos, float radius)
+	CollisionProfileType type,
+	ActorBase* owner,
+	const VECTOR& localPos,
+	float radius)
 	:
-	ColliderBase(SHAPE::SPHERE, tag, follow),
+	ColliderBase(SHAPE::SPHERE, type, owner),
 	localPos_(localPos),
 	radius_(radius)
 {
@@ -65,32 +68,31 @@ bool ColliderSphere::IsHitRay(const VECTOR& rayStart, const VECTOR& rayEnd) cons
 
 VECTOR ColliderSphere::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hitPoly, int maxTryCnt, float pushDistance) const
 {
-	// 追従先の自身のインスタンスをコピー生成
-	Transform tmpTransform = *follow_;
-	ColliderSphere tmpSphere = *this;
-	tmpSphere.SetFollow(&tmpTransform);
+	// 座標
+	VECTOR pos = owner_->GetTransform().pos;
 
 	// 衝突補正処理
 	int tryCnt = 0;
 	while (tryCnt < maxTryCnt)
 	{
+		VECTOR spherePos = VAdd(pos, localPos_);
+
 		// 球体と三角形の当たり判定
 		if (!HitCheck_Sphere_Triangle(
-			tmpSphere.GetPos(), tmpSphere.GetRadius(),
+			spherePos, radius_,
 			hitPoly.Position[0], hitPoly.Position[1], hitPoly.Position[2]))
 		{
 			break;
 		}
 
 		// 衝突していたら法線方向に押し戻し
-		tmpTransform.pos =
-			VAdd(tmpTransform.pos, VScale(hitPoly.Normal, pushDistance));
+		pos = VAdd(pos, VScale(hitPoly.Normal, pushDistance));
 
 		tryCnt++;
 	}
 
 	// 押し戻し座標を返す
-	return tmpTransform.pos;
+	return pos;
 }
 
 void ColliderSphere::DrawDebug(int color)

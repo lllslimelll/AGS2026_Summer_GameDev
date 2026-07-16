@@ -1,15 +1,19 @@
 #include "../Common/Transform.h"
+#include "../Game/Actor/ActorBase.h"
 #include "ColliderModel.h"
 #include "ColliderCapsule.h"
 
 
 ColliderCapsule::ColliderCapsule(
-    TAG tag, const Transform* follow,
-    const VECTOR& localPosTop, const VECTOR& localPosDown, float radius)
+    CollisionProfileType type,
+    ActorBase* owner,
+    const VECTOR& localPosTop,
+    const VECTOR& localPosDown,
+    float radius)
     :
-	ColliderBase(SHAPE::CAPSULE, tag, follow),
+    ColliderBase(SHAPE::CAPSULE, type, owner),
     localPosTop_(localPosTop),
-	localPosDown_(localPosDown),
+    localPosDown_(localPosDown),
     radius_(radius)
 {
 }
@@ -78,7 +82,7 @@ void ColliderCapsule::PushBackAlongNormal(
 {
     // モデルとカプセルの衝突判定
     auto hits = MV1CollCheck_Capsule(
-        colliderModel->GetFollow()->modelId, -1,
+        colliderModel->GetOwner()->GetTransform().modelId, -1,
         GetPosTop(), GetPosDown(), GetRadius());
 
     // 衝突した複数のポリゴンと衝突回避するまで、位置を移動させる
@@ -104,31 +108,34 @@ VECTOR ColliderCapsule::GetPosPushBackAlongNormal(
     const MV1_COLL_RESULT_POLY& hitCollPoly, int maxTryCnt, float pushDistance) const
 {
     // コピー生成
-    Transform tmpTransform = *follow_;
+    Transform tmpTransform = owner_->GetTransform();
     ColliderCapsule tmpCapsule = *this;
-    tmpCapsule.SetFollow(&tmpTransform);
 
     // 衝突補正処理
     int tryCnt = 0;
+    VECTOR pos = tmpTransform.pos;
+
     while (tryCnt < maxTryCnt)
     {
+        VECTOR top = VAdd(pos, localPosTop_);
+        VECTOR down = VAdd(pos, localPosDown_);
+
         // カプセルと三角形の当たり判定
         if (!HitCheck_Capsule_Triangle(
-            tmpCapsule.GetPosTop(), tmpCapsule.GetPosDown(), tmpCapsule.GetRadius(),
+             top, down, radius_,
             hitCollPoly.Position[0], hitCollPoly.Position[1], hitCollPoly.Position[2]))
         {
             break;
         }
 
         // 衝突していたら法線方向に押し戻し
-        tmpTransform.pos =
-            VAdd(tmpTransform.pos, VScale(hitCollPoly.Normal, pushDistance));
+        pos = VAdd(pos, VScale(hitCollPoly.Normal, pushDistance));
 
         tryCnt++;
     }
 
     // 押し戻した座標を返す
-    return tmpTransform.pos;
+    return pos;
 }
 
 bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, bool isTarget) const
@@ -137,7 +144,7 @@ bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, 
 
     // モデルとカプセルの衝突判定
     auto hits = MV1CollCheck_Capsule(
-        colliderModel->GetFollow()->modelId, -1,
+        colliderModel->GetOwner()->GetTransform().modelId, -1,
         GetPosTop(), GetPosDown(), GetRadius());
 
     // 衝突した複数のポリゴンと衝突回避するまで、位置を移動させる
@@ -175,26 +182,28 @@ void ColliderCapsule::DrawDebug(int color)
     VECTOR s;
     VECTOR e;
 
+    const Transform& trans = owner_->GetTransform();
+
     // 球体を繋ぐ線(X+)
-    dir = follow_->GetRight();
+    dir = trans.GetRight();
     s = VAdd(pos1, VScale(dir, radius_));
     e = VAdd(pos2, VScale(dir, radius_));
     DrawLine3D(s, e, color);
 
     // 球体を繋ぐ線(X-)
-    dir = follow_->GetLeft();
+    dir = trans.GetLeft();
     s = VAdd(pos1, VScale(dir, radius_));
     e = VAdd(pos2, VScale(dir, radius_));
     DrawLine3D(s, e, color);
 
     // 球体を繋ぐ線(Z+)
-    dir = follow_->GetForward();
+    dir = trans.GetForward();
     s = VAdd(pos1, VScale(dir, radius_));
     e = VAdd(pos2, VScale(dir, radius_));
     DrawLine3D(s, e, color);
 
     // 球体を繋ぐ線(Z-)
-    dir = follow_->GetBack();
+    dir = trans.GetBack();
     s = VAdd(pos1, VScale(dir, radius_));
     e = VAdd(pos2, VScale(dir, radius_));
     DrawLine3D(s, e, color);

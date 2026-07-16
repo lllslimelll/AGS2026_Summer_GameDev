@@ -3,17 +3,20 @@
 #include "Manager/InputManager.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/ScreenManager.h"
-#include "Scene/SceneManager.h"
+#include "Collision/CollisionProfileManager.h"
+#include "Collision/CollisionManager.h"
+#include "Game/Scene/SceneManager.h"
 #include "Manager/SoundManager.h"
 #include "Common/FpsController.h"
 #include "Application.h"
 
 Application* Application::instance_ = nullptr;
 
-const std::string Application::PATH_IMAGE = "Data/Image/";
-const std::string Application::PATH_MODEL = "Data/Model/";
-const std::string Application::PATH_EFFECT = "Data/Effect/";
-const std::string Application::PATH_CSV = "Data/Csv/";
+const std::string Application::PATH_IMAGE = "Resource/Image/";
+const std::string Application::PATH_MODEL = "Resource/Model/";
+const std::string Application::PATH_EFFECT = "Resource/Effect/";
+const std::string Application::PATH_CSV = "Resource/Csv/";
+const std::string Application::PATH_SHADER = "Resource/Shader/";
 
 void Application::CreateInstance(void)
 {
@@ -66,6 +69,7 @@ void Application::Init(void)
 
 	// 入力制御初期化
 	SetUseDirectInputFlag(true);
+
 	InputManager::CreateInstance();
 
 	// リソース管理初期化
@@ -73,6 +77,9 @@ void Application::Init(void)
 
 	// サウンド管理初期化
 	SoundManager::CreateInstance();
+
+	CollisionProfileManager::CreateInstance(); // 追加
+	CollisionManager::CreateInstance();        // 追加
 
 	// スクリーン管理初期化
 	ScreenManager::CreateInstance();
@@ -127,6 +134,8 @@ void Application::Destroy(void)
 	SoundManager::GetInstance().Destroy();
 	// スクリーン管理破棄
 	ScreenManager::GetInstance().Destroy();
+	CollisionManager::GetInstance().Destroy();        // 追加
+	CollisionProfileManager::GetInstance().Destroy(); // 追加
 
 	// Effekseerを終了する。
 	Effkseer_End();

@@ -8,6 +8,8 @@ public:
 	PauseScene();
 	~PauseScene() override;
 
+	// ƒ[ƒh
+	void Load(void) override {};
 	void Init() override;
 	void Update() override;
 	void Draw() override;

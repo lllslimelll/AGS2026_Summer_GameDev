@@ -1,5 +1,5 @@
 #include <DxLib.h>
-#include "../Application.h"
+#include "../../Application.h"
 #include "Material.h"
 
 // ---------------------------------------------------------------
@@ -10,7 +10,8 @@ Material::Material(
     const std::string& psFile, int constBufSizePS,
     int texSlotNum,
     int texAddress)
-    : constBufSizeVS_(constBufSizeVS),
+    :
+    constBufSizeVS_(constBufSizeVS),
     constBufSizePS_(constBufSizePS),
     texAddress_(texAddress)
 {

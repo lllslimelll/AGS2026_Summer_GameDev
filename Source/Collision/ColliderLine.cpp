@@ -1,12 +1,16 @@
-#include "../../Utility/AsoUtility.h"
+#include "..//Utility/AsoUtility.h"
 #include "../Common/Transform.h"
+#include "../Game/Actor/ActorBase.h"
 #include "ColliderModel.h"
 #include "ColliderLine.h"
 
-ColliderLine::ColliderLine(TAG tag, const Transform* follow,
-	const VECTOR& localPosStart, const VECTOR& localPosEnd)
+ColliderLine::ColliderLine(
+	CollisionProfileType type,
+	ActorBase* owner,
+	const VECTOR& localPosStart,
+	const VECTOR& localPosEnd)
 	:
-	ColliderBase(SHAPE::LINE, tag, follow),
+	ColliderBase(SHAPE::LINE, type, owner),
 	localPosStart_(localPosStart),
 	localPosEnd_(localPosEnd)
 {
@@ -54,7 +58,7 @@ bool ColliderLine::PushBackUp(
 
 	// ステージモデル(地面)との衝突
 	auto hits = MV1CollCheck_LineDim(
-		colliderModel->GetFollow()->modelId, -1, GetPosStart(), GetPosEnd());
+		colliderModel->GetOwner()->GetTransform().modelId, -1, GetPosStart(), GetPosEnd());
 
 	for (int i = 0; i < hits.HitNum; i++)
 	{

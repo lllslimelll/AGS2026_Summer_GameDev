@@ -97,17 +97,13 @@ private:
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 30.0f;
 
-	// 巡回時の視野モデルの大きさ
-	static constexpr VECTOR VIEW_RANGE_SCL = { 8.0f, 4.0f, 2.0f };
-	// 巡回時の視野モデルの傾きX
-	static constexpr float VIEW_RANGE_ROT_X = 26.0f * DX_PI_F / 180.0f;
-	static constexpr float VIEW_RANGE_LOCAL_ROT_X = 90.0f * DX_PI_F / 180.0f;
-	// 巡回時の視野モデル位置同期用フレーム番号
-	static constexpr int VIEW_RANGE_SYNC_FRAME_IDX = 6;
 	// 巡回時の視野の広さ
 	static constexpr float VIEW_RANGE_PATROL = 600.0f;
 	// 巡回時の視野角
 	static constexpr float VIEW_ANGLE_PATROL = 16.0f;
+
+	static constexpr float VIEW_HALF_FOV_PATROL =
+		VIEW_ANGLE_PATROL * 0.5f * DX_PI_F / 180.0f;
 
 	// 状態
 	STATE state_;
@@ -121,9 +117,6 @@ private:
 	int activeWayPointIndex_;
 	// 現在、移動先としている巡回先座標
 	VECTOR nextWayPoint_;
-
-	// 視野範囲用トランスフォーム
-	Transform viewRangeTransform_;
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -159,7 +152,7 @@ private:
 	// 巡回ルートの移動方向を設定する
 	void SetMoveDirPatrol(void);
 
-	// 索敵（視野モデル）
-	bool InSearchConeModel(void);
+	// 索敵
+	bool InSearchCone(void);
 };
 

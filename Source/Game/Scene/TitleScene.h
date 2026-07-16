@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "../Object/Common/Transform.h"
+#include "../../Common/Transform.h"
 #include "SceneBase.h"
 
 class Camera;
@@ -16,6 +16,9 @@ public:
 
 	// デストラクタ
 	~TitleScene(void) override;
+
+	// ロード
+	void Load(void) override {};
 
 	// 初期化
 	void Init(void) override;

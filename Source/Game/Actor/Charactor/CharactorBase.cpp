@@ -1,11 +1,12 @@
 #include "../../../Application.h"
-#include "../../../Scene/SceneManager.h"
+#include "../../Scene/SceneManager.h"
 #include "../../../Manager/ResourceManager.h"
-#include "../../../Object/Common/AnimationController.h"
+#include "../../../Common/AnimationController.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../Collider/ColliderLine.h"
-#include "../../Collider/ColliderModel.h"
-#include "../../Collider/ColliderCapsule.h"
+#include "../../../Collision/ColliderLine.h"
+#include "../../../Collision/ColliderModel.h"
+#include "../../../Collision/ColliderCapsule.h"
+#include "../../../Collision/CollisionManager.h"
 #include "CharactorBase.h"
 
 CharactorBase::CharactorBase(void)
@@ -152,15 +153,20 @@ void CharactorBase::CollisionGravity(void)
 
 	if (colliderLine_ == nullptr) return;
 
+	// CollisionManager から BLOCK の結果を取得
+	auto blockHits = CollisionManager::GetInstance().GetBlockHits(this);
+
 	// 登録されている衝突物を全てチェック
-	for (const auto& hitCol : hitColliders_)
+	for (const auto& hit : blockHits)
 	{
-		// ステージ以外は処理を飛ばす
-		if (hitCol->GetTag() != ColliderBase::TAG::PLANET) continue;
+		// WORLD_STATIC / WORLD_DYNAMIC のみ処理
+		CollisionChannel ch = hit.otherCollider->GetChannel();
+		if (ch != CollisionChannel::WORLD_STATIC &&
+			ch != CollisionChannel::WORLD_DYNAMIC) continue;
 
 		// 派生クラスへキャスト
 		const ColliderModel* colliderModel =
-			dynamic_cast<const ColliderModel*>(hitCol);
+			dynamic_cast<const ColliderModel*>(hit.otherCollider);
 
 		if (colliderModel == nullptr) continue;
 
@@ -208,15 +214,18 @@ void CharactorBase::CollisionCapsule(void)
 		dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
 	if (colliderCapsule == nullptr) return;
 
+	// CollisionManager から BLOCK の結果を取得
+	auto blockHits = CollisionManager::GetInstance().GetBlockHits(this);
+
 	// 登録されている衝突物をすべてチェック
-	for (const auto& hitCol : hitColliders_)
+	for (const auto& hit : blockHits)
 	{
 		// モデル以外は処理を飛ばす
-		if (hitCol->GetShape() != ColliderBase::SHAPE::MODEL) continue;
+		if (hit.otherCollider->GetShape() != ColliderBase::SHAPE::MODEL) continue;
 
 		// 派生クラスへキャスト
 		const ColliderModel* colliderModel =
-			dynamic_cast<const ColliderModel*>(hitCol);
+			dynamic_cast<const ColliderModel*>(hit.otherCollider);
 
 		if (colliderModel == nullptr) continue;
 

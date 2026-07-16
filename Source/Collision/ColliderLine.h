@@ -1,7 +1,6 @@
 #pragma once
 #include <DxLib.h>
 #include "ColliderBase.h"
-class Transform;
 class ColliderModel;
 
 class ColliderLine : public ColliderBase
@@ -10,8 +9,10 @@ public:
 
 	// コンストラクタ
 	ColliderLine(
-		TAG tag, const Transform* follow,
-		const VECTOR& localPosStart, const VECTOR& localPosEnd);
+		CollisionProfileType type,
+		ActorBase* owner,
+		const VECTOR& localPosStart,
+		const VECTOR& localPosEnd);
 	// デストラクタ
 	~ColliderLine(void) override;
 

@@ -1,6 +1,6 @@
 #include "ResultScene.h"
 #include "SceneManager.h"
-#include "../Manager/InputManager.h"
+#include "../../Manager/InputManager.h"
 #include <DxLib.h>
 
 ResultScene::ResultScene()

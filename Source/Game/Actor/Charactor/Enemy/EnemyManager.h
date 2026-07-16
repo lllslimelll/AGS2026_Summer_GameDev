@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "EnemyBase.h"
-#include "../../../../Object/Collider/ColliderBase.h"
+#include "../../../../Collision/ColliderBase.h"
 class ColliderBase;
 class Player;
 

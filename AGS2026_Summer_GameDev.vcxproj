@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Collision\CollisionManager.cpp" />
     <ClCompile Include="Source\Utility\Math.cpp" />
     <ClCompile Include="Source\Utility\ColorF.cpp" />
     <ClCompile Include="Source\Collision\CollisionProfileManager.cpp" />
@@ -162,7 +163,7 @@
     <ClCompile Include="Source\Common\FpsController.cpp" />
     <ClCompile Include="Source\Core\Quaternion.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\Camera\Camera.cpp" />
+    <ClCompile Include="Source\Game\Camera\Camera.cpp" />
     <ClCompile Include="Source\Manager\InputManager.cpp" />
     <ClCompile Include="Source\Manager\Resource.cpp" />
     <ClCompile Include="Source\Manager\ResourceManager.cpp" />
@@ -196,6 +197,7 @@
     <ClCompile Include="Source\Core\Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Collision\CollisionManager.h" />
     <ClInclude Include="Source\Utility\Math.h" />
     <ClInclude Include="Source\Utility\ColorF.h" />
     <ClInclude Include="Source\Collision\CollisionProfileManager.h" />
@@ -229,7 +231,7 @@
     <ClInclude Include="Source\Common\FpsController.h" />
     <ClInclude Include="Source\Core\Quaternion.h" />
     <ClInclude Include="Source\main.h" />
-    <ClInclude Include="Source\Camera\Camera.h" />
+    <ClInclude Include="Source\Game\Camera\Camera.h" />
     <ClInclude Include="Source\Manager\InputManager.h" />
     <ClInclude Include="Source\Manager\Resource.h" />
     <ClInclude Include="Source\Manager\ResourceManager.h" />

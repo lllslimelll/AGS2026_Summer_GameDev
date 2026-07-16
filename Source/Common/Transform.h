@@ -1,6 +1,6 @@
 #pragma once
 #include <DxLib.h>
-#include "../../Common/Quaternion.h"
+#include "../Core/Quaternion.h"
 
 /// <summary>
 /// ƒ‚ƒfƒ‹§Œä‚ÌŠî–{î•ñ

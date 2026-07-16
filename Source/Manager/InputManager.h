@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <vector>
 #include <Dxlib.h>
-#include "../Common/Vector2.h"
+#include "../Core/Vector2.h"
 
 class InputManager
 {

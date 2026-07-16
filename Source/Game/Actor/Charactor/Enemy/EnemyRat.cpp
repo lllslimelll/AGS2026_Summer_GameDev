@@ -1,10 +1,11 @@
 #include "../../../../Application.h"
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
-#include "../../../Common/AnimationController.h"
-#include "../../../Collider/ColliderLine.h"
-#include "../../../Collider/ColliderCapsule.h"
-#include "../../../../Scene/SceneManager.h"
+#include "../../../../Common/AnimationController.h"
+#include "../../../../Collision/ColliderLine.h"
+#include "../../../../Collision/ColliderCapsule.h"
+#include "../../../../Collision/CollisionManager.h"
+#include "../../../Scene/SceneManager.h"
 #include "EnemyRat.h"
 
 
@@ -48,19 +49,20 @@ void EnemyRat::InitTransform(void)
 
 void EnemyRat::InitCollider(void)
 {
-	// 主に地面との衝突で使用する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
+		CollisionProfileType::PAWN,
+		this,
+		COL_LINE_START_LOCAL_POS,
+		COL_LINE_END_LOCAL_POS);
+	RegisterCollider(colLine, static_cast<int>(COLLIDER_TYPE::GROUND_LINE));
 
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::GROUND_LINE), colLine);
-
-	// 主に壁や木などの衝突で使用するカプセルコライダ
 	ColliderCapsule* colCapsule = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS, COL_CAPSULE_RADIUS);
-
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+		CollisionProfileType::PAWN,
+		this,
+		COL_CAPSULE_TOP_LOCAL_POS,
+		COL_CAPSULE_DOWN_LOCAL_POS,
+		COL_CAPSULE_RADIUS);
+	RegisterCollider(colCapsule, static_cast<int>(COLLIDER_TYPE::CAPSULE));
 }
 
 void EnemyRat::InitAnimation(void)

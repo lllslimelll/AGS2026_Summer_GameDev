@@ -16,6 +16,8 @@ public:
 	// デストラクタ
 	~DebugScene(void) override;
 
+	// ロード
+	void Load(void) override {};
 	// 初期化
 	void Init(void) override;
 	// 更新

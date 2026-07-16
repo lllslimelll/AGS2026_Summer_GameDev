@@ -1,6 +1,7 @@
 #include "../../Manager/ResourceManager.h"
-#include "../../Scene/SceneManager.h"
-#include "../Collider/ColliderBase.h"
+#include "../Scene/SceneManager.h"
+#include "../../Collision/ColliderBase.h"
+#include "../../Collision/CollisionManager.h"
 #include "ActorBase.h"
 
 ActorBase::ActorBase(void)
@@ -60,6 +61,7 @@ void ActorBase::Release(void)
 	// 自身のコライダ解放
 	for (auto& own : ownColliders_)
 	{
+		CollisionManager::GetInstance().Unregister(own.second);
 		delete own.second;
 	}
 	ownColliders_.clear();
@@ -81,32 +83,11 @@ const ColliderBase* ActorBase::GetOwnCollider(int key) const
 	return ownColliders_.at(key);
 }
 
-// 衝突対象となるコライダを登録
-void ActorBase::AddHitCollider(const ColliderBase* hitCollider)
+// ---------------------------------------------------------------
+// コライダーを CollisionManager に登録する
+// ---------------------------------------------------------------
+void ActorBase::RegisterCollider(ColliderBase* collider, int key)
 {
-	for (const auto& c : hitColliders_)
-	{
-		if (c == hitCollider)
-		{
-			return;
-		}
-	}
-
-	hitColliders_.emplace_back(hitCollider);
-}
-
-// 衝突対象となるコライダをクリア
-void ActorBase::ClearHitCollider(void)
-{
-	hitColliders_.clear();
-}
-
-bool ActorBase::IsOccludedByColliders(const VECTOR& from, const VECTOR& to) const
-{
-	for (const auto& c : hitColliders_)
-	{
-		if (!c->IsOccluder()) continue;
-		if (c->IsOccluded(from, to)) return true;
-	}
-	return false;
+	ownColliders_[key] = collider;
+	CollisionManager::GetInstance().Register(collider);
 }

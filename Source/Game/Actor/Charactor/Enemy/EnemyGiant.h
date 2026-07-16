@@ -67,11 +67,10 @@ private:
     static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f,  50.0f, 0.0f };
     static constexpr float  COL_CAPSULE_RADIUS = 40.0f;
 
-    // 視野コライダ（視野モデル）用
-    static constexpr VECTOR VIEW_RANGE_SCL = { 10.0f, 5.0f, 3.0f };
-    static constexpr float  VIEW_RANGE_ROT_X = 26.0f * DX_PI_F / 180.0f;
-    static constexpr float  VIEW_RANGE_LOCAL_ROT_X = 90.0f * DX_PI_F / 180.0f;
-    static constexpr int    VIEW_RANGE_SYNC_FRAME = 6;  // 頭部フレーム番号
+    // 視野
+    static constexpr float VIEW_DIST = 1000.0f; // 視野距離
+    static constexpr float VIEW_ANGLE = 60.0f;  // 視野角（度）
+    static constexpr float VIEW_HALF_FOV = VIEW_ANGLE * 0.5f * DX_PI_F / 180.0f;  // 半視野角（ラジアン）
 
     // 攻撃用球体コライダ（手フレームに追従）
     static constexpr float ATTACK_SPHERE_RADIUS = 20.0f;
@@ -83,6 +82,7 @@ private:
     static constexpr float DIST_ATTACK = 100.0f;  // 攻撃距離
     static constexpr float DIST_CHASE = 500.0f;  // チェイス解除距離
     static constexpr float ATTACK_DAMAGE = 20;
+
     VECTOR spawnPos_ = AsoUtility::VECTOR_ZERO;
     // 状態
     STATE state_;
@@ -120,8 +120,8 @@ private:
     // 巡回方向設定
     void SetMoveDirToTarget(const VECTOR& target);
 
-    // 索敵（視野モデル）
-    bool InSearchConeModel(void);
+    // 索敵
+    bool InSearchCone(void) const;
 
     // プレイヤーとの距離
     float DistToPlayer(void) const;

@@ -1,6 +1,6 @@
 #include <DxLib.h>
 #include "../Application.h"
-#include "../Common/Vector2.h"
+#include "../Core/Vector2.h"
 #include "../Manager/ScreenManager.h"
 #include "../Renderer/Material/Material.h"
 #include "../Renderer/PixelRenderer.h"

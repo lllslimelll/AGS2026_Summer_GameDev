@@ -3,8 +3,8 @@
 #include <DxLib.h>
 #include "../../../Application.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../Collider/ColliderBase.h"
-#include "../../Collider/ColliderModel.h"
+#include "../../../Collision/ColliderBase.h"
+#include "../../../Collision/ColliderModel.h"
 #include "Item.h"
 #include "ItemManager.h"
 
@@ -49,7 +49,6 @@ void ItemManager::Release(void)
 	}
 	// アイテムとコライダーをクリア
 	items_.clear();
-	hitColliders_.clear();
 }
 
 Item* ItemManager::Create(const Item::ItemData& data)
@@ -80,18 +79,6 @@ Item* ItemManager::Create(const Item::ItemData& data)
 
 	// アイテムを返す
 	return item;
-}
-
-void ItemManager::AddHitCollider(const ColliderBase* collider)
-{
-	// GetAimedItemの遮蔽チェック用コライダを追加
-	hitColliders_.emplace_back(collider);
-
-	// 衝突判定用コライダをアイテムに追加
-	for (auto& item : items_)
-	{
-		item->AddHitCollider(collider);
-	}
 }
 
 Item* ItemManager::GetAimedItem(

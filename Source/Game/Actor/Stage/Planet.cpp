@@ -1,7 +1,7 @@
 #include "../../../Manager/ResourceManager.h"
-#include "../../Common/Transform.h"
+#include "../../../Common/Transform.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../Collider/ColliderModel.h"
+#include "../../../Collision/ColliderModel.h"
 #include "Planet.h"
 
 Planet::~Planet(void)
@@ -36,7 +36,7 @@ void Planet::InitCollider(void)
     MV1SetupCollInfo(transform_.modelId);
 
     ColliderModel* colModel =
-        new ColliderModel(ColliderBase::TAG::PLANET, &transform_);
+        new ColliderModel(CollisionProfileType::WORLD_STATIC, this);
 
     for (const std::string& name : EXCLUDE_FRAME_NAMES)
     {
@@ -48,9 +48,7 @@ void Planet::InitCollider(void)
         colModel->AddTargetFrameIds(name);
     }
 
-    colModel->SetOccluder(true);
-
-    ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
+    RegisterCollider(colModel, static_cast<int>(COLLIDER_TYPE::MODEL));
 }
 
 void Planet::InitAnimation(void)

@@ -1,11 +1,11 @@
 #include <DxLib.h>
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Scene/SceneManager.h"
-#include "../../../Camera/Camera.h"
+#include "../../Scene/SceneManager.h"
+#include "../../Camera/Camera.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SoundManager.h"
-#include "../../Collider/ColliderBase.h"
-#include "../../Collider/ColliderSphere.h"
+#include "../../../Collision/ColliderBase.h"
+#include "../../../Collision/ColliderSphere.h"
 #include "Item.h"
 
 void Item::SetCameraPos(const VECTOR& pos)
@@ -128,17 +128,7 @@ bool Item::IsAimed(const VECTOR& rayOrigin, const VECTOR& rayEnd) const
 {
     if (state_ != STATE::DROPPED) return false;
 
-    //if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::SPHERE)) == 0) return false;
-
-    //const ColliderSphere* col = dynamic_cast<const ColliderSphere*>(
-    //    ownColliders_.at(static_cast<int>(COLLIDER_TYPE::SPHERE)));
-
-    //if (col == nullptr || !col->IsHitRay(rayOrigin, rayEnd)) return false;
-
-    // 遮蔽チェック
-    //if (IsOccludedByColliders(rayOrigin, transform_.pos)) return false;
-
-        // 一旦AsoUtilityで確認
+    // 一旦AsoUtilityで確認
     bool hit = AsoUtility::IsHitSphereCapsule(
         transform_.pos, 30.0f,
         rayOrigin, rayEnd, 0.0f);
@@ -236,11 +226,13 @@ void Item::InitTransform(void)
 void Item::InitCollider(void)
 {
     // カプセルコライダ
-    ColliderBase* colSphere = new ColliderSphere(
-        ColliderBase::TAG::ITEM, &transform_,
-        AsoUtility::VECTOR_ZERO, 50.0f);
+    ColliderSphere* colSphere = new ColliderSphere(
+        CollisionProfileType::ITEM,
+        this,
+        AsoUtility::VECTOR_ZERO,
+        50.0f);
 
-    ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::SPHERE), colSphere);
+    RegisterCollider(colSphere, static_cast<int>(COLLIDER_TYPE::SPHERE));
 }
 
 void Item::InitAnimation(void)
