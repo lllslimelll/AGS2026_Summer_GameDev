@@ -1,100 +1,137 @@
 #pragma once
-#include <DxLib.h>
-#include <algorithm>
+#include <cmath>
+#include "Vector3.h"
+#include "Matrix4x4.h"
+
+// クォータニオン
 class Quaternion
 {
-
 public:
-	
-	static constexpr float kEpsilonNormalSqrt = 1e-15F;
 
-	double w;
-	double x;
-	double y;
-	double z;
+    float w; // 実部
+    float x; // 虚部 i
+    float y; // 虚部 j
+    float z; // 虚部 k
 
-	// コンストラクタ
-	Quaternion(void);
-	explicit Quaternion(const VECTOR& rad);
-	Quaternion(double w, double x, double y, double z);
+    // ---------------------------------------------------------------
+    // コンストラクタ
+    // ---------------------------------------------------------------
 
-	// デストラクタ
-	~Quaternion(void);
+    // デフォルト：単位クォータニオン（回転なし）
+    Quaternion(void);
 
-	// オイラー角からクォータニオンへ変換
-	static Quaternion Euler(const VECTOR& rad);
-	static Quaternion Euler(double radX, double radY, double radZ);
+    // w, x, y, z を直接指定
+    Quaternion(float w, float x, float y, float z);
 
-	// クォータニオンの合成
-	static Quaternion Mult(const Quaternion& q1, const Quaternion& q2);
-	Quaternion Mult(const Quaternion& q) const;
+    // ---------------------------------------------------------------
+    // 生成
+    // ---------------------------------------------------------------
 
-	// 指定軸を指定角分、回転させる
-	static Quaternion AngleAxis(double rad, VECTOR axis);
+    // 単位クォータニオン（回転なし）を返す
+    static Quaternion Identity(void);
 
-	// 座標を回転させる
-	static VECTOR PosAxis(const Quaternion& q, VECTOR pos);
-	VECTOR PosAxis(VECTOR pos) const;
+    // オイラー角（ラジアン）からクォータニオンを生成する
+    static Quaternion Euler(float radX, float radY, float radZ);
+    static Quaternion Euler(const Vector3& rad);
 
-	// クォータニオンからオイラー角へ変換
-	static VECTOR ToEuler(const Quaternion& q);
-	VECTOR ToEuler(void) const;
+    // 指定した軸周りに指定角度（ラジアン）回転するクォータニオンを生成する
+    static Quaternion AngleAxis(float rad, const Vector3& axis);
 
-	// クォータニオンから行列へ変換
-	static MATRIX ToMatrix(const Quaternion& q);
-	MATRIX ToMatrix(void) const;
+    // 前方向ベクトルからクォータニオンを生成する
+    // forward: 向きたい方向（正規化済みであること）
+    static Quaternion LookRotation(const Vector3& forward);
+    static Quaternion LookRotation(
+        const Vector3& forward,
+        const Vector3& up);
 
-	// ベクトルからクォータニオンに変換
-	static Quaternion LookRotation(const VECTOR& forward);
-	static Quaternion LookRotation(const VECTOR& forward, const VECTOR& up);
+    // from から to への最短回転クォータニオンを生成する
+    static Quaternion FromToRotation(
+        const Vector3& from,
+        const Vector3& to);
 
-	// 行列からクォータニオンに変換
-	static Quaternion GetRotation(const MATRIX& mat);
+    // 行列からクォータニオンを生成する
+    Matrix4x4 ToMatrix(void) const;
 
-	// 基本ベクトルを取得
-	VECTOR GetForward(void) const;
-	VECTOR GetBack(void) const;
-	VECTOR GetRight(void) const;
-	VECTOR GetLeft(void) const;
-	VECTOR GetUp(void) const;
-	VECTOR GetDown(void) const;
+    // ---------------------------------------------------------------
+    // 演算
+    // ---------------------------------------------------------------
 
-	// 内積
-	static double Dot(const Quaternion& q1, const Quaternion& q2);
-	double Dot(const Quaternion& b) const;
+    // クォータニオンの合成（回転の掛け合わせ）
+    // q1 の後に q2 を回転させる
+    Quaternion operator*(const Quaternion& other) const;
 
-	// 正規化
-	static Quaternion Normalize(const Quaternion& q);
-	Quaternion Normalized(void) const;
-	void Normalize(void);
+    // 比較
+    bool operator==(const Quaternion& other) const;
+    bool operator!=(const Quaternion& other) const;
 
-	// 逆クォータニオン
-	Quaternion Inverse(void) const;
+    // ---------------------------------------------------------------
+    // 回転
+    // ---------------------------------------------------------------
 
-	// 球面補間
-	static Quaternion Slerp(const Quaternion& from, const Quaternion& to, double t);
+    // ベクトルを回転させる
+    Vector3 RotateVector(const Vector3& v) const;
 
-	// ２つのベクトル間の回転量を取得する
-	static Quaternion FromToRotation(const VECTOR& fromDir, const VECTOR& toDir);
-	static Quaternion RotateTowards(const Quaternion& from, const Quaternion& to, float maxDegreesDelta);
-	static double Angle(const Quaternion& q1, const Quaternion& q2);
-	static Quaternion SlerpUnclamped(Quaternion a, Quaternion b, float t);
-	static Quaternion Identity(void);
+    // ---------------------------------------------------------------
+    // 変換
+    // ---------------------------------------------------------------
 
-	// 長さ
-	double Length(void) const;
-	double LengthSquared(void) const;
-	VECTOR xyz(void) const;
+    // オイラー角（ラジアン）に変換する
+    Vector3 ToEuler(void) const;
 
-	// 対象方向の回転
-	void ToAngleAxis(float* angle, VECTOR* axis);
+    // ---------------------------------------------------------------
+    // 正規化
+    // ---------------------------------------------------------------
+
+    // 長さ
+    float Length(void)        const;
+    float LengthSquared(void) const;
+
+    // 正規化したクォータニオンを返す（自分は変わらない）
+    Quaternion Normalized(void) const;
+
+    // 自分自身を正規化する
+    void Normalize(void);
+
+    // ---------------------------------------------------------------
+    // 補間
+    // ---------------------------------------------------------------
+
+    // 球面線形補間
+    // t: 0.0f = from, 1.0f = to
+    static Quaternion Slerp(
+        const Quaternion& from,
+        const Quaternion& to,
+        float t);
+
+    // ---------------------------------------------------------------
+    // その他
+    // ---------------------------------------------------------------
+
+    // 逆クォータニオン（回転を逆にする）
+    Quaternion Inverse(void) const;
+
+    // 内積
+    static float Dot(const Quaternion& a, const Quaternion& b);
+    float        Dot(const Quaternion& other) const;
+
+    // 2つのクォータニオン間の角度（度）を返す
+    static float Angle(const Quaternion& a, const Quaternion& b);
+
+    // 最大角度を制限しながら to に向けて回転する
+    // maxDegreesDelta: 1フレームの最大回転角度（度）
+    static Quaternion RotateTowards(
+        const Quaternion& from,
+        const Quaternion& to,
+        float maxDegreesDelta);
+
+    // デバッグ用
+    bool IsNormalized(float tolerance = 1e-4f) const;
 
 private:
 
-	// 基本ベクトルを取得
-	VECTOR GetDir(VECTOR dir) const;
-
-	Quaternion operator*(float rhs);
-	Quaternion operator+(const Quaternion& rhs);
-	
+    // 補間（クランプなし）
+    static Quaternion SlerpUnclamped(
+        const Quaternion& a,
+        const Quaternion& b,
+        float t);
 };

@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\Matrix4x4.cpp" />
     <ClCompile Include="Source\Collision\CollisionManager.cpp" />
     <ClCompile Include="Source\Utility\Math.cpp" />
     <ClCompile Include="Source\Utility\ColorF.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Source\Core\Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Core\Matrix4x4.h" />
     <ClInclude Include="Source\Collision\CollisionManager.h" />
     <ClInclude Include="Source\Collision\CollisionQueryParams.h" />
     <ClInclude Include="Source\Utility\Math.h" />
