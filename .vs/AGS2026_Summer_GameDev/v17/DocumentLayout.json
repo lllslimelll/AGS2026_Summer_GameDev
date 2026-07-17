@@ -3,20 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Game\\Scene\\DeadScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionQueryParams.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\CollisionQueryParams.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\CollisionManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\CollisionManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\ColliderModel.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\ColliderModel.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\ColliderModel.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Game\\Scene\\DeadScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -71,10 +87,6 @@
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Game\\Scene\\GameScene.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Application.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -89,10 +101,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Manager\\InputManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Manager\\InputManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\CollisionManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyBase.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -221,10 +229,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\ActorBase.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Game\\Actor\\ActorBase.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Source\\Collision\\CollisionManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderLine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -786,125 +790,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DeadScene.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.cpp",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DeadScene.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.cpp",
-              "RelativeToolTip": "Source\\Game\\Scene\\DeadScene.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:36:09.615Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EnemyManager.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
-              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
-              "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
-              "ViewState": "AgIAAH0AAAAAAAAAAAAiwJEAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:36:02.472Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "DeadScene.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DeadScene.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.h",
-              "RelativeToolTip": "Source\\Game\\Scene\\DeadScene.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:35:46.208Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "DebugScene.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.cpp",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DebugScene.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.cpp",
-              "RelativeToolTip": "Source\\Game\\Scene\\DebugScene.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:35:45.751Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "SceneBase.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneBase.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\SceneBase.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneBase.h",
-              "RelativeToolTip": "Source\\Game\\Scene\\SceneBase.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:35:38.904Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "ResultScene.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\ResultScene.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\ResultScene.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\ResultScene.h",
-              "RelativeToolTip": "Source\\Game\\Scene\\ResultScene.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvw0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:35:35.135Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "PauseScene.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\PauseScene.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\PauseScene.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\PauseScene.h",
-              "RelativeToolTip": "Source\\Game\\Scene\\PauseScene.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwsAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:35:31.032Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DebugScene.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DebugScene.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.h",
-              "RelativeToolTip": "Source\\Game\\Scene\\DebugScene.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvxIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:34:48.369Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "ItemManager.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.cpp",
-              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Item\\ItemManager.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.cpp",
-              "RelativeToolTip": "Source\\Game\\Actor\\Item\\ItemManager.cpp",
-              "ViewState": "AgIAADcAAAAAAAAAAAAcwFEAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:27:41.989Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -915,52 +802,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Player.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Player.cpp",
-              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Player.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Player.cpp",
-              "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Player.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T01:33:46.535Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "SceneManager.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneManager.cpp",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\SceneManager.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneManager.cpp",
-              "RelativeToolTip": "Source\\Game\\Scene\\SceneManager.cpp",
-              "ViewState": "AgIAAAgBAAAAAAAAAAAkwBUBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T05:39:55.486Z",
+              "DocumentIndex": 0,
+              "Title": "CollisionQueryParams.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionQueryParams.h",
+              "RelativeDocumentMoniker": "Source\\Collision\\CollisionQueryParams.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionQueryParams.h*",
+              "RelativeToolTip": "Source\\Collision\\CollisionQueryParams.h*",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvw8AAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-17T00:25:20.956Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "GameScene.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\GameScene.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.h",
-              "RelativeToolTip": "Source\\Game\\Scene\\GameScene.h",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACsAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T05:00:31.234Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "ColliderModel.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.h",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderModel.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.h",
-              "RelativeToolTip": "Source\\Collision\\ColliderModel.h",
-              "ViewState": "AgIAABsAAAAAAAAAAAAiwC8AAAAGAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.h*",
+              "RelativeToolTip": "Source\\Collision\\ColliderModel.h*",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAhwBYAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-07-16T04:38:00.974Z",
               "EditorCaption": ""
@@ -971,120 +832,29 @@
               "Title": "ColliderModel.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderModel.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.cpp",
-              "RelativeToolTip": "Source\\Collision\\ColliderModel.cpp",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAAwIoAAAAaAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderModel.cpp*",
+              "RelativeToolTip": "Source\\Collision\\ColliderModel.cpp*",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAAAHwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-07-16T04:35:49.501Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "ItemManager.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Item\\ItemManager.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.h",
-              "RelativeToolTip": "Source\\Game\\Actor\\Item\\ItemManager.h",
-              "ViewState": "AgIAAA4AAAAAAAAAAADwvx4AAAAqAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "CollisionManager.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.h",
+              "RelativeDocumentMoniker": "Source\\Collision\\CollisionManager.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.h",
+              "RelativeToolTip": "Source\\Collision\\CollisionManager.h",
+              "ViewState": "AgIAABAAAAAAAAAAAAAYwCMAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:29:09.796Z",
+              "WhenOpened": "2026-07-16T04:48:35.533Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "EnemyManager.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h",
-              "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:26:43.876Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "Application.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.cpp",
-              "RelativeDocumentMoniker": "Source\\Application.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.cpp",
-              "RelativeToolTip": "Source\\Application.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T05:34:13.191Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "GameScene.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.cpp",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\GameScene.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.cpp",
-              "RelativeToolTip": "Source\\Game\\Scene\\GameScene.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T05:01:18.482Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "TitleScene.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\TitleScene.h",
-              "RelativeDocumentMoniker": "Source\\Game\\Scene\\TitleScene.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\TitleScene.h",
-              "RelativeToolTip": "Source\\Game\\Scene\\TitleScene.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-15T06:46:08.94Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "Material.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Renderer\\Material\\Material.cpp",
-              "RelativeDocumentMoniker": "Source\\Renderer\\Material\\Material.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Renderer\\Material\\Material.cpp",
-              "RelativeToolTip": "Source\\Renderer\\Material\\Material.cpp",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:16:16.812Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "InputManager.cpp",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Manager\\InputManager.cpp",
-              "RelativeDocumentMoniker": "Source\\Manager\\InputManager.cpp",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Manager\\InputManager.cpp",
-              "RelativeToolTip": "Source\\Manager\\InputManager.cpp",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:21:56.073Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Application.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.h",
-              "RelativeDocumentMoniker": "Source\\Application.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.h",
-              "RelativeToolTip": "Source\\Application.h",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAACYAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-15T01:06:50.812Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 2,
               "Title": "CollisionManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionManager.cpp",
@@ -1097,7 +867,250 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DeadScene.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.cpp",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DeadScene.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.cpp",
+              "RelativeToolTip": "Source\\Game\\Scene\\DeadScene.cpp",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAACcAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T06:36:09.615Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "DebugScene.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DebugScene.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.h",
+              "RelativeToolTip": "Source\\Game\\Scene\\DebugScene.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvxIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T06:34:48.369Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "PauseScene.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\PauseScene.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\PauseScene.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\PauseScene.h",
+              "RelativeToolTip": "Source\\Game\\Scene\\PauseScene.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwsAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T06:35:31.032Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ResultScene.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\ResultScene.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\ResultScene.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\ResultScene.h",
+              "RelativeToolTip": "Source\\Game\\Scene\\ResultScene.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvw0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T06:35:35.135Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "SceneBase.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneBase.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\SceneBase.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneBase.h",
+              "RelativeToolTip": "Source\\Game\\Scene\\SceneBase.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T06:35:38.904Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "ItemManager.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.cpp",
+              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Item\\ItemManager.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.cpp",
+              "RelativeToolTip": "Source\\Game\\Actor\\Item\\ItemManager.cpp",
+              "ViewState": "AgIAADcAAAAAAAAAAAAcwFEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T06:27:41.989Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Player.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Player.cpp",
+              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Player.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Player.cpp",
+              "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Player.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T01:33:46.535Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "SceneManager.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneManager.cpp",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\SceneManager.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneManager.cpp",
+              "RelativeToolTip": "Source\\Game\\Scene\\SceneManager.cpp",
+              "ViewState": "AgIAAAgBAAAAAAAAAAAkwBUBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T05:39:55.486Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "GameScene.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\GameScene.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.h",
+              "RelativeToolTip": "Source\\Game\\Scene\\GameScene.h",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACsAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T05:00:31.234Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "EnemyManager.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
+              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp*",
+              "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.cpp*",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAhwGgAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T06:36:02.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "EnemyManager.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h*",
+              "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyManager.h*",
+              "ViewState": "AgIAAA0AAAAAAAAAAAD4vyAAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T06:26:43.876Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "DebugScene.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.cpp",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DebugScene.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DebugScene.cpp",
+              "RelativeToolTip": "Source\\Game\\Scene\\DebugScene.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T06:35:45.751Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "DeadScene.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\DeadScene.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\DeadScene.h",
+              "RelativeToolTip": "Source\\Game\\Scene\\DeadScene.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T06:35:46.208Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "ItemManager.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Actor\\Item\\ItemManager.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\ItemManager.h",
+              "RelativeToolTip": "Source\\Game\\Actor\\Item\\ItemManager.h",
+              "ViewState": "AgIAAA4AAAAAAAAAAADwvx4AAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-16T06:29:09.796Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Application.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.cpp",
+              "RelativeDocumentMoniker": "Source\\Application.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.cpp",
+              "RelativeToolTip": "Source\\Application.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T05:34:13.191Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "GameScene.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.cpp",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\GameScene.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\GameScene.cpp",
+              "RelativeToolTip": "Source\\Game\\Scene\\GameScene.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T05:01:18.482Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "TitleScene.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\TitleScene.h",
+              "RelativeDocumentMoniker": "Source\\Game\\Scene\\TitleScene.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\TitleScene.h",
+              "RelativeToolTip": "Source\\Game\\Scene\\TitleScene.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-15T06:46:08.94Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Material.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Renderer\\Material\\Material.cpp",
+              "RelativeDocumentMoniker": "Source\\Renderer\\Material\\Material.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Renderer\\Material\\Material.cpp",
+              "RelativeToolTip": "Source\\Renderer\\Material\\Material.cpp",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T06:16:16.812Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 24,
+              "Title": "InputManager.cpp",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Manager\\InputManager.cpp",
+              "RelativeDocumentMoniker": "Source\\Manager\\InputManager.cpp",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Manager\\InputManager.cpp",
+              "RelativeToolTip": "Source\\Manager\\InputManager.cpp",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-16T06:21:56.073Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Application.h",
+              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.h",
+              "RelativeDocumentMoniker": "Source\\Application.h",
+              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Application.h",
+              "RelativeToolTip": "Source\\Application.h",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACYAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-07-15T01:06:50.812Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
               "Title": "HitResult.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\HitResult.h",
               "RelativeDocumentMoniker": "Source\\Collision\\HitResult.h",
@@ -1105,12 +1118,11 @@
               "RelativeToolTip": "Source\\Collision\\HitResult.h",
               "ViewState": "AgIAAAIAAAAAAAAAAAAgwBkAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-15T01:39:45.553Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-15T01:39:45.553Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "EnemyBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyBase.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyBase.cpp",
@@ -1118,12 +1130,11 @@
               "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyBase.cpp",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAACMAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:03:28.867Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T06:03:28.867Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "PostEffect.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\PostEffect\\PostEffect.cpp",
               "RelativeDocumentMoniker": "Source\\PostEffect\\PostEffect.cpp",
@@ -1131,12 +1142,11 @@
               "RelativeToolTip": "Source\\PostEffect\\PostEffect.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T06:16:10.005Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T06:16:10.005Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "PixelRenderer.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Renderer\\PixelRenderer.h",
               "RelativeDocumentMoniker": "Source\\Renderer\\PixelRenderer.h",
@@ -1144,12 +1154,11 @@
               "RelativeToolTip": "Source\\Renderer\\PixelRenderer.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:15:25.871Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T06:15:25.871Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "EnemyRobot.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRobot.h",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRobot.h",
@@ -1157,12 +1166,11 @@
               "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRobot.h",
               "ViewState": "AgIAAHkAAAAAAAAAAAAAAJkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:11:13.904Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T06:11:13.904Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "EnemyGiant.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
@@ -1170,12 +1178,11 @@
               "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
               "ViewState": "AgIAADAAAAAAAAAAAADwv1QAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:03:50.942Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T06:03:50.942Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "EnemyRobot.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRobot.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRobot.cpp",
@@ -1183,12 +1190,11 @@
               "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRobot.cpp",
               "ViewState": "AgIAADcBAAAAAAAAAAAAAFUBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T05:57:40.281Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T05:57:40.281Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "EnemyBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyBase.h",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyBase.h",
@@ -1196,12 +1202,11 @@
               "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyBase.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAEUAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T06:01:54.279Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T06:01:54.279Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "EnemyGiant.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
@@ -1209,12 +1214,11 @@
               "RelativeToolTip": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
               "ViewState": "AgIAAJABAAAAAAAAAAAAAKABAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-16T05:37:44.239Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-16T05:37:44.239Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "EnemyRat.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRat.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Enemy\\EnemyRat.cpp",
@@ -1226,7 +1230,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "CollisionProfileManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionProfileManager.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionProfileManager.cpp",
@@ -1238,7 +1242,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 37,
               "Title": "CollisionResponse.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionResponse.h",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionResponse.h",
@@ -1250,7 +1254,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 38,
               "Title": "Item.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Item\\Item.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Item\\Item.cpp",
@@ -1262,7 +1266,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 39,
               "Title": "CharactorBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\CharactorBase.h",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\CharactorBase.h",
@@ -1274,7 +1278,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "CollisionProfile.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionProfile.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionProfile.cpp",
@@ -1286,7 +1290,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 40,
               "Title": "CharactorBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\CharactorBase.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\CharactorBase.cpp",
@@ -1298,7 +1302,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 41,
               "Title": "Camera.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Camera\\Camera.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Camera\\Camera.cpp",
@@ -1310,7 +1314,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 42,
               "Title": "Rocket.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Stage\\Rocket.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Stage\\Rocket.cpp",
@@ -1322,7 +1326,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 43,
               "Title": "SceneManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\SceneManager.h",
               "RelativeDocumentMoniker": "Source\\Game\\Scene\\SceneManager.h",
@@ -1334,7 +1338,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 44,
               "Title": "ResultScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\ResultScene.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Scene\\ResultScene.cpp",
@@ -1346,7 +1350,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 45,
               "Title": "InputManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Manager\\InputManager.h",
               "RelativeDocumentMoniker": "Source\\Manager\\InputManager.h",
@@ -1358,7 +1362,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 47,
               "Title": "ColliderBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderBase.h",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderBase.h",
@@ -1370,7 +1374,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 46,
               "Title": "Transform.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Common\\Transform.h",
               "RelativeDocumentMoniker": "Source\\Common\\Transform.h",
@@ -1382,7 +1386,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 48,
               "Title": "CollisionProfileManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionProfileManager.h",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionProfileManager.h",
@@ -1394,7 +1398,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 49,
               "Title": "Camera.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Camera\\Camera.h",
               "RelativeDocumentMoniker": "Source\\Game\\Camera\\Camera.h",
@@ -1406,7 +1410,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 51,
               "Title": "Planet.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Stage\\Planet.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Stage\\Planet.cpp",
@@ -1418,7 +1422,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 50,
               "Title": "StageManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Stage\\StageManager.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Stage\\StageManager.cpp",
@@ -1430,7 +1434,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 53,
               "Title": "CollisionProfile.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionProfile.h",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionProfile.h",
@@ -1442,7 +1446,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 52,
               "Title": "ActorBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\ActorBase.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\ActorBase.cpp",
@@ -1454,7 +1458,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 54,
               "Title": "ColliderLine.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderLine.h",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderLine.h",
@@ -1466,7 +1470,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 55,
               "Title": "Player.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\Charactor\\Player.h",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\Charactor\\Player.h",
@@ -1478,7 +1482,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 56,
               "Title": "ActorBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Actor\\ActorBase.h",
               "RelativeDocumentMoniker": "Source\\Game\\Actor\\ActorBase.h",
@@ -1490,19 +1494,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
-              "Title": "CollisionManager.h",
-              "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.h",
-              "RelativeDocumentMoniker": "Source\\Collision\\CollisionManager.h",
-              "ToolTip": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionManager.h",
-              "RelativeToolTip": "Source\\Collision\\CollisionManager.h",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-16T04:48:35.533Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 57,
               "Title": "ColliderLine.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderLine.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderLine.cpp",
@@ -1514,7 +1506,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 59,
               "Title": "ColliderSphere.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderSphere.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderSphere.cpp",
@@ -1526,7 +1518,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 58,
               "Title": "AsoUtility.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\AsoUtility.h",
               "RelativeDocumentMoniker": "Source\\Utility\\AsoUtility.h",
@@ -1538,7 +1530,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 62,
               "Title": "ColliderCapsule.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderCapsule.h",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderCapsule.h",
@@ -1550,7 +1542,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 61,
               "Title": "ColliderCapsule.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderCapsule.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderCapsule.cpp",
@@ -1562,7 +1554,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 60,
               "Title": "ColliderSphere.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderSphere.h",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderSphere.h",
@@ -1574,7 +1566,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 63,
               "Title": "ColliderBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\ColliderBase.cpp",
               "RelativeDocumentMoniker": "Source\\Collision\\ColliderBase.cpp",
@@ -1586,7 +1578,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 64,
               "Title": "CollisionProfileType.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionProfileType.h",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionProfileType.h",
@@ -1598,7 +1590,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 65,
               "Title": "CollisionChannel.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Collision\\CollisionChannel.h",
               "RelativeDocumentMoniker": "Source\\Collision\\CollisionChannel.h",
@@ -1610,7 +1602,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 66,
               "Title": "PauseScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Game\\Scene\\PauseScene.cpp",
               "RelativeDocumentMoniker": "Source\\Game\\Scene\\PauseScene.cpp",
@@ -1622,7 +1614,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 72,
               "Title": "Color.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\Color.h",
               "RelativeDocumentMoniker": "Source\\Utility\\Color.h",
@@ -1634,7 +1626,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 71,
               "Title": "ColorF.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\ColorF.cpp",
               "RelativeDocumentMoniker": "Source\\Utility\\ColorF.cpp",
@@ -1646,7 +1638,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 70,
               "Title": "Vector2.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Core\\Vector2.h",
               "RelativeDocumentMoniker": "Source\\Core\\Vector2.h",
@@ -1658,7 +1650,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 67,
               "Title": "Vector3.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Core\\Vector3.h",
               "RelativeDocumentMoniker": "Source\\Core\\Vector3.h",
@@ -1670,7 +1662,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 69,
               "Title": "Vector2.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Core\\Vector2.cpp",
               "RelativeDocumentMoniker": "Source\\Core\\Vector2.cpp",
@@ -1682,7 +1674,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 68,
               "Title": "Vector3.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Core\\Vector3.cpp",
               "RelativeDocumentMoniker": "Source\\Core\\Vector3.cpp",
@@ -1694,7 +1686,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 73,
               "Title": "ColorF.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\ColorF.h",
               "RelativeDocumentMoniker": "Source\\Utility\\ColorF.h",
@@ -1706,7 +1698,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 74,
               "Title": "Color.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\Color.cpp",
               "RelativeDocumentMoniker": "Source\\Utility\\Color.cpp",
@@ -1718,7 +1710,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 75,
               "Title": "AsoUtility.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\AsoUtility.cpp",
               "RelativeDocumentMoniker": "Source\\Utility\\AsoUtility.cpp",
@@ -1730,7 +1722,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 76,
               "Title": "Math.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\Math.h",
               "RelativeDocumentMoniker": "Source\\Utility\\Math.h",
@@ -1742,7 +1734,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 77,
               "Title": "Math.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Source\\Utility\\Math.cpp",
               "RelativeDocumentMoniker": "Source\\Utility\\Math.cpp",
@@ -1754,7 +1746,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 100,
+              "DocumentIndex": 101,
               "Title": "ColliderBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\ColliderBase.cpp",
               "RelativeDocumentMoniker": "Src\\Collision\\ColliderBase.cpp",
@@ -1766,7 +1758,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 78,
               "Title": "ColliderBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\ColliderBase.h",
               "RelativeDocumentMoniker": "Src\\Collision\\ColliderBase.h",
@@ -1777,7 +1769,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 101,
+              "DocumentIndex": 102,
               "Title": "CollisionProfileManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\CollisionProfileManager.cpp",
               "RelativeDocumentMoniker": "Src\\Collision\\CollisionProfileManager.cpp",
@@ -1789,7 +1781,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 102,
+              "DocumentIndex": 103,
               "Title": "CollisionProfileType.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\CollisionProfileType.h",
               "RelativeDocumentMoniker": "Src\\Collision\\CollisionProfileType.h",
@@ -1801,7 +1793,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 103,
+              "DocumentIndex": 104,
               "Title": "CollisionProfile.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\CollisionProfile.h",
               "RelativeDocumentMoniker": "Src\\Collision\\CollisionProfile.h",
@@ -1813,7 +1805,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 104,
+              "DocumentIndex": 105,
               "Title": "CollisionResponse.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\CollisionResponse.h",
               "RelativeDocumentMoniker": "Src\\Collision\\CollisionResponse.h",
@@ -1825,7 +1817,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 105,
+              "DocumentIndex": 106,
               "Title": "CollisionProfileManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\CollisionProfileManager.h",
               "RelativeDocumentMoniker": "Src\\Collision\\CollisionProfileManager.h",
@@ -1837,7 +1829,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 106,
+              "DocumentIndex": 107,
               "Title": "CollisionChannel.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\CollisionChannel.h",
               "RelativeDocumentMoniker": "Src\\Collision\\CollisionChannel.h",
@@ -1849,7 +1841,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 107,
+              "DocumentIndex": 108,
               "Title": "ResourceManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\ResourceManager.h",
               "RelativeDocumentMoniker": "Src\\Manager\\ResourceManager.h",
@@ -1861,7 +1853,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 108,
+              "DocumentIndex": 109,
               "Title": "InputManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\InputManager.h",
               "RelativeDocumentMoniker": "Src\\Manager\\InputManager.h",
@@ -1873,7 +1865,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 109,
+              "DocumentIndex": 110,
               "Title": "InputManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\InputManager.cpp",
               "RelativeDocumentMoniker": "Src\\Manager\\InputManager.cpp",
@@ -1885,7 +1877,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 110,
+              "DocumentIndex": 111,
               "Title": "CollisionProfile.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Collision\\CollisionProfile.cpp",
               "RelativeDocumentMoniker": "Src\\Collision\\CollisionProfile.cpp",
@@ -1897,7 +1889,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 111,
+              "DocumentIndex": 112,
               "Title": "PostEffect.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\PostEffect\\PostEffect.cpp",
               "RelativeDocumentMoniker": "Src\\PostEffect\\PostEffect.cpp",
@@ -1909,7 +1901,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 112,
+              "DocumentIndex": 113,
               "Title": "PostEffect.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\PostEffect\\PostEffect.h",
               "RelativeDocumentMoniker": "Src\\PostEffect\\PostEffect.h",
@@ -1921,7 +1913,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 113,
+              "DocumentIndex": 114,
               "Title": "PixelRenderer.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Renderer\\PixelRenderer.cpp",
               "RelativeDocumentMoniker": "Src\\Renderer\\PixelRenderer.cpp",
@@ -1933,7 +1925,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 114,
+              "DocumentIndex": 115,
               "Title": "ModelRenderer.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Renderer\\ModelRenderer.cpp",
               "RelativeDocumentMoniker": "Src\\Renderer\\ModelRenderer.cpp",
@@ -1945,7 +1937,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 115,
+              "DocumentIndex": 116,
               "Title": "Material.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Renderer\\Material\\Material.cpp",
               "RelativeDocumentMoniker": "Src\\Renderer\\Material\\Material.cpp",
@@ -1957,7 +1949,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 116,
+              "DocumentIndex": 117,
               "Title": "Material.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Renderer\\Material\\Material.h",
               "RelativeDocumentMoniker": "Src\\Renderer\\Material\\Material.h",
@@ -1969,7 +1961,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 117,
+              "DocumentIndex": 118,
               "Title": "PixelRenderer.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Renderer\\PixelRenderer.h",
               "RelativeDocumentMoniker": "Src\\Renderer\\PixelRenderer.h",
@@ -1981,7 +1973,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 118,
+              "DocumentIndex": 119,
               "Title": "SceneManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\SceneManager.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\SceneManager.cpp",
@@ -1993,7 +1985,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 119,
+              "DocumentIndex": 120,
               "Title": "ModelRenderer.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Renderer\\ModelRenderer.h",
               "RelativeDocumentMoniker": "Src\\Renderer\\ModelRenderer.h",
@@ -2005,7 +1997,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 120,
+              "DocumentIndex": 121,
               "Title": "SceneManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\SceneManager.h",
               "RelativeDocumentMoniker": "Src\\Scene\\SceneManager.h",
@@ -2017,7 +2009,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 121,
+              "DocumentIndex": 122,
               "Title": "Application.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Application.h",
               "RelativeDocumentMoniker": "Src\\Application.h",
@@ -2029,7 +2021,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 122,
+              "DocumentIndex": 123,
               "Title": "Application.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Application.cpp",
               "RelativeDocumentMoniker": "Src\\Application.cpp",
@@ -2041,7 +2033,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 123,
+              "DocumentIndex": 124,
               "Title": "ScreenManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\ScreenManager.cpp",
               "RelativeDocumentMoniker": "Src\\Manager\\ScreenManager.cpp",
@@ -2053,7 +2045,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 124,
+              "DocumentIndex": 125,
               "Title": "ScreenManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\ScreenManager.h",
               "RelativeDocumentMoniker": "Src\\Manager\\ScreenManager.h",
@@ -2065,7 +2057,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 125,
+              "DocumentIndex": 126,
               "Title": "CharactorBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
@@ -2077,7 +2069,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 126,
+              "DocumentIndex": 127,
               "Title": "Player.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Player.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Player.h",
@@ -2089,7 +2081,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 127,
+              "DocumentIndex": 128,
               "Title": "Player.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Player.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Player.cpp",
@@ -2101,7 +2093,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 128,
+              "DocumentIndex": 129,
               "Title": "RocketLocatorUI.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\RocketLocatorUI.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\RocketLocatorUI.cpp",
@@ -2113,7 +2105,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 129,
+              "DocumentIndex": 130,
               "Title": "Camera.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Camera\\Camera.cpp",
               "RelativeDocumentMoniker": "Src\\Camera\\Camera.cpp",
@@ -2125,7 +2117,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 130,
+              "DocumentIndex": 131,
               "Title": "GameScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\GameScene.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\GameScene.cpp",
@@ -2137,7 +2129,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 131,
+              "DocumentIndex": 132,
               "Title": "InventoryUI.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\InventoryUI.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\InventoryUI.cpp",
@@ -2149,7 +2141,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 132,
+              "DocumentIndex": 133,
               "Title": "Inventory.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Inventory\\Inventory.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Inventory\\Inventory.cpp",
@@ -2161,7 +2153,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 133,
+              "DocumentIndex": 134,
               "Title": "Item.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Item\\Item.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Item\\Item.cpp",
@@ -2173,7 +2165,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 134,
+              "DocumentIndex": 135,
               "Title": "ResourceManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\ResourceManager.cpp",
               "RelativeDocumentMoniker": "Src\\Manager\\ResourceManager.cpp",
@@ -2185,7 +2177,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 135,
+              "DocumentIndex": 136,
               "Title": "GameScene.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\GameScene.h",
               "RelativeDocumentMoniker": "Src\\Scene\\GameScene.h",
@@ -2197,7 +2189,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 136,
+              "DocumentIndex": 137,
               "Title": "SceneBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\SceneBase.h",
               "RelativeDocumentMoniker": "Src\\Scene\\SceneBase.h",
@@ -2209,7 +2201,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 137,
+              "DocumentIndex": 138,
               "Title": "EnemyGiant.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
@@ -2221,7 +2213,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 138,
+              "DocumentIndex": 139,
               "Title": "EnemyBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyBase.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyBase.cpp",
@@ -2233,7 +2225,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 139,
+              "DocumentIndex": 140,
               "Title": "SoundManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\SoundManager.cpp",
               "RelativeDocumentMoniker": "Src\\Manager\\SoundManager.cpp",
@@ -2245,7 +2237,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 140,
+              "DocumentIndex": 141,
               "Title": "SoundManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\SoundManager.h",
               "RelativeDocumentMoniker": "Src\\Manager\\SoundManager.h",
@@ -2257,7 +2249,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 141,
+              "DocumentIndex": 142,
               "Title": "EnemyGiant.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
@@ -2269,7 +2261,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 142,
+              "DocumentIndex": 143,
               "Title": "ItemManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Item\\ItemManager.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Item\\ItemManager.h",
@@ -2281,7 +2273,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 143,
+              "DocumentIndex": 144,
               "Title": "Item1.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Item\\Item1.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Item\\Item1.h",
@@ -2293,7 +2285,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 144,
+              "DocumentIndex": 145,
               "Title": "Item1.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Item\\Item1.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Item\\Item1.cpp",
@@ -2305,7 +2297,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 145,
+              "DocumentIndex": 146,
               "Title": "CharactorBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\CharactorBase.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\CharactorBase.h",
@@ -2317,7 +2309,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 146,
+              "DocumentIndex": 147,
               "Title": "ItemManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Item\\ItemManager.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Item\\ItemManager.cpp",
@@ -2329,7 +2321,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 147,
+              "DocumentIndex": 148,
               "Title": "AnimationController.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Common\\AnimationController.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Common\\AnimationController.cpp",
@@ -2341,7 +2333,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 148,
+              "DocumentIndex": 149,
               "Title": "Item.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Item\\Item.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Item\\Item.h",
@@ -2353,7 +2345,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 149,
+              "DocumentIndex": 150,
               "Title": "EnemyRat.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRat.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRat.cpp",
@@ -2365,7 +2357,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 150,
+              "DocumentIndex": 151,
               "Title": "Camera.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Camera\\Camera.h",
               "RelativeDocumentMoniker": "Src\\Camera\\Camera.h",
@@ -2377,7 +2369,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 151,
+              "DocumentIndex": 152,
               "Title": "EnemyBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyBase.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyBase.h",
@@ -2389,7 +2381,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 152,
+              "DocumentIndex": 153,
               "Title": "EnemyManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyManager.cpp",
@@ -2401,7 +2393,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 153,
+              "DocumentIndex": 154,
               "Title": "EnemyManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyManager.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyManager.h",
@@ -2413,7 +2405,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 154,
+              "DocumentIndex": 155,
               "Title": "EnemyRobot.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRobot.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRobot.cpp",
@@ -2425,7 +2417,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 155,
+              "DocumentIndex": 156,
               "Title": "EnemyRat.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRat.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRat.h",
@@ -2437,7 +2429,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 156,
+              "DocumentIndex": 157,
               "Title": "EnemyRobot.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRobot.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyRobot.h",
@@ -2449,7 +2441,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 157,
+              "DocumentIndex": 158,
               "Title": "AnimationController.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Common\\AnimationController.h",
               "RelativeDocumentMoniker": "Src\\Object\\Common\\AnimationController.h",
@@ -2461,7 +2453,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 158,
+              "DocumentIndex": 159,
               "Title": "TitleScene.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\TitleScene.h",
               "RelativeDocumentMoniker": "Src\\Scene\\TitleScene.h",
@@ -2473,7 +2465,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 159,
+              "DocumentIndex": 160,
               "Title": "TitleScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\TitleScene.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\TitleScene.cpp",
@@ -2485,7 +2477,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 160,
+              "DocumentIndex": 161,
               "Title": "StageManager.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Stage\\StageManager.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Stage\\StageManager.h",
@@ -2497,7 +2489,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 161,
+              "DocumentIndex": 162,
               "Title": "StageManager.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Stage\\StageManager.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Stage\\StageManager.cpp",
@@ -2509,7 +2501,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 162,
+              "DocumentIndex": 163,
               "Title": "Inventory.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Inventory\\Inventory.h",
               "RelativeDocumentMoniker": "Src\\Object\\Inventory\\Inventory.h",
@@ -2521,7 +2513,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 163,
+              "DocumentIndex": 164,
               "Title": "GameUI.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\GameUI.h",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\GameUI.h",
@@ -2533,7 +2525,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 164,
+              "DocumentIndex": 165,
               "Title": "GuideUI.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\GuideUI.h",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\GuideUI.h",
@@ -2545,7 +2537,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 165,
+              "DocumentIndex": 166,
               "Title": "InventoryUI.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\InventoryUI.h",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\InventoryUI.h",
@@ -2557,7 +2549,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 166,
+              "DocumentIndex": 167,
               "Title": "Rocket.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Stage\\Rocket.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Stage\\Rocket.cpp",
@@ -2569,7 +2561,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 167,
+              "DocumentIndex": 168,
               "Title": "RocketLocatorUI.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\RocketLocatorUI.h",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\RocketLocatorUI.h",
@@ -2581,7 +2573,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 168,
+              "DocumentIndex": 169,
               "Title": "ResultScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\ResultScene.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\ResultScene.cpp",
@@ -2593,7 +2585,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 169,
+              "DocumentIndex": 170,
               "Title": "GuideUI.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\GuideUI.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\GuideUI.cpp",
@@ -2605,7 +2597,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 170,
+              "DocumentIndex": 171,
               "Title": "StatusUI.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\StatusUI.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\StatusUI.cpp",
@@ -2617,7 +2609,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 171,
+              "DocumentIndex": 172,
               "Title": "Rocket.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Stage\\Rocket.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Stage\\Rocket.h",
@@ -2629,7 +2621,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 172,
+              "DocumentIndex": 173,
               "Title": "ResultScene.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\ResultScene.h",
               "RelativeDocumentMoniker": "Src\\Scene\\ResultScene.h",
@@ -2641,7 +2633,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 90,
+              "DocumentIndex": 91,
               "Title": "ColliderSphere.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderSphere.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderSphere.cpp",
@@ -2653,7 +2645,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 173,
+              "DocumentIndex": 174,
               "Title": "Planet.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Stage\\Planet.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Stage\\Planet.cpp",
@@ -2665,7 +2657,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 91,
+              "DocumentIndex": 92,
               "Title": "ColliderModel.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderModel.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderModel.cpp",
@@ -2677,7 +2669,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 92,
+              "DocumentIndex": 93,
               "Title": "ColliderModel.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderModel.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderModel.h",
@@ -2689,7 +2681,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 93,
+              "DocumentIndex": 94,
               "Title": "ColliderBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderBase.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderBase.h",
@@ -2701,7 +2693,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 174,
+              "DocumentIndex": 175,
               "Title": "ActorBase.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\ActorBase.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\ActorBase.h",
@@ -2713,7 +2705,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 94,
+              "DocumentIndex": 95,
               "Title": "ColliderLine.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderLine.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderLine.h",
@@ -2725,7 +2717,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 95,
+              "DocumentIndex": 96,
               "Title": "ColliderBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderBase.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderBase.cpp",
@@ -2737,7 +2729,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 96,
+              "DocumentIndex": 97,
               "Title": "ColliderCapsule.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderCapsule.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderCapsule.h",
@@ -2749,7 +2741,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 97,
+              "DocumentIndex": 98,
               "Title": "ColliderSphere.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderSphere.h",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderSphere.h",
@@ -2761,7 +2753,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 175,
+              "DocumentIndex": 176,
               "Title": "DebugScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\DebugScene.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\DebugScene.cpp",
@@ -2773,7 +2765,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 176,
+              "DocumentIndex": 177,
               "Title": "DebugScene.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\DebugScene.h",
               "RelativeDocumentMoniker": "Src\\Scene\\DebugScene.h",
@@ -2785,7 +2777,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 177,
+              "DocumentIndex": 178,
               "Title": "StatusUI.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\StatusUI.h",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\StatusUI.h",
@@ -2797,7 +2789,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 178,
+              "DocumentIndex": 179,
               "Title": "PauseScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\PauseScene.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\PauseScene.cpp",
@@ -2809,7 +2801,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 179,
+              "DocumentIndex": 180,
               "Title": "GameUI.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\GameUI\\GameUI.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\GameUI\\GameUI.cpp",
@@ -2821,7 +2813,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 180,
+              "DocumentIndex": 181,
               "Title": "Planet.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\Stage\\Planet.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Stage\\Planet.h",
@@ -2833,7 +2825,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 181,
+              "DocumentIndex": 182,
               "Title": "Transform.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Common\\Transform.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Common\\Transform.cpp",
@@ -2845,7 +2837,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 182,
+              "DocumentIndex": 183,
               "Title": "UI.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\UI\\UI.h",
               "RelativeDocumentMoniker": "Src\\Object\\UI\\UI.h",
@@ -2857,7 +2849,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 183,
+              "DocumentIndex": 184,
               "Title": "AsoUtility.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Utility\\AsoUtility.h",
               "RelativeDocumentMoniker": "Src\\Utility\\AsoUtility.h",
@@ -2869,7 +2861,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 184,
+              "DocumentIndex": 185,
               "Title": "DeadScene.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\DeadScene.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\DeadScene.cpp",
@@ -2881,7 +2873,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 185,
+              "DocumentIndex": 186,
               "Title": "PauseScene.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\PauseScene.h",
               "RelativeDocumentMoniker": "Src\\Scene\\PauseScene.h",
@@ -2893,7 +2885,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 186,
+              "DocumentIndex": 187,
               "Title": "DeadScene.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\DeadScene.h",
               "RelativeDocumentMoniker": "Src\\Scene\\DeadScene.h",
@@ -2905,7 +2897,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 98,
+              "DocumentIndex": 99,
               "Title": "ColliderCapsule.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderCapsule.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderCapsule.cpp",
@@ -2917,7 +2909,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 187,
+              "DocumentIndex": 188,
               "Title": "Resource.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Manager\\Resource.cpp",
               "RelativeDocumentMoniker": "Src\\Manager\\Resource.cpp",
@@ -2929,7 +2921,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 188,
+              "DocumentIndex": 189,
               "Title": "Transform.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Common\\Transform.h",
               "RelativeDocumentMoniker": "Src\\Object\\Common\\Transform.h",
@@ -2941,7 +2933,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 189,
+              "DocumentIndex": 190,
               "Title": "SceneBase.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Scene\\SceneBase.cpp",
               "RelativeDocumentMoniker": "Src\\Scene\\SceneBase.cpp",
@@ -2953,7 +2945,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 79,
               "Title": "SceneManager.h",
               "DocumentMoniker": "C:\\Project\\Src\\Manager\\SceneManager.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\Manager\\SceneManager.h",
@@ -2965,7 +2957,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 80,
               "Title": "SceneManager.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Manager\\SceneManager.cpp",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\Manager\\SceneManager.cpp",
@@ -2977,7 +2969,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 88,
+              "DocumentIndex": 89,
               "Title": "Camera.cpp",
               "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\Camera.cpp",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\Camera.cpp",
@@ -2989,7 +2981,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 89,
+              "DocumentIndex": 90,
               "Title": "Camera.h",
               "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\Camera.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\Camera.h",
@@ -3001,7 +2993,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 80,
+              "DocumentIndex": 81,
               "Title": "GameUI.h",
               "DocumentMoniker": "C:\\Project\\Src\\UI\\GameUI\\GameUI.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\UI\\GameUI\\GameUI.h",
@@ -3013,7 +3005,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 81,
+              "DocumentIndex": 82,
               "Title": "HUD.h",
               "DocumentMoniker": "C:\\Project\\Src\\UI\\GameUI\\HUD.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\UI\\GameUI\\HUD.h",
@@ -3025,7 +3017,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 82,
+              "DocumentIndex": 83,
               "Title": "InventoryUI.h",
               "DocumentMoniker": "C:\\Project\\Src\\UI\\GameUI\\InventoryUI.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\UI\\GameUI\\InventoryUI.h",
@@ -3037,7 +3029,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 190,
+              "DocumentIndex": 191,
               "Title": "SkyDome.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\SkyDome.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\SkyDome.cpp",
@@ -3049,7 +3041,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 83,
+              "DocumentIndex": 84,
               "Title": "UI.h",
               "DocumentMoniker": "C:\\Project\\Src\\UI\\UI.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\UI\\UI.h",
@@ -3061,7 +3053,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 84,
+              "DocumentIndex": 85,
               "Title": "UI.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\UI\\UI.cpp",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\UI\\UI.cpp",
@@ -3073,7 +3065,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 85,
+              "DocumentIndex": 86,
               "Title": "GameUI.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\UI\\GameUI\\GameUI.cpp",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\UI\\GameUI\\GameUI.cpp",
@@ -3085,7 +3077,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 191,
+              "DocumentIndex": 192,
               "Title": "SkyDome.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Actor\\SkyDome.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\SkyDome.h",
@@ -3097,7 +3089,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 86,
+              "DocumentIndex": 87,
               "Title": "SceneBase.cpp",
               "DocumentMoniker": "C:\\Project\\Src\\Scene\\SceneBase.cpp",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\Scene\\SceneBase.cpp",
@@ -3109,7 +3101,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 87,
+              "DocumentIndex": 88,
               "Title": "SceneBase.h",
               "DocumentMoniker": "C:\\Project\\Src\\Scene\\SceneBase.h",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Project\\Src\\Scene\\SceneBase.h",
@@ -3121,7 +3113,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 192,
+              "DocumentIndex": 193,
               "Title": "FpsController.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Common\\FpsController.cpp",
               "RelativeDocumentMoniker": "Src\\Common\\FpsController.cpp",
@@ -3133,7 +3125,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 193,
+              "DocumentIndex": 194,
               "Title": "Quaternion.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Common\\Quaternion.h",
               "RelativeDocumentMoniker": "Src\\Common\\Quaternion.h",
@@ -3145,7 +3137,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 194,
+              "DocumentIndex": 195,
               "Title": "MatrixUtility.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Utility\\MatrixUtility.cpp",
               "RelativeDocumentMoniker": "Src\\Utility\\MatrixUtility.cpp",
@@ -3157,7 +3149,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 195,
+              "DocumentIndex": 196,
               "Title": "MatrixUtility.h",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Utility\\MatrixUtility.h",
               "RelativeDocumentMoniker": "Src\\Utility\\MatrixUtility.h",
@@ -3169,7 +3161,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 196,
+              "DocumentIndex": 197,
               "Title": "Quaternion.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Common\\Quaternion.cpp",
               "RelativeDocumentMoniker": "Src\\Common\\Quaternion.cpp",
@@ -3181,7 +3173,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 99,
+              "DocumentIndex": 100,
               "Title": "ColliderLine.cpp",
               "DocumentMoniker": "C:\\Users\\2416038\\Desktop\\GitHub\\AGS2026_Summer\\Src\\Object\\Collider\\ColliderLine.cpp",
               "RelativeDocumentMoniker": "Src\\Object\\Collider\\ColliderLine.cpp",

@@ -87,13 +87,6 @@ bool ColliderModel::IsTargetFrame(int frameIdx) const
 	return false;
 }
 
-bool ColliderModel::IsHitRay(const VECTOR& start, const VECTOR& end) const
-{
-	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(
-		owner_->GetTransform().modelId, -1, start, end, -1);
-	return result.HitFlag == 1;
-}
-
 MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 	const VECTOR& start, const VECTOR& end, bool isExclude, bool isTarget) const
 {
@@ -129,12 +122,4 @@ MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 	MV1CollResultPolyDimTerminate(hits);
 
 	return ret;
-}
-
-bool ColliderModel::IsOccluded(const VECTOR& from, const VECTOR& to) const
-{
-	MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(
-		owner_->GetTransform().modelId, -1, from, to, -1);
-
-	return result.HitFlag == 1;
 }

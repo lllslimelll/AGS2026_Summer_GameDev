@@ -137,12 +137,3 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 	//// “G‚Ì‰Šú‰»
 	//enemyRat->Init();
 }
-
-// Õ“Ë‘ÎÛ‚Æ‚È‚éƒRƒ‰ƒCƒ_‚ð“o˜^
-void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
-{
-	for (auto& enemy : enemies_)
-	{
-		enemy->AddHitCollider(hitCollider);
-	}
-}

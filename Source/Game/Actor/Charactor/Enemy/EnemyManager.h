@@ -32,9 +32,6 @@ public:
 	// エネミー取得
 	const std::vector<EnemyBase*>& GetEnemies(void) const { return enemies_; }
 
-	// 衝突対象となるコライダを登録
-	void AddHitCollider(const ColliderBase* hitCollider);
-
 private:
 
 	// プレイヤー

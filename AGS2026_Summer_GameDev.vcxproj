@@ -198,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Collision\CollisionManager.h" />
+    <ClInclude Include="Source\Collision\CollisionQueryParams.h" />
     <ClInclude Include="Source\Utility\Math.h" />
     <ClInclude Include="Source\Utility\ColorF.h" />
     <ClInclude Include="Source\Collision\CollisionProfileManager.h" />

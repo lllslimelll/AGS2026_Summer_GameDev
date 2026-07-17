@@ -31,9 +31,6 @@ public:
 	// 対象フレーム指定
 	bool IsTargetFrame(int frameIdx) const;
 
-	// 線分とモデルの当たり判定
-	bool IsHitRay(const VECTOR& start, const VECTOR& end) const;
-
 	// 線分とモデルの最接近(startに近い)衝突ポリゴンを取得
 	MV1_COLL_RESULT_POLY GetNearestHitPolyLine(
 		const VECTOR& start, const VECTOR& end,
@@ -44,9 +41,6 @@ public:
 		const MV1_COLL_RESULT_POLY& hitPoly,
 		int maxTryCnt,
 		float pushDistance) const override {return VECTOR();}
-
-	bool IsOccluded(const VECTOR& from, const VECTOR& to) const override;
-
 protected:
 
 	// 衝突判定から除外するフレーム番号
