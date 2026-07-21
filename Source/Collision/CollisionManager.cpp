@@ -1,8 +1,9 @@
+#include <algorithm>
+#include "../Component/PrimitiveComponent.h"
+#include "../Component/CapsuleComponent.h"
+#include "../Component/SphereComponent.h"
+#include "../Component/StaticMeshComponent.h"
 #include "../Game/Actor/ActorBase.h"
-#include "ColliderBase.h"
-#include "ColliderCapsule.h"
-#include "ColliderModel.h"
-#include "ColliderSphere.h"
 #include "CollisionManager.h"
 
 CollisionManager* CollisionManager::instance_ = nullptr;
@@ -17,10 +18,7 @@ void CollisionManager::CreateInstance(void)
 
 CollisionManager& CollisionManager::GetInstance(void)
 {
-    if (instance_ == nullptr)
-    {
-        CreateInstance();
-    }
+    if (instance_ == nullptr) CreateInstance();
     return *instance_;
 }
 
@@ -30,37 +28,27 @@ void CollisionManager::Destroy(void)
     instance_ = nullptr;
 }
 
-// ---------------------------------------------------------------
-// シーン切り替え時に全登録をクリア
-// ---------------------------------------------------------------
 void CollisionManager::Clear(void)
 {
-    colliders_.clear();
+    components_.clear();
     hitResults_.clear();
 }
 
-// ---------------------------------------------------------------
-// コライダーを登録する
-// ---------------------------------------------------------------
-void CollisionManager::Register(ColliderBase* collider)
+void CollisionManager::Register(PrimitiveComponent* component)
 {
-    // 重複登録を防ぐ
-    auto it = std::find(colliders_.begin(), colliders_.end(), collider);
-    if (it == colliders_.end())
+    auto it = std::find(components_.begin(), components_.end(), component);
+    if (it == components_.end())
     {
-        colliders_.push_back(collider);
+        components_.push_back(component);
     }
 }
 
-// ---------------------------------------------------------------
-// コライダーの登録を解除する
-// ---------------------------------------------------------------
-void CollisionManager::Unregister(ColliderBase* collider)
+void CollisionManager::Unregister(PrimitiveComponent* component)
 {
-    auto it = std::find(colliders_.begin(), colliders_.end(), collider);
-    if (it != colliders_.end())
+    auto it = std::find(components_.begin(), components_.end(), component);
+    if (it != components_.end())
     {
-        colliders_.erase(it);
+        components_.erase(it);
     }
 }
 
@@ -69,133 +57,78 @@ void CollisionManager::Unregister(ColliderBase* collider)
 // ---------------------------------------------------------------
 void CollisionManager::Update(void)
 {
-    // 前フレームの結果をクリア
     hitResults_.clear();
 
-    // 全コライダーのペアを判定
-    for (int i = 0; i < (int)colliders_.size(); i++)
+    for (int i = 0; i < (int)components_.size(); i++)
     {
-        for (int j = i + 1; j < (int)colliders_.size(); j++)
+        for (int j = i + 1; j < (int)components_.size(); j++)
         {
-            ColliderBase* a = colliders_[i];
-            ColliderBase* b = colliders_[j];
+            PrimitiveComponent* a = components_[i];
+            PrimitiveComponent* b = components_[j];
 
             // どちらかが無効なら判定しない
             if (!a->IsValid() || !b->IsValid()) continue;
 
-            // 同じ Actor のコライダー同士は判定しない
-            if (a->GetOwner() == b->GetOwner()) continue;
+            // 同じ Actor のコンポーネント同士は判定しない
+            if (&a->GetOwner() == &b->GetOwner()) continue;
 
             // 優先度方式でレスポンスを決定
             CollisionResponse response = ResolveResponse(a, b);
 
-            // IGNORE なら判定しない
+            // NONE なら判定しない
             if (response == CollisionResponse::NONE) continue;
 
-            // 判定を実行
             Solve(a, b);
         }
     }
 }
 
 // ---------------------------------------------------------------
-// HitResult を取得する
-// ---------------------------------------------------------------
-std::vector<HitResult> CollisionManager::GetHits(
-    const ActorBase* actor) const
-{
-    std::vector<HitResult> result;
-    for (const auto& hit : hitResults_)
-    {
-        if (hit.selfCollider->GetOwner() == actor ||
-            hit.otherCollider->GetOwner() == actor)
-        {
-            result.push_back(hit);
-        }
-    }
-    return result;
-}
-
-std::vector<HitResult> CollisionManager::GetBlockHits(
-    const ActorBase* actor) const
-{
-    std::vector<HitResult> result;
-    for (const auto& hit : hitResults_)
-    {
-        if (hit.response != CollisionResponse::BLOCK) continue;
-        if (hit.selfCollider->GetOwner() == actor ||
-            hit.otherCollider->GetOwner() == actor)
-        {
-            result.push_back(hit);
-        }
-    }
-    return result;
-}
-
-std::vector<HitResult> CollisionManager::GetOverlapHits(
-    const ActorBase* actor) const
-{
-    std::vector<HitResult> result;
-    for (const auto& hit : hitResults_)
-    {
-        if (hit.response != CollisionResponse::OVERLAP) continue;
-        if (hit.selfCollider->GetOwner() == actor ||
-            hit.otherCollider->GetOwner() == actor)
-        {
-            result.push_back(hit);
-        }
-    }
-    return result;
-}
-
-// ---------------------------------------------------------------
 // 優先度方式でレスポンスを決定する
-// BLOCK > OVERLAP > IGNORE
 // ---------------------------------------------------------------
 CollisionResponse CollisionManager::ResolveResponse(
-    const ColliderBase* a,
-    const ColliderBase* b) const
+    const PrimitiveComponent* a,
+    const PrimitiveComponent* b) const
 {
     CollisionResponse responseA =
         a->GetProfile().GetResponse(b->GetChannel());
     CollisionResponse responseB =
         b->GetProfile().GetResponse(a->GetChannel());
 
-    // 値の大きいほうを採用
     return static_cast<CollisionResponse>(
-        max(
-            static_cast<int>(responseA),
+        max(static_cast<int>(responseA),
             static_cast<int>(responseB)));
 }
 
 // ---------------------------------------------------------------
-// 2つのコライダーの判定を実行
+// 形状の組み合わせで判定を分岐
 // ---------------------------------------------------------------
-void CollisionManager::Solve(ColliderBase* a, ColliderBase* b)
+void CollisionManager::Solve(
+    PrimitiveComponent* a,
+    PrimitiveComponent* b)
 {
-    CollisionResponse response = ResolveResponse(a, b);
+    using SHAPE = PrimitiveComponent::SHAPE;
 
-    // 形状の組み合わせで判定を分岐
-    if (a->GetShape() == ColliderBase::SHAPE::CAPSULE &&
-        b->GetShape() == ColliderBase::SHAPE::MODEL)
+    if (a->GetShape() == SHAPE::CAPSULE &&
+        b->GetShape() == SHAPE::STATIC_MESH)
     {
-        SolveCapsuleModel(a, b);
+        SolveCapsuleStaticMesh(a, b);
         return;
     }
-    if (a->GetShape() == ColliderBase::SHAPE::MODEL &&
-        b->GetShape() == ColliderBase::SHAPE::CAPSULE)
+    if (a->GetShape() == SHAPE::STATIC_MESH &&
+        b->GetShape() == SHAPE::CAPSULE)
     {
-        SolveCapsuleModel(b, a);
+        SolveCapsuleStaticMesh(b, a);
         return;
     }
-    if (a->GetShape() == ColliderBase::SHAPE::SPHERE &&
-        b->GetShape() == ColliderBase::SHAPE::SPHERE)
+    if (a->GetShape() == SHAPE::SPHERE &&
+        b->GetShape() == SHAPE::SPHERE)
     {
         SolveSphereVsSphere(a, b);
         return;
     }
-    if (a->GetShape() == ColliderBase::SHAPE::CAPSULE &&
-        b->GetShape() == ColliderBase::SHAPE::CAPSULE)
+    if (a->GetShape() == SHAPE::CAPSULE &&
+        b->GetShape() == SHAPE::CAPSULE)
     {
         SolveCapsuleVsCapsule(a, b);
         return;
@@ -203,43 +136,49 @@ void CollisionManager::Solve(ColliderBase* a, ColliderBase* b)
 }
 
 // ---------------------------------------------------------------
-// Capsule vs Model の判定
+// Capsule vs StaticMesh の判定
 // ---------------------------------------------------------------
-void CollisionManager::SolveCapsuleModel(
-    ColliderBase* capsuleBase, ColliderBase* modelBase)
+void CollisionManager::SolveCapsuleStaticMesh(
+    PrimitiveComponent* capsuleComp,
+    PrimitiveComponent* meshComp)
 {
-    auto* capsule = static_cast<ColliderCapsule*>(capsuleBase);
-    auto* model = static_cast<ColliderModel*>(modelBase);
+    auto* capsule = static_cast<CapsuleComponent*>(capsuleComp);
+    auto* mesh = static_cast<StaticMeshComponent*>(meshComp);
 
-    CollisionResponse response = ResolveResponse(capsuleBase, modelBase);
+    CollisionResponse response = ResolveResponse(capsuleComp, meshComp);
+
+    Vector3 top = capsule->GetTopPos();
+    Vector3 bottom = capsule->GetBottomPos();
 
     auto hits = MV1CollCheck_Capsule(
-        model->GetOwner()->GetTransform().modelId, -1,
-        capsule->GetPosTop(),
-        capsule->GetPosDown(),
+        mesh->GetModelId(), -1,
+        VGet(top.x, top.y, top.z),
+        VGet(bottom.x, bottom.y, bottom.z),
         capsule->GetRadius());
 
     for (int i = 0; i < hits.HitNum; i++)
     {
         HitResult hit;
-        hit.selfCollider = capsuleBase;
-        hit.otherCollider = modelBase;
-        hit.otherActor = modelBase->GetOwner();
+        hit.selfCollider = capsuleComp;
+        hit.otherCollider = meshComp;
+        hit.otherActor = &meshComp->GetOwner();
         hit.response = response;
         hit.isHit = true;
         hit.isBlocking = (response == CollisionResponse::BLOCK);
         hit.normal = hits.Dim[i].Normal;
         hit.point = hits.Dim[i].Position[0];
 
-        // BLOCK の場合は押し戻し座標を計算
         if (response == CollisionResponse::BLOCK)
         {
-            hit.pushBackPos = capsule->GetPosPushBackAlongNormal(
-                hits.Dim[i], 10, 1.0f);
+            // 押し戻し座標を計算
+            hit.pushBackPos = VGet(
+                capsule->GetWorldPos().x,
+                capsule->GetWorldPos().y,
+                capsule->GetWorldPos().z);
         }
 
-        hitResults_.push_back(hit);
-        break; // 最初の衝突だけ取る
+        NotifyHit(capsuleComp, meshComp, hit);
+        break;
     }
 
     MV1CollResultPolyDimTerminate(hits);
@@ -249,59 +188,250 @@ void CollisionManager::SolveCapsuleModel(
 // Sphere vs Sphere の判定
 // ---------------------------------------------------------------
 void CollisionManager::SolveSphereVsSphere(
-    ColliderBase* aBase, ColliderBase* bBase)
+    PrimitiveComponent* aComp,
+    PrimitiveComponent* bComp)
 {
-    auto* a = static_cast<ColliderSphere*>(aBase);
-    auto* b = static_cast<ColliderSphere*>(bBase);
+    auto* a = static_cast<SphereComponent*>(aComp);
+    auto* b = static_cast<SphereComponent*>(bComp);
 
-    CollisionResponse response = ResolveResponse(aBase, bBase);
+    CollisionResponse response = ResolveResponse(aComp, bComp);
 
-    VECTOR posA = a->GetPos();
-    VECTOR posB = b->GetPos();
-    VECTOR diff = VSub(posB, posA);
+    Vector3 posA = a->GetCenter();
+    Vector3 posB = b->GetCenter();
+    float   dist = Vector3::Distance(posA, posB);
+    float   sum = a->GetRadius() + b->GetRadius();
 
-    float distSq = VDot(diff, diff);
-    float radiusSum = a->GetRadius() + b->GetRadius();
-
-    if (distSq >= radiusSum * radiusSum) return;
+    if (dist >= sum) return;
 
     HitResult hit;
-    hit.selfCollider = aBase;
-    hit.otherCollider = bBase;
-    hit.otherActor = bBase->GetOwner();
+    hit.selfCollider = aComp;
+    hit.otherCollider = bComp;
+    hit.otherActor = &bComp->GetOwner();
     hit.response = response;
     hit.isHit = true;
     hit.isBlocking = (response == CollisionResponse::BLOCK);
-    hit.distance = sqrtf(distSq);
+    hit.distance = dist;
 
-    hitResults_.push_back(hit);
+    NotifyHit(aComp, bComp, hit);
 }
 
 // ---------------------------------------------------------------
 // Capsule vs Capsule の判定
 // ---------------------------------------------------------------
 void CollisionManager::SolveCapsuleVsCapsule(
-    ColliderBase* aBase, ColliderBase* bBase)
+    PrimitiveComponent* aComp,
+    PrimitiveComponent* bComp)
 {
-    auto* a = static_cast<ColliderCapsule*>(aBase);
-    auto* b = static_cast<ColliderCapsule*>(bBase);
+    auto* a = static_cast<CapsuleComponent*>(aComp);
+    auto* b = static_cast<CapsuleComponent*>(bComp);
 
-    CollisionResponse response = ResolveResponse(aBase, bBase);
+    CollisionResponse response = ResolveResponse(aComp, bComp);
 
-    // DxLib のカプセル vs カプセル判定
+    Vector3 aTop = a->GetTopPos();
+    Vector3 aBottom = a->GetBottomPos();
+    Vector3 bTop = b->GetTopPos();
+    Vector3 bBottom = b->GetBottomPos();
+
     bool isHit = HitCheck_Capsule_Capsule(
-        a->GetPosTop(), a->GetPosDown(), a->GetRadius(),
-        b->GetPosTop(), b->GetPosDown(), b->GetRadius());
+        VGet(aTop.x, aTop.y, aTop.z),
+        VGet(aBottom.x, aBottom.y, aBottom.z),
+        a->GetRadius(),
+        VGet(bTop.x, bTop.y, bTop.z),
+        VGet(bBottom.x, bBottom.y, bBottom.z),
+        b->GetRadius());
 
     if (!isHit) return;
 
     HitResult hit;
-    hit.selfCollider = aBase;
-    hit.otherCollider = bBase;
-    hit.otherActor = bBase->GetOwner();
+    hit.selfCollider = aComp;
+    hit.otherCollider = bComp;
+    hit.otherActor = &bComp->GetOwner();
     hit.response = response;
     hit.isHit = true;
     hit.isBlocking = (response == CollisionResponse::BLOCK);
 
+    NotifyHit(aComp, bComp, hit);
+}
+
+// ---------------------------------------------------------------
+// HitResult を生成して OnHit / OnOverlap に通知する
+// ---------------------------------------------------------------
+void CollisionManager::NotifyHit(
+    PrimitiveComponent* a,
+    PrimitiveComponent* b,
+    const HitResult& hit)
+{
     hitResults_.push_back(hit);
+
+    ActorBase& ownerA = a->GetOwner();
+    ActorBase& ownerB = b->GetOwner();
+
+    if (hit.response == CollisionResponse::BLOCK)
+    {
+        ownerA.OnHit(hit);
+
+        // B 側の HitResult を作成
+        HitResult hitB;
+        hitB.selfCollider = b;
+        hitB.otherCollider = a;
+        hitB.otherActor = &ownerA;
+        hitB.response = hit.response;
+        hitB.isHit = true;
+        hitB.isBlocking = true;
+        ownerB.OnHit(hitB);
+    }
+    else if (hit.response == CollisionResponse::OVERLAP)
+    {
+        ownerA.OnOverlap(hit);
+
+        HitResult hitB;
+        hitB.selfCollider = b;
+        hitB.otherCollider = a;
+        hitB.otherActor = &ownerA;
+        hitB.response = hit.response;
+        hitB.isHit = true;
+        hitB.isBlocking = false;
+        ownerB.OnOverlap(hitB);
+    }
+}
+
+// ---------------------------------------------------------------
+// LineTrace
+// ---------------------------------------------------------------
+HitResult CollisionManager::LineTrace(
+    const VECTOR& start,
+    const VECTOR& end,
+    CollisionChannel channel,
+    const CollisionQueryParams& params) const
+{
+    HitResult nearest;
+    nearest.distance = FLT_MAX;
+
+    for (auto* comp : components_)
+    {
+        if (!comp->IsValid()) continue;
+        if (!IsTargetChannel(comp, channel, params)) continue;
+        if (comp->GetShape() != PrimitiveComponent::SHAPE::STATIC_MESH) continue;
+
+        auto* mesh = static_cast<StaticMeshComponent*>(comp);
+
+        MV1_COLL_RESULT_POLY result = MV1CollCheck_Line(
+            mesh->GetModelId(), -1, start, end);
+
+        if (!result.HitFlag) continue;
+
+        float dist = VSize(VSub(result.HitPosition, start));
+        if (dist < nearest.distance)
+        {
+            nearest.otherCollider = comp;
+            nearest.otherActor = &comp->GetOwner();
+            nearest.point = result.HitPosition;
+            nearest.normal = result.Normal;
+            nearest.distance = dist;
+            nearest.isHit = true;
+            nearest.isBlocking = true;
+            nearest.response = CollisionResponse::BLOCK;
+        }
+    }
+
+    return nearest;
+}
+
+// ---------------------------------------------------------------
+// SweepSphere
+// ---------------------------------------------------------------
+HitResult CollisionManager::SweepSphere(
+    const VECTOR& start,
+    const VECTOR& end,
+    float radius,
+    CollisionChannel channel,
+    const CollisionQueryParams& params) const
+{
+    HitResult nearest;
+    nearest.distance = FLT_MAX;
+
+    for (auto* comp : components_)
+    {
+        if (!comp->IsValid()) continue;
+        if (!IsTargetChannel(comp, channel, params)) continue;
+
+        if (comp->GetShape() == PrimitiveComponent::SHAPE::CAPSULE)
+        {
+            auto* capsule = static_cast<CapsuleComponent*>(comp);
+
+            Vector3 top = capsule->GetTopPos();
+            Vector3 bottom = capsule->GetBottomPos();
+
+            bool isHit = HitCheck_Capsule_Capsule(
+                start, end, radius,
+                VGet(top.x, top.y, top.z),
+                VGet(bottom.x, bottom.y, bottom.z),
+                capsule->GetRadius());
+
+            if (!isHit) continue;
+
+            float dist = VSize(VSub(
+                VGet(capsule->GetCenter().x,
+                    capsule->GetCenter().y,
+                    capsule->GetCenter().z),
+                start));
+
+            if (dist < nearest.distance)
+            {
+                nearest.otherCollider = comp;
+                nearest.otherActor = &comp->GetOwner();
+                nearest.distance = dist;
+                nearest.isHit = true;
+                nearest.isBlocking = true;
+                nearest.response = CollisionResponse::BLOCK;
+            }
+        }
+        else if (comp->GetShape() == PrimitiveComponent::SHAPE::STATIC_MESH)
+        {
+            auto* mesh = static_cast<StaticMeshComponent*>(comp);
+
+            auto hits = MV1CollCheck_Capsule(
+                mesh->GetModelId(), -1, start, end, radius);
+
+            for (int i = 0; i < hits.HitNum; i++)
+            {
+                float dist = VSize(VSub(hits.Dim[i].HitPosition, start));
+                if (dist < nearest.distance)
+                {
+                    nearest.otherCollider = comp;
+                    nearest.otherActor = &comp->GetOwner();
+                    nearest.point = hits.Dim[i].HitPosition;
+                    nearest.normal = hits.Dim[i].Normal;
+                    nearest.distance = dist;
+                    nearest.isHit = true;
+                    nearest.isBlocking = true;
+                    nearest.response = CollisionResponse::BLOCK;
+                }
+            }
+
+            MV1CollResultPolyDimTerminate(hits);
+        }
+    }
+
+    return nearest;
+}
+
+// ---------------------------------------------------------------
+// LineTrace / SweepSphere の対象か
+// ---------------------------------------------------------------
+bool CollisionManager::IsTargetChannel(
+    const PrimitiveComponent* comp,
+    CollisionChannel channel,
+    const CollisionQueryParams& params) const
+{
+    // 無視リストに含まれていたらスキップ
+    for (auto* ignored : params.ignoredActors)
+    {
+        if (ignored == &comp->GetOwner()) return false;
+    }
+
+    CollisionResponse response =
+        comp->GetProfile().GetResponse(channel);
+
+    return response != CollisionResponse::NONE;
 }

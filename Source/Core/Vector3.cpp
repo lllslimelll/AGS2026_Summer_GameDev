@@ -7,22 +7,14 @@
 // ---------------------------------------------------------------
 // 定数の定義
 // ---------------------------------------------------------------
-const Vector3 Vector3::ZERO = { 0.0f, 0.0f, 0.0f };
-const Vector3 Vector3::ONE = { 1.0f, 1.0f, 1.0f };
-const Vector3 Vector3::UP = { 0.0f, 1.0f, 0.0f };
-const Vector3 Vector3::DOWN = { 0.0f,-1.0f, 0.0f };
-const Vector3 Vector3::FORWARD = { 0.0f, 0.0f, 1.0f };
-const Vector3 Vector3::BACK = { 0.0f, 0.0f,-1.0f };
-const Vector3 Vector3::RIGHT = { 1.0f, 0.0f, 0.0f };
-const Vector3 Vector3::LEFT = { -1.0f, 0.0f, 0.0f };
-
-// ---------------------------------------------------------------
-// コンストラクタ
-// ---------------------------------------------------------------
-Vector3::Vector3(float x, float y, float z)
-    : x(x), y(y), z(z)
-{
-}
+const Vector3 Vector3::ZERO = Vector3(0.0f,0.0f,0.0f);
+const Vector3 Vector3::ONE = Vector3(1.0f, 1.0f, 1.0f);
+const Vector3 Vector3::UP = Vector3(0.0f, 1.0f, 0.0f);
+const Vector3 Vector3::DOWN = Vector3(0.0f, -1.0f, 0.0f);
+const Vector3 Vector3::FORWARD = Vector3(0.0f, 0.0f, 1.0f);
+const Vector3 Vector3::BACK = Vector3(0.0f, 0.0f,-1.0f);
+const Vector3 Vector3::RIGHT = Vector3(1.0f, 0.0f, 0.0f);
+const Vector3 Vector3::LEFT = Vector3(-1.0f, 0.0f, 0.0f);
 
 // ---------------------------------------------------------------
 // 演算子オーバーロード
@@ -35,6 +27,11 @@ Vector3 Vector3::operator+(const Vector3& other) const
 Vector3 Vector3::operator-(const Vector3& other) const
 {
     return { x - other.x, y - other.y, z - other.z };
+}
+
+Vector3 Vector3::operator*(const Vector3& other) const
+{
+    return { x * other.x, y * other.y, z * other.z };
 }
 
 Vector3 Vector3::operator*(float scalar) const

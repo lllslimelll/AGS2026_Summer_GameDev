@@ -67,12 +67,12 @@ public:
     // -----------------------------------------------------------------
 
     // 度→ラジアン
-    static float  ToRadian(float deg);
-    static double ToRadian(double deg);
+    static constexpr float  ToRadian(float  deg) { return deg * DEG2RAD; }
+    static constexpr double ToRadian(double deg) { return deg * DEG2RAD; }
 
     // ラジアン→度
-    static float  ToDegree(float rad);
-    static double ToDegree(double rad);
+    static constexpr float  ToDegree(float  rad) { return rad * RAD2DEG; }
+    static constexpr double ToDegree(double rad) { return rad * RAD2DEG; }
 
     // 0?360度の範囲に収める
     static double DegIn360(double deg);

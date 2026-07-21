@@ -1,56 +1,68 @@
+// GameScene.h
 #pragma once
 #include "SceneBase.h"
 #include <vector>
 #include <memory>
 class ActorBase;
-class SkyDome;
-class StageManager;
-class ItemManager;
 class Player;
 class Camera;
+class StageManager;
+class ItemManager;
 class EnemyManager;
+class SkyDome;
 class GameUI;
 
 class GameScene : public SceneBase
 {
-
 public:
-	
-	// コンストラクタ
-	GameScene(void);
 
-	// デストラクタ
-	~GameScene(void) override;
+    GameScene(void);
+    ~GameScene(void) override;
 
-	// ロード
-	void Load(void) override;
+    void Load(void) override;
+    void Init(void) override;
+    void Update(void) override;
+    void Draw(void) override;
 
-	// 初期化
-	void Init(void) override;
+    // Actor を生成して管理リストに追加する
+    template<typename T, typename... Args>
+    T* SpawnActor(Args&&... args)
+    {
+        auto actor = std::make_unique<T>(std::forward<Args>(args)...);
+        T* ptr = actor.get();
+        actors_.push_back(std::move(actor));
+        return ptr;
+    }
 
-	// 更新
-	void Update(void) override;
-
-	// 描画
-	void Draw(void) override;
+    // Actor を取得する
+    template<typename T>
+    T* GetActor(void) const
+    {
+        for (auto& actor : actors_)
+        {
+            if (auto* ptr = dynamic_cast<T*>(actor.get()))
+            {
+                return ptr;
+            }
+        }
+        return nullptr;
+    }
 
 private:
 
-	// スカイドーム
-	SkyDome* skyDome_;
-	// ステージ
-	std::unique_ptr<StageManager> stageMng_;
-	// アイテム
-	ItemManager* itemMng_;
-	// プレイヤー
-	std::unique_ptr<Player> player_;
-	// カメラ
-	std::unique_ptr<Camera> camera_;
-	// 敵
-	EnemyManager* enemyManager_;
-	// ゲームUI
-	std::vector<std::unique_ptr<GameUI>> gameUIs_;
+    // 全 Actor を一元管理
+    std::vector<std::unique_ptr<ActorBase>> actors_;
 
-	// シャドウマップ作成
-	int CreateShadowMap(void);
+    // UI（Actor ではないので別管理）
+    std::vector<std::unique_ptr<GameUI>> gameUIs_;
+
+    // 今は直接参照が必要なものだけポインタで持つ
+    Player* player_ = nullptr;
+    Camera* camera_ = nullptr;
+    StageManager* stageMng_ = nullptr;
+    ItemManager* itemMng_ = nullptr;
+    EnemyManager* enemyMng_ = nullptr;
+    SkyDome* skyDome_ = nullptr;
+
+    int CreateShadowMap(void);
 };

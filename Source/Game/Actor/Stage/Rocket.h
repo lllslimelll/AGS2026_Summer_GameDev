@@ -1,19 +1,16 @@
 #pragma once
 #include "../ActorBase.h"
 
+class StaticMeshComponent;
+
 class Rocket : public ActorBase
 {
 public:
 
-    // 衝突判定種別
-    enum class COLLIDER_TYPE
-    {
-        MODEL = 0,
-        MAX,
-    };
     static constexpr int QUOTA = 5000;
     ~Rocket(void) override;
 
+    void Init(void)   override;
     void Update(void) override;
     void Draw(void)   override;
 
@@ -26,20 +23,11 @@ public:
     // ノルマクリアしたか
     bool IsQuotaCleared(void) const;
 
-    // 座標取得
-    const VECTOR& GetPos(void) const;
-
-protected:
-
-    virtual void InitLoad(void)      override;
-    virtual void InitTransform(void) override;
-    virtual void InitCollider(void)  override;
-    virtual void InitAnimation(void) override;
-    virtual void InitPost(void)      override;
+    // モデルID取得
+    int  GetModelId(void) const;
 
 private:
 
-
-
+    StaticMeshComponent* mesh_ = nullptr;
     int totalDelivered_ = 0;
 };

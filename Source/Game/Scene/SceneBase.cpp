@@ -1,5 +1,5 @@
-#include "../Manager/ResourceManager.h"
-#include "../Manager/InputManager.h"
+#include "../../Manager/ResourceManager.h"
+#include "../../Manager/InputManager.h"
 #include "SceneManager.h"
 #include "SceneBase.h"
 

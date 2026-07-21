@@ -1,5 +1,5 @@
 #include <DxLib.h>
-#include "../../../Object/Actor/Charactor/Player.h"
+#include "../../Actor/Charactor/Player.h"
 #include "StatusUI.h"
 
 StatusUI::StatusUI(const Player& player)

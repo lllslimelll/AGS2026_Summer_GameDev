@@ -1,16 +1,10 @@
+// Collision/CollisionQueryParams.h
 #pragma once
 #include <vector>
-
 class ActorBase;
 
 struct CollisionQueryParams
 {
-	// 無視する Actor リスト
-	std::vector<const ActorBase*> ignoredActors_;
-
-	// 無視する Actor を追加
-	void AddIgnoredActor(const Actorbase* actor)
-	{
-		
-	}
+    // 無視する Actor リスト
+    std::vector<const ActorBase*> ignoredActors;
 };

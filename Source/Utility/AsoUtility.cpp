@@ -567,23 +567,23 @@ void AsoUtility::DrawLineXYZ(const VECTOR& pos, const MATRIX& rot, float len)
 
 }
 
-void AsoUtility::DrawLineXYZ(const VECTOR& pos, const Quaternion& rot, float len)
-{
-
-    VECTOR dir;
-
-    // X
-    dir = rot.GetRight();
-    DrawLineDir(pos, dir, 0xff0000, len);
-
-    // Y
-    dir = rot.GetUp();
-    DrawLineDir(pos, dir, 0x00ff00, len);
-
-    // Z
-    dir = rot.GetForward();
-    DrawLineDir(pos, dir, 0x0000ff, len);
-
-}
+//void AsoUtility::DrawLineXYZ(const VECTOR& pos, const Quaternion& rot, float len)
+//{
+//
+//    VECTOR dir;
+//
+//    // X
+//    dir = rot.GetRight();
+//    DrawLineDir(pos, dir, 0xff0000, len);
+//
+//    // Y
+//    dir = rot.GetUp();
+//    DrawLineDir(pos, dir, 0x00ff00, len);
+//
+//    // Z
+//    dir = rot.GetForward();
+//    DrawLineDir(pos, dir, 0x0000ff, len);
+//
+//}
 
 

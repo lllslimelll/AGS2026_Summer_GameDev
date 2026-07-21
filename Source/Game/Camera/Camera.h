@@ -1,178 +1,111 @@
 #pragma once
-#include <unordered_map>
-#include <unordered_set>
 #include <DxLib.h>
+#include "../../Core/Vector3.h"
 #include "../../Core/Quaternion.h"
+#include "../../Utility/Math.h"
 #include "../Actor/ActorBase.h"
-class Transform;
-class ColliderSphere;
+
+class Player;
+class Player;
 
 class Camera : public ActorBase
 {
-
 public:
 
-	// カメラの初期座標
-	static constexpr VECTOR DERFAULT_POS = { 0.0f, 200.0f, -500.0f };
-	
-	// カメラの初期角度
-	static constexpr VECTOR DERFAULT_ANGLES = { 
-		0.0f, 175.0f * DX_PI_F / 180.0f, 0.0f
-	};
+    // カメラモード
+    enum class MODE
+    {
+        NONE,
+        FIXED_POINT,  // 固定点カメラ
+        FREE,         // 自由移動カメラ
+        FOLLOW,       // プレイヤー追従カメラ
+    };
 
-	// カメラの回転量
-	const float ROT_POW_DEG = 2.0f;
-	const float ROT_POW_RAD = ROT_POW_DEG * DX_PI_F / 180.0f;
+    // ---- 定数 ----
 
-	// カメラの移動スピード
-	static constexpr float SPEED = 20.0f;
+    // 初期座標
+    static constexpr Vector3 DEFAULT_POS = Vector3(0.0f, 200.0f, -500.0f);
+    // 初期ピッチ角（ラジアン、やや下向き）
+    static constexpr float   DEFAULT_PITCH_ANGLE = Math::ToRadian(10.0f);
 
-	// カメラのクリップ範囲
-	static constexpr float VIEW_NEAR = 3.0f;
-	static constexpr float VIEW_FAR = 20000.0f;
+    // 移動速度（FREE モード）
+    static constexpr float SPEED = 20.0f;
 
-	// 追従位置からカメラ位置までの相対座標
-	//static constexpr VECTOR FOLLOW_CAMERA_LOCAL_POS = { 0.0f, 50.0f, -400.0f };
-	static constexpr VECTOR FOLLOW_CAMERA_LOCAL_POS = { 0.0f, 0.0f, 0.0f };
+    // クリップ距離
+    static constexpr float VIEW_NEAR = 3.0f;
+    static constexpr float VIEW_FAR = 20000.0f;
 
-	// 追従位置から注視点までの相対座標
-	static constexpr VECTOR FOLLOW_TARGET_LOCAL_POS = { 0.0f, 0.0f, 100.0f };
+    // 追従カメラのオフセット（プレイヤー位置基準、後ろ・上にずらす）
+    static constexpr Vector3 FOLLOW_CAMERA_OFFSET = Vector3(0.0f, 150.0f, -350.0f);
+    // 注視点のプレイヤーからの高さオフセット
+    static constexpr float   FOLLOW_TARGET_HEIGHT = 100.0f;
 
-	// カメラのX回転上限度角
-	static constexpr float LIMIT_X_UP_RAD = 65.0f * (DX_PI_F / 180.0f);
-	static constexpr float LIMIT_X_DW_RAD = 80.0f * (DX_PI_F / 180.0f);
-	
-	// カメラモード
-	enum class MODE
-	{
-		NONE,
-		FIXED_POINT,
-		FREE,
-		FOLLOW,
-	};
+    // 上下回転制限（ラジアン）
+    static constexpr float LIMIT_PITCH_MAX = Math::ToRadian(60.0f);
+    static constexpr float LIMIT_PITCH_MIN = Math::ToRadian(-70.0f);
 
-	// 衝突判定種別
-	enum class COLLIDER_TYPE
-	{
-		SPHERE,
-		MAX,
-	};
+    // スティック回転速度
+    static constexpr float ROT_POW_RAD = Math::ToRadian(2.0f);
 
-	// コンストラクタ
-	Camera(void);
+    // マウス感度
+    static constexpr float MOUSE_SENSITIVITY = 0.00040f;
 
-	// デストラクタ
-	~Camera(void) override;
+    // コンストラクタ / デストラクタ
+    Camera(void);
+    ~Camera(void) override;
 
-	// 更新
-	void Update(void) override;
+    // ライフサイクル
+    void Init(void)    override;
+    void Update(void)  override;
+    void Draw(void)    override;
+    void Release(void) override;
 
-	// 描画
-	void Draw(void) override;
-	// 描画前処理の適用
-	void SetBeforeDraw(void);
+    // 描画前に DxLib カメラを設定する
+    void SetBeforeDraw(void);
 
-	// 解放
-	void Release(void) override;
+    // 追従対象を設定する（毎フレーム SetCameraForward も呼ぶ）
+    void SetFollowTarget(Player* target);
 
-	// 座標の取得
-	const VECTOR& GetPos(void) const;
+    // カメラモードを変更する
+    void ChangeMode(MODE mode);
 
-	// 角度の取得
-	const VECTOR& GetAngles(void) const;
-	const Quaternion& GetQuaRot(void) const;
-	
-	// X回転を抜いたY軸のみのカメラ角度
-	const Quaternion& GetQuaRotY(void) const;
-	
-	// 注視点の取得
-	const VECTOR& GetTargetPos(void) const;
+    // 注視点を取得する
+    Vector3 GetTargetPos(void) const;
 
-	// カメラの前方方向
-	VECTOR GetForward(void) const;
-
-	// カメラモードの変更
-	void ChangeMode(MODE mode);
-
-	// 追従対象の設定
-	void SetFollow(const Transform* follow);
-
-protected:
-
-	// リソースロード
-	void InitLoad(void) override {}
-
-	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override {}
-
-	// 衝突判定の初期化
-	void InitCollider(void) override;
-
-	// アニメーションの初期化
-	void InitAnimation(void) override {}
-
-	// 初期化後の個別処理
-	void InitPost(void) override;
+    // カメラ前方向を取得する（注視点 - 位置）
+    Vector3 GetCameraForward(void) const;
 
 private:
-	bool isFirstMouseFrame_ = true;
-	// 衝突時の押し戻し試行回数
-	static constexpr int CNT_TRY_COLLISION_CAMERA = 30;
 
-	// 衝突時の押し戻し量
-	static constexpr float COLLISION_BACK_DIS = 2.0f;
+    // マウス初回フレームフラグ
+    bool isFirstMouseFrame_ = true;
 
-	// 衝突判定用球体判定
-	static constexpr float COL_CAPSULE_SPHERE = 50.0f;
+    // 追従対象
+    Player* followTarget_ = nullptr;
 
-	// カメラの補完移動率
-	static constexpr float LERP_RATE_MOVE = 0.1f;
+    // カメラモード
+    MODE mode_ = MODE::NONE;
 
-	// カメラの更新前位置
-	VECTOR prePos_;
+    // 水平回転角（ヨー）・垂直回転角（ピッチ）（ラジアン）
+    float yawAngle_ = 0.0f;
+    float pitchAngle_ = DEFAULT_PITCH_ANGLE;
 
-	// カメラが追従対象とするTransform
-	const Transform* followTransform_;
+    // 注視点（DxLib に渡す用）
+    Vector3 targetPos_ = Vector3::ZERO;
 
-	// カメラモード
-	MODE mode_;
+    // モード別更新
+    void UpdateFixedPoint(void);
+    void UpdateFree(void);
+    void UpdateFollow(void);
 
-	// カメラ角度(rad)
-	VECTOR angles_;
+    // 初期値にリセット
+    void SetDefault(void);
 
-	// カメラ角度(Y軸のみ)
-	Quaternion rotY_;
+    // 回転入力処理
+    void ProcessRot(bool isLimit);
+    void RotMouse(bool isLimit);
+    void RotGamePad(bool isLimit);
 
-	// 注視点
-	VECTOR targetPos_;
-	
-	// 
-	std::vector<int> opacityFrames_;
-
-	// モード別更新
-	void UpdateFixedPoint(void);
-	void UpdateFree(void);
-	void UpdateFollow(void);
-
-	// カメラを初期位置に戻す
-	void SetDefault(void);
-
-	// 追従対象との位置同期を取る
-	void SyncFollow(void);
-
-	// カメラ操作
-	void ProcessRot(bool isLimit);
-	void ProcessMove(void);
-
-	// カメラ回転(マウス)
-	void RotMouse(bool isLimit);
-
-	// カメラ回転(ゲームパッド)
-	void RotGamePad(bool isLimit);
-
-	// 衝突判定
-	void Collision(void);
-
-	// 透明度を不透明に初期化
-	void ResetOpacityFrame(void);
+    // 自由移動処理（FREE モード用）
+    void ProcessMove(void);
 };

@@ -1,27 +1,27 @@
 #pragma once
 #include <vector>
+#include <functional>
+#include "../../../../Game/Actor/ActorBase.h"
 #include "EnemyBase.h"
-#include "../../../../Collision/ColliderBase.h"
-class ColliderBase;
+
 class Player;
 
-class EnemyManager
+class EnemyManager : public ActorBase
 {
 public:
 
+	// Enemy 生成を GameScene(World 相当)に委譲するための関数オブジェクト
+	using SpawnEnemyFunc = std::function<EnemyBase* (const EnemyBase::EnemyData&)>;
+
 	// コンストラクタ
-	EnemyManager(Player& player);
+	EnemyManager(Player& player, SpawnEnemyFunc spawnFunc);
 	// デストラクタ
 	~EnemyManager(void);
 
-	// 初期化
-	void Init(void);
-	// 更新
-	void Update(void);
-	// 描画
-	void Draw(void);
-	// 解放
-	void Release(void);
+	void Init(void)    override;
+	void Update(void)  override;
+	void Draw(void)    override;
+	void Release(void) override;
 
 	// CSV読み込み
 	void LoadCsvData(void);
@@ -36,6 +36,8 @@ private:
 
 	// プレイヤー
 	Player& player_;
+
+	SpawnEnemyFunc spawnFunc_;
 
 	// エネミーリスト
 	std::vector<EnemyBase*> enemies_;

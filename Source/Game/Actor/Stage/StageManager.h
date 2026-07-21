@@ -1,34 +1,26 @@
 #pragma once
-#include <memory>
-#include <DxLib.h>
+#include "../ActorBase.h"
 
 class Planet;
 class Rocket;
-class ColliderBase;
 
-class StageManager
+class StageManager : public ActorBase
 {
 public:
 
-    StageManager(void);
-    ~StageManager(void);
+    StageManager(Planet* planet, Rocket* rocket);
+    ~StageManager(void) override;
 
-    void Init(void);
-    void Update(void);
-    void Draw(void);
-    void Release(void);
+    void Init(void)    override {}
+    void Update(void)  override {}
+    void Draw(void)    override {}
+    void Release(void) override {}
 
-    // ロケット取得
     Rocket& GetRocket(void);
-
-    // 惑星取得
     Planet& GetPlanet(void);
-
-    // Transform取得（シャドウマップ用）
-    const Transform& GetTransform(void) const;
 
 private:
 
-    std::unique_ptr<Planet> planet_;
-    std::unique_ptr<Rocket> rocket_;
+    Planet* planet_;
+    Rocket* rocket_;
 };

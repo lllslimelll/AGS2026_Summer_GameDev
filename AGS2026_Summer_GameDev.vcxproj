@@ -133,6 +133,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Component\CapsuleComponent.cpp" />
+    <ClCompile Include="Source\Component\PrimitiveComponent.cpp" />
+    <ClCompile Include="Source\Component\SceneComponent.cpp" />
+    <ClCompile Include="Source\Component\ActorComponent.cpp" />
     <ClCompile Include="Source\Core\Matrix4x4.cpp" />
     <ClCompile Include="Source\Collision\CollisionManager.cpp" />
     <ClCompile Include="Source\Utility\Math.cpp" />
@@ -173,17 +177,9 @@
     <ClCompile Include="Source\Game\Actor\Charactor\CharactorBase.cpp" />
     <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyManager.cpp" />
-    <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyRat.cpp" />
-    <ClCompile Include="Source\Game\Actor\Charactor\Enemy\EnemyRobot.cpp" />
     <ClCompile Include="Source\Game\Actor\Charactor\Player.cpp" />
     <ClCompile Include="Source\Game\Actor\SkyDome.cpp" />
-    <ClCompile Include="Source\Collision\ColliderBase.cpp" />
-    <ClCompile Include="Source\Collision\ColliderCapsule.cpp" />
-    <ClCompile Include="Source\Collision\ColliderLine.cpp" />
-    <ClCompile Include="Source\Collision\ColliderModel.cpp" />
-    <ClCompile Include="Source\Collision\ColliderSphere.cpp" />
     <ClCompile Include="Source\Common\AnimationController.cpp" />
-    <ClCompile Include="Source\Common\Transform.cpp" />
     <ClCompile Include="Source\Game\Scene\DebugScene.cpp" />
     <ClCompile Include="Source\Game\Scene\GameScene.cpp" />
     <ClCompile Include="Source\Game\Scene\SceneBase.cpp" />
@@ -196,8 +192,14 @@
     <ClCompile Include="Source\Game\Actor\Stage\StageManager.cpp" />
     <ClCompile Include="Source\Core\Vector3.cpp" />
     <ClCompile Include="Source\Core\Vector2.cpp" />
+    <ClCompile Include="Source\Component\SphereComponent.cpp" />
+    <ClCompile Include="Source\Component\StaticMeshComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Component\CapsuleComponent.h" />
+    <ClInclude Include="Source\Component\PrimitiveComponent.h" />
+    <ClInclude Include="Source\Component\SceneComponent.h" />
+    <ClInclude Include="Source\Component\ActorComponent.h" />
     <ClInclude Include="Source\Core\Matrix4x4.h" />
     <ClInclude Include="Source\Collision\CollisionManager.h" />
     <ClInclude Include="Source\Collision\CollisionQueryParams.h" />
@@ -243,17 +245,9 @@
     <ClInclude Include="Source\Game\Actor\Charactor\CharactorBase.h" />
     <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyBase.h" />
     <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyManager.h" />
-    <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyRat.h" />
-    <ClInclude Include="Source\Game\Actor\Charactor\Enemy\EnemyRobot.h" />
     <ClInclude Include="Source\Game\Actor\Charactor\Player.h" />
     <ClInclude Include="Source\Game\Actor\SkyDome.h" />
-    <ClInclude Include="Source\Collision\ColliderBase.h" />
-    <ClInclude Include="Source\Collision\ColliderCapsule.h" />
-    <ClInclude Include="Source\Collision\ColliderLine.h" />
-    <ClInclude Include="Source\Collision\ColliderModel.h" />
-    <ClInclude Include="Source\Collision\ColliderSphere.h" />
     <ClInclude Include="Source\Common\AnimationController.h" />
-    <ClInclude Include="Source\Common\Transform.h" />
     <ClInclude Include="Source\Game\Scene\DebugScene.h" />
     <ClInclude Include="Source\Game\Scene\GameScene.h" />
     <ClInclude Include="Source\Game\Scene\SceneBase.h" />
@@ -267,6 +261,8 @@
     <ClInclude Include="Source\Utility\Color.h" />
     <ClInclude Include="Source\Core\Vector3.h" />
     <ClInclude Include="Source\Core\Vector2.h" />
+    <ClInclude Include="Source\Component\SphereComponent.h" />
+    <ClInclude Include="Source\Component\StaticMeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Csv\EnemyData.csv" />

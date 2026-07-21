@@ -1,93 +1,119 @@
+// Game/Actor/ActorBase.cpp
 #include "../../Manager/ResourceManager.h"
-#include "../Scene/SceneManager.h"
-#include "../../Collision/ColliderBase.h"
-#include "../../Collision/CollisionManager.h"
+#include "../../Game/Scene/SceneManager.h"
+#include "../../Component/ActorComponent.h"
+#include "../../Component/SceneComponent.h"
+#include "../../Collision/HitResult.h"
 #include "ActorBase.h"
 
 ActorBase::ActorBase(void)
-	: 
-	resMng_(ResourceManager::GetInstance()),
-	scnMng_(SceneManager::GetInstance()),
-	transform_()
+    : resMng_(ResourceManager::GetInstance())
+    , scnMng_(SceneManager::GetInstance())
 {
+    // RootComponent を生成
+    auto root = std::make_unique<SceneComponent>(*this);
+    rootComponent_ = root.get();
+    components_.push_back(std::move(root));
 }
 
 ActorBase::~ActorBase(void)
 {
 }
 
+// ---------------------------------------------------------------
+// ライフサイクル
+// ---------------------------------------------------------------
+
 void ActorBase::Init(void)
 {
+    for (auto& comp : components_)
+    {
+        comp->Init();
+    }
+}
 
-	// リソースロード
-	InitLoad();
-
-	// Transform初期化
-	InitTransform();
-
-	// 衝突判定の初期化
-	InitCollider();
-
-	// アニメーションの初期化
-	InitAnimation();
-
-	// 初期化後の個別処理
-	InitPost();
-
+void ActorBase::Update(void)
+{
+    for (auto& comp : components_)
+    {
+        if (comp->IsActive())
+        {
+            comp->Update();
+        }
+    }
 }
 
 void ActorBase::Draw(void)
 {
-	if (transform_.modelId != -1)
-	{
-		MV1DrawModel(transform_.modelId);
-	}
-
-#ifdef _DEBUG
-
-	// 所有しているコライダの描画
-	for (const auto& own : ownColliders_)
-	{
-		own.second->Draw();
-	}
-
-#endif // _DEBUG
+    for (auto& comp : components_)
+    {
+        if (comp->IsActive())
+        {
+            comp->Draw();
+        }
+    }
 }
 
 void ActorBase::Release(void)
 {
-	transform_.Release();
-
-	// 自身のコライダ解放
-	for (auto& own : ownColliders_)
-	{
-		CollisionManager::GetInstance().Unregister(own.second);
-		delete own.second;
-	}
-	ownColliders_.clear();
-}
-
-const Transform& ActorBase::GetTransform(void) const
-{
-	return transform_;
-}
-
-
-// 特定の自身の衝突情報
-const ColliderBase* ActorBase::GetOwnCollider(int key) const
-{
-	if (ownColliders_.count(key) == 0)
-	{
-		return nullptr;
-	}
-	return ownColliders_.at(key);
+    for (auto& comp : components_)
+    {
+        comp->Release();
+    }
+    components_.clear();
+    rootComponent_ = nullptr;
 }
 
 // ---------------------------------------------------------------
-// コライダーを CollisionManager に登録する
+// Transform アクセス
 // ---------------------------------------------------------------
-void ActorBase::RegisterCollider(ColliderBase* collider, int key)
+
+Vector3 ActorBase::GetPos(void) const
 {
-	ownColliders_[key] = collider;
-	CollisionManager::GetInstance().Register(collider);
+    return rootComponent_->GetWorldPos();
+}
+
+Quaternion ActorBase::GetRot(void) const
+{
+    return rootComponent_->GetWorldRot();
+}
+
+Vector3 ActorBase::GetScl(void) const
+{
+    return rootComponent_->GetWorldScl();
+}
+
+void ActorBase::SetPos(const Vector3& pos)
+{
+    rootComponent_->SetWorldPos(pos);
+}
+
+void ActorBase::SetRot(const Quaternion& rot)
+{
+    rootComponent_->SetWorldRot(rot);
+}
+
+void ActorBase::SetScl(const Vector3& scl)
+{
+    rootComponent_->SetLocalScl(scl);
+}
+
+Vector3 ActorBase::GetForward(void) const
+{
+    return rootComponent_->GetForward();
+}
+
+Vector3 ActorBase::GetRight(void) const
+{
+    return rootComponent_->GetRight();
+}
+
+Vector3 ActorBase::GetUp(void) const
+{
+    return rootComponent_->GetUp();
+}
+
+SceneComponent* ActorBase::GetRootComponent(void) const
+{
+    return rootComponent_;
 }

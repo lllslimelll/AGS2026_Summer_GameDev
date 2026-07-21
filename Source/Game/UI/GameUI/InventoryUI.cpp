@@ -1,6 +1,6 @@
 #include <DxLib.h>
-#include "../../../Object/Actor/Item/Item.h"
-#include "../../../Object/Inventory/Inventory.h"
+#include "../../Actor/Item/Item.h"
+#include "../../Inventory/Inventory.h"
 #include "InventoryUI.h"
 
 InventoryUI::InventoryUI(const Inventory& inventory)

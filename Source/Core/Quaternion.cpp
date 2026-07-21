@@ -1,5 +1,6 @@
 #include <cmath>
 #include <algorithm>
+#include "../Utility/Math.h"
 #include "Quaternion.h"
 #include "Vector3.h"
 
@@ -380,7 +381,7 @@ Quaternion Quaternion::RotateTowards(
 {
     float angle = Angle(from, to);
     if (angle < 1e-6f) return to;
-    float t = std::min(1.0f, maxDegreesDelta / angle);
+    float t = Math::Min(1.0f, maxDegreesDelta / angle);
     return SlerpUnclamped(from, to, t);
 }
 

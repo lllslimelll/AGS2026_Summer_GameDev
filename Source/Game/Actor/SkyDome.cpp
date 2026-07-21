@@ -1,157 +1,74 @@
+#include "../../Utility/Math.h"
 #include "../../Manager/ResourceManager.h"
-#include "../../Scene/SceneManager.h"
-#include "../Common/Transform.h"
+#include "../../Game/Scene/SceneManager.h"
 #include "../../Utility/AsoUtility.h"
+#include "../../Component/StaticMeshComponent.h"
 #include "SkyDome.h"
-#include "../../Camera/Camera.h"
 
-SkyDome::SkyDome(const Transform& followTransform)
-	:
-	followTransform_(followTransform),
-	state_(STATE::FOLLOW),
-	ActorBase()
+SkyDome::SkyDome(const ActorBase* followTarget)
+	: ActorBase()
+	, followTarget_(followTarget)
 {
 }
 
-SkyDome::~SkyDome()
+SkyDome::~SkyDome() {}
+
+void SkyDome::Init(void)
 {
+	// モデルロード
+	int modelId = resMng_.Load(ResourceManager::SRC::SPACE_DOME).handleId_;
+	mesh_ = AddComponent<StaticMeshComponent>(modelId);
+
+	// トランスフォーム
+	SetScl(Vector3(0.3f, 0.3f, 0.3f));
+	SetRot(Quaternion::AngleAxis(Math::ToRadian(200.0f), Vector3::FORWARD));
+	if (followTarget_) SetPos(followTarget_->GetPos());
+
+	// Component を Init（CollisionManager への登録等）
+	ActorBase::Init();
+
+	// Init後処理（モデルIDが確定してから）
+	MV1SetUseZBuffer(modelId, true);
+	MV1SetWriteZBuffer(modelId, false);
+
+	SceneManager::SCENE_ID sceneId = scnMng_.GetSceneID();
+	ChangeState(sceneId == SceneManager::SCENE_ID::GAME ? STATE::FOLLOW : STATE::STAY);
 }
 
 void SkyDome::Update(void)
 {
 	switch (state_)
 	{
-	case SkyDome::STATE::NONE:
-		UpdateNone();
-		break;
-	case SkyDome::STATE::STAY:
-		UpdateStay();
-		break;
-	case SkyDome::STATE::FOLLOW:
-		UpdateFollow();
-		break;
+	case STATE::STAY:   UpdateStay();   break;
+	case STATE::FOLLOW: UpdateFollow(); break;
+	default: break;
 	}
-
-
-	// 空をY軸に毎フレーム0.05°ずつ回転を追加
-	/*transform_.quaRotLocal = Quaternion::Mult(
-		transform_.quaRotLocal,
-		Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.05f), AsoUtility::AXIS_Y));*/
-
-	transform_.Update();
+	ActorBase::Update();
 }
 
 void SkyDome::Draw(void)
 {
 	SetUseLighting(FALSE);
-	MV1DrawModel(transform_.modelId);
+	ActorBase::Draw();
 	SetUseLighting(TRUE);
-}
-
-void SkyDome::InitLoad(void)
-{
-	// モデル読み込み
-	transform_.SetModel(resMng_.Load(			// 1個 = Load()  複数 = Depulicate()
-		ResourceManager::SRC::SPACE_DOME).handleId_);
-}
-
-void SkyDome::InitTransform(void)
-{
-	transform_.scl = { 0.3f,0.3f,0.3f };
-
-	transform_.quaRot = Quaternion::Identity();
-	// X軸を90度
-	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(200.0f), AsoUtility::AXIS_Z);
-
-	// 座標
-	transform_.pos = AsoUtility::VECTOR_ZERO;
-}
-
-void SkyDome::InitCollider(void)
-{
-}
-
-void SkyDome::InitAnimation(void)
-{
-}
-
-void SkyDome::InitPost(void)
-{
-	transform_.Update();
-
-	// Zバッファ向こう（突き抜け対策）
-	MV1SetUseZBuffer(transform_.modelId, true);
-	MV1SetWriteZBuffer(transform_.modelId, false);
-
-	// 初期状態
-	SceneManager::SCENE_ID sceneId = scnMng_.GetSceneID();
-	if (sceneId == SceneManager::SCENE_ID::GAME)
-	{
-		ChangeState(STATE::FOLLOW);
-	}
-	else
-	{
-		ChangeState(STATE::STAY);
-	}
 }
 
 void SkyDome::ChangeState(STATE state)
 {
-	// 状態変更
 	state_ = state;
-
-	// 状態ごとの初期化処理
-	switch (state_)
-	{
-	case SkyDome::STATE::NONE:
-		ChangeStateNone();
-		break;
-	case SkyDome::STATE::STAY:
-		ChangeStateStay();
-		break;
-	case SkyDome::STATE::FOLLOW:
-		ChangeStateFollow();
-		break;
-	}
-}
-
-void SkyDome::ChangeStateNone(void)
-{
-}
-
-void SkyDome::ChangeStateStay(void)
-{
-}
-
-void SkyDome::ChangeStateFollow(void)
-{
-	// 追従開始
-	transform_.pos = followTransform_.pos;
-	transform_.Update();
-}
-
-void SkyDome::UpdateNone(void)
-{
+	if (state_ == STATE::FOLLOW && followTarget_)
+		SetPos(followTarget_->GetPos());
 }
 
 void SkyDome::UpdateStay(void)
 {
-	// Y軸回転
-	Quaternion rot = Quaternion::AngleAxis(
-		AsoUtility::Deg2RadF(0.07f), AsoUtility::AXIS_Y);
-	transform_.quaRot = transform_.quaRot.Mult(rot);
-	transform_.Update();
+	Quaternion rot = Quaternion::AngleAxis(Math::ToRadian(0.07f), Vector3::UP);
+	SetRot(GetRot() * rot);
 }
 
 void SkyDome::UpdateFollow(void)
 {
-	// Y軸回転
-	Quaternion rot = Quaternion::AngleAxis(
-		AsoUtility::Deg2RadF(0.03f), AsoUtility::AXIS_Y);
-	transform_.quaRot = transform_.quaRot.Mult(rot);
-
-	// 追従
-	transform_.pos = followTransform_.pos;
-
-	transform_.Update();
+	Quaternion rot = Quaternion::AngleAxis(Math::ToRadian(0.03f), Vector3::UP);
+	SetRot(GetRot() * rot);
+	if (followTarget_) SetPos(followTarget_->GetPos());
 }

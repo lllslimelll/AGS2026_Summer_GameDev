@@ -1,43 +1,52 @@
+// Collision/CollisionManager.h
 #pragma once
 #include <vector>
-#include <memory>
 #include <DxLib.h>
 #include "HitResult.h"
 #include "CollisionChannel.h"
-
-class ColliderBase;
+#include "CollisionQueryParams.h"
+class PrimitiveComponent;
 class ActorBase;
 
-// 当たり判定を一元管理するクラス
-// Unreal の FPhysScene に相当
 class CollisionManager
 {
 public:
 
-    static void             CreateInstance(void);
+    static void              CreateInstance(void);
     static CollisionManager& GetInstance(void);
     void Destroy(void);
 
-    // シーン切り替え時に全登録をクリアする
+    // シーン切り替え時に全登録をクリア
     void Clear(void);
 
-    // コライダーを登録する
-    void Register(ColliderBase* collider);
+    // PrimitiveComponent を登録する
+    void Register(PrimitiveComponent* component);
 
-    // コライダーの登録を解除する
-    void Unregister(ColliderBase* collider);
+    // PrimitiveComponent の登録を解除する
+    void Unregister(PrimitiveComponent* component);
 
     // 毎フレーム全ての当たり判定を実行する
+    // 結果を OnHit / OnOverlap で通知する
     void Update(void);
 
-    // Actor の HitResult を全て取得する
-    std::vector<HitResult> GetHits(const ActorBase* actor) const;
+    // ---------------------------------------------------------------
+    // レイキャスト
+    // ---------------------------------------------------------------
+    HitResult LineTrace(
+        const VECTOR& start,
+        const VECTOR& end,
+        CollisionChannel channel,
+        const CollisionQueryParams& params = CollisionQueryParams()) const;
 
-    // BLOCK のみ取得（押し戻し用）
-    std::vector<HitResult> GetBlockHits(const ActorBase* actor) const;
-
-    // OVERLAP のみ取得（トリガー・ダメージ判定用）
-    std::vector<HitResult> GetOverlapHits(const ActorBase* actor) const;
+    // ---------------------------------------------------------------
+    // スウィープ（球）
+    // ---------------------------------------------------------------
+    HitResult SweepSphere(
+        const VECTOR& start,
+        const VECTOR& end,
+        float radius,
+        CollisionChannel channel,
+        const CollisionQueryParams& params = CollisionQueryParams()) const;
 
 private:
 
@@ -46,27 +55,44 @@ private:
 
     static CollisionManager* instance_;
 
-    // 登録されたコライダー一覧
-    std::vector<ColliderBase*> colliders_;
+    // 登録された PrimitiveComponent 一覧
+    std::vector<PrimitiveComponent*> components_;
 
-    // 毎フレームの判定結果（Update でクリア→生成）
+    // 毎フレームの判定結果
     std::vector<HitResult> hitResults_;
 
-    // 2つのコライダーの判定を実行して HitResult を生成する
-    void Solve(ColliderBase* a, ColliderBase* b);
+    // 2つの Component の判定を実行する
+    void Solve(PrimitiveComponent* a, PrimitiveComponent* b);
 
-    // Capsule vs Model の判定
-    void SolveCapsuleModel(ColliderBase* capsule, ColliderBase* model);
+    // Capsule vs StaticMesh の判定
+    void SolveCapsuleStaticMesh(
+        PrimitiveComponent* capsule,
+        PrimitiveComponent* mesh);
 
     // Sphere vs Sphere の判定
-    void SolveSphereVsSphere(ColliderBase* a, ColliderBase* b);
+    void SolveSphereVsSphere(
+        PrimitiveComponent* a,
+        PrimitiveComponent* b);
 
     // Capsule vs Capsule の判定
-    void SolveCapsuleVsCapsule(ColliderBase* a, ColliderBase* b);
+    void SolveCapsuleVsCapsule(
+        PrimitiveComponent* a,
+        PrimitiveComponent* b);
 
     // 優先度方式でレスポンスを決定する
-    // BLOCK > OVERLAP > IGNORE
     CollisionResponse ResolveResponse(
-        const ColliderBase* a,
-        const ColliderBase* b) const;
+        const PrimitiveComponent* a,
+        const PrimitiveComponent* b) const;
+
+    // LineTrace / SweepSphere の対象か
+    bool IsTargetChannel(
+        const PrimitiveComponent* component,
+        CollisionChannel channel,
+        const CollisionQueryParams& params) const;
+
+    // HitResult を生成して OnHit / OnOverlap に通知する
+    void NotifyHit(
+        PrimitiveComponent* a,
+        PrimitiveComponent* b,
+        const HitResult& hit);
 };

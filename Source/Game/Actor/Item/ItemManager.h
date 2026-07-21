@@ -1,69 +1,48 @@
 #pragma once
 #include <vector>
-#include <DxLib.h>
+#include <functional>
+#include "../ActorBase.h"
 #include "Item.h"
 
-class ColliderBase;
-
-class ItemManager
+class ItemManager : public ActorBase
 {
 public:
 
-	// コンストラクタ
-	ItemManager(void);
+    // Item 生成を GameScene に委譲するための関数オブジェクト
+    // GameScene が World 相当なので SpawnActor 権限をここで受け取る
+    using SpawnItemFunc = std::function<Item* (const Item::ItemData&)>;
 
-	// デストラクタ
-	~ItemManager(void);
+    ItemManager(SpawnItemFunc spawnFunc);
+    ~ItemManager(void) override;
 
-	// 初期化
-	void Init(void);
+    void Init(void)    override;
+    void Update(void)  override;
+    void Draw(void)    override;
+    void Release(void) override;
 
-	// 更新
-	void Update(void);
+    // アイテム生成
+    Item* Create(const Item::ItemData& data);
 
-	// 描画
-	void Draw(void);
+    // 照準に当たっているアイテムを返す
+    Item* GetAimedItem(
+        const Vector3& rayOrigin,
+        const Vector3& rayDir,
+        float          rayLength) const;
 
-	// 解放
-	void Release(void);
+    // 投擲中アイテムの一覧
+    const std::vector<Item*>& GetThrowingItems(void) const;
 
-	// アイテム生成
-	Item* Create(const Item::ItemData& data);
-
-	// 照準に当たっているアイテムを返す
-	// 壁で遮られている場合は nullptr
-	// rayOrigin : レイの始点（カメラ位置）
-	// rayDir    : レイの方向（カメラ前方、正規化済み）
-	// rayLength : レイの長さ（= 拾える最大距離）
-	Item* GetAimedItem(
-		const VECTOR& rayOrigin,
-		const VECTOR& rayDir,
-		float rayLength) const;
-
-	// 投擲中アイテムの一覧（EnemyManagerの命中判定に使う）
-	const std::vector<Item*>& GetThrowingItems(void) const;
-
-	// 全アイテムの一覧
-	const std::vector<Item*>& GetAllItems(void) const;
+    // 全アイテムの一覧
+    const std::vector<Item*>& GetAllItems(void) const;
 
 private:
 
-	// 全アイテム
-	std::vector<Item*> items_;
+    SpawnItemFunc spawnFunc_;
 
-	// 投擲中アイテム（毎フレームUpdateFlyingListで再構築）
-	std::vector<Item*> flyingItems_;
+    std::vector<Item*> items_;
+    std::vector<Item*> flyingItems_;
 
-	// 遮蔽チェック用コライダー（GetAimedItemのステージ判定に使う）
-	std::vector<const ColliderBase*> hitColliders_;
-
-	// CSVからアイテムデータを読み込んで生成
-	void LoadCsvData(void);
-
-	// 投擲中リストを毎フレーム更新
-	void UpdateThrowingList(void);
-
-	// 納品済みアイテムを削除
-	void RemoveDeliveredItems(void);
+    void LoadCsvData(void);
+    void UpdateThrowingList(void);
+    void RemoveDeliveredItems(void);
 };
-

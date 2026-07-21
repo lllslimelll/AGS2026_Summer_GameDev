@@ -3,12 +3,12 @@
 #include <DxLib.h>
 #include "../../../Application.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Collision/ColliderBase.h"
-#include "../../../Collision/ColliderModel.h"
 #include "Item.h"
 #include "ItemManager.h"
 
-ItemManager::ItemManager(void)
+ItemManager::ItemManager(SpawnItemFunc spawnFunc)
+    : ActorBase()
+    , spawnFunc_(spawnFunc)
 {
 }
 
@@ -18,95 +18,66 @@ ItemManager::~ItemManager(void)
 
 void ItemManager::Init(void)
 {
-	LoadCsvData();
+    LoadCsvData();
 }
 
 void ItemManager::Update(void)
 {
-	for (auto& item : items_)
-	{
-		item->Update();
-	}
-
-	// 納品済みアイテムを掃除
-	RemoveDeliveredItems();
+    for (auto& item : items_)
+    {
+        item->Update();
+    }
+    RemoveDeliveredItems();
 }
 
 void ItemManager::Draw(void)
 {
-	for (auto& item : items_)
-	{
-		item->Draw();
-	}
+    for (auto& item : items_)
+    {
+        item->Draw();
+    }
 }
 
 void ItemManager::Release(void)
 {
-	for (auto& item : items_)
-	{
-		item->Release();
-		delete item;
-	}
-	// アイテムとコライダーをクリア
-	items_.clear();
+    // Item の解放は GameScene(actors_) が担当するため
+    // ここではリストをクリアするだけ
+    items_.clear();
+    flyingItems_.clear();
 }
 
 Item* ItemManager::Create(const Item::ItemData& data)
 {
-	Item* item = nullptr;
-
-	// 種別事にアイテム生成
-	switch (data.type)
-	{
-	case Item::TYPE::type1:
-		item = new Item(data);
-		break;
-	case Item::TYPE::type2:
-		item = new Item(data);
-		break;
-	case Item::TYPE::type3:
-		item = new Item(data);
-		break;
-	default:
-		break;
-	}
-
-	if (item != nullptr)
-	{
-		item->Init(); // 初期化
-		items_.emplace_back(item); // アイテムリストに追加
-	}
-
-	// アイテムを返す
-	return item;
+    // Item の生成は GameScene(World 相当)に委譲する
+    Item* item = spawnFunc_(data);
+    if (item != nullptr)
+    {
+        items_.emplace_back(item);
+    }
+    return item;
 }
 
 Item* ItemManager::GetAimedItem(
-    const VECTOR& rayOrigin,   // カメラ位置
-    const VECTOR& rayDir,      // カメラ前方（正規化済み）
-    float rayLength) const     // レイの長さ＝拾える最大距離
+    const Vector3& rayOrigin,
+    const Vector3& rayDir,
+    float          rayLength) const
 {
-	VECTOR rayEnd = VAdd(rayOrigin, VScale(rayDir, rayLength));
+    Vector3 rayEnd = rayOrigin + rayDir * rayLength;
+    Item* aimed = nullptr;
+    float   nearest = rayLength;
 
-	Item* aimed = nullptr;
-	float  nearest = rayLength;
+    for (auto item : items_)
+    {
+        if (!item->IsAimed(rayOrigin, rayEnd)) continue;
 
-	for (auto item : items_)
-	{
-		// アイテムがレイに当たってるか確認
-		if (!item->IsAimed(rayOrigin, rayEnd)) continue;
-
-		// アイテムとカメラの距離を計算
-		float dist = VSize(VSub(item->GetTransform().pos, rayOrigin));
-		
-		if (aimed == nullptr || dist < nearest)
-		{
-			aimed = item;
-			nearest = dist;
-		}
-	}
-	// アイテムを返す
-	return aimed;
+        float dist = Vector3::Distance(item->GetPos(), rayOrigin);
+        if (aimed == nullptr || dist < nearest)
+        {
+            aimed = item;
+            nearest = dist;
+        }
+    }
+    return aimed;
 }
 
 const std::vector<Item*>& ItemManager::GetAllItems(void) const
@@ -114,75 +85,65 @@ const std::vector<Item*>& ItemManager::GetAllItems(void) const
     return items_;
 }
 
+const std::vector<Item*>& ItemManager::GetThrowingItems(void) const
+{
+    return flyingItems_;
+}
+
 void ItemManager::LoadCsvData(void)
 {
-    // ファイルの読み込み
-	std::ifstream ifs = std::ifstream(Application::PATH_CSV + "ItemData.csv");
-	// エラー発生
-	if (!ifs) return;
+    std::ifstream ifs(Application::PATH_CSV + "ItemData.csv");
+    if (!ifs) return;
 
-	// ファイルを1行ずつ読み込む
-	std::string line; // 1行の文字情報
-	std::vector<std::string> strSplit;  // 1行を1文字の動的配列に分割
+    std::string line;
+    std::vector<std::string> strSplit;
+    bool isHeader = true;
 
-	bool isHeader = true;
+    while (getline(ifs, line))
+    {
+        if (isHeader) { isHeader = false; continue; }
+        if (line.empty() || line.find_first_not_of(",\r\n ") == std::string::npos) continue;
 
-	while (getline(ifs, line)) 
-	{
-		if (isHeader) 
-		{
-			isHeader = false;
-			continue;
-		}
+        strSplit = AsoUtility::Split(line, ',');
 
-		// 空行スキップ
-		if (line.empty() || line.find_first_not_of(",\r\n ") == std::string::npos) continue;
+        Item::ItemData data = Item::ItemData();
+        int idx = 0;
 
-		// 1行をカンマ区切りで分割
-		strSplit = AsoUtility::Split(line, ',');
+        data.id = stoi(strSplit[idx++]);
+        data.type = static_cast<Item::TYPE>(stoi(strSplit[idx++]));
+        data.grade = static_cast<Item::GRADE>(stoi(strSplit[idx++]));
+        data.value = stoi(strSplit[idx++]);
+        data.defaultPos = Vector3(
+            stof(strSplit[idx++]),
+            stof(strSplit[idx++]),
+            stof(strSplit[idx++])
+        );
 
-		Item* item = nullptr;
-
-		// 構造体に合わせて読み込みデータを格納
-		Item::ItemData data = Item::ItemData();
-		int idx = 0;
-		// ID
-		data.id = stoi(strSplit[idx++]);
-		// 種別
-		data.type = static_cast<Item::TYPE>(stoi(strSplit[idx++]));
-		// グレード
-		data.grade = static_cast<Item::GRADE>(stoi(strSplit[idx++]));
-		// 価値
-		data.value = stoi(strSplit[idx++]);
-		// 初期座標
-		data.defaultPos =
-		{
-			stof(strSplit[idx++]), // X
-			stof(strSplit[idx++]), // Y
-			stof(strSplit[idx++])  // Z
-		};
-
-		// アイテム生成
-		Create(data);
-	}
-
-	ifs.close();
+        Create(data);
+    }
 }
 
 void ItemManager::RemoveDeliveredItems(void)
 {
-	auto it = items_.begin();
-	while (it != items_.end())
-	{
-		if ((*it)->GetState() == Item::STATE::DELIVERED)
-		{
-			(*it)->Release();
-			delete* it;
-			it = items_.erase(it);  // eraseは次のイテレータを返す
-		}
-		else
-		{
-			++it;
-		}
-	}
+    // 納品済みアイテムをリストから除外する
+    // 実体の解放は GameScene の actors_ が担当するため erase のみ
+    for (auto it = items_.begin(); it != items_.end();)
+    {
+        if ((*it)->GetState() == Item::STATE::DELIVERED)
+            it = items_.erase(it);  // eraseが次のイテレータを返す
+        else
+            ++it;
+    }
+}
+
+void ItemManager::UpdateThrowingList(void)
+{
+    flyingItems_.clear();
+    for (auto item : items_)
+    {
+        if (item->GetState() == Item::STATE::THROW)
+        {
+            flyingItems_.push_back(item);
+        }
+    }
 }

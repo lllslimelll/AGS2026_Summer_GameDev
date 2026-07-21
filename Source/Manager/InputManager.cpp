@@ -39,7 +39,8 @@ void InputManager::Init(void)
 void InputManager::Update(void)
 {
 	// マウスの座標とホイール回転量を取得
-	GetMousePoint(&mousePos_.x, &mousePos_.y);
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
 	mouseWheelRot_ = GetMouseWheelRotVol();
 
 	// スティック状態の更新
@@ -111,14 +112,8 @@ bool InputManager::IsReleased(InputCommand cmd) const
 	return !currentInputInfo_.at(cmd) && lastInputInfo_.at(cmd);
 }
 
-Vector2 InputManager::GetMousePos(void) const
-{
-	return mousePos_;
-}
-
 InputManager::InputManager(void)
 	:
-	mousePos_(),
 	dInState_(),
 	xInState_()
 {

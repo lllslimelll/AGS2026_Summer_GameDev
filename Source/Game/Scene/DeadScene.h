@@ -32,4 +32,3 @@ private:
     void UpdateDeadMenu(void);
     void DrawDeadMenu(void);
 };
-

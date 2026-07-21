@@ -3,11 +3,9 @@
 #include "SceneManager.h"
 #include "DeadScene.h"
 
-
 DeadScene::DeadScene()
-	:
-	SceneBase(),
-	menuIndex_(-1)
+    : SceneBase()
+    , menuIndex_(-1)
 {
 }
 
@@ -21,12 +19,12 @@ void DeadScene::Init(void)
 
 void DeadScene::Update(void)
 {
-	UpdateDeadMenu();
+    UpdateDeadMenu();
 }
 
 void DeadScene::Draw(void)
 {
-	DrawDeadMenu();
+    DrawDeadMenu();
 }
 
 void DeadScene::UpdateDeadMenu(void)
@@ -50,7 +48,7 @@ void DeadScene::UpdateDeadMenu(void)
     bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
     if (mouseMoved)
     {
-        const char* labels[MENU_MAX] = { "リトライ", " タイトルへ" };
+        const char* labels[MENU_MAX] = { "リトライ", "タイトルへ" };
 
         constexpr int ITEM_SPAN = 110;
         constexpr int MENU_FONT = 70;
@@ -121,19 +119,19 @@ void DeadScene::DrawDeadMenu(void)
     constexpr int ITEM_SPAN = 110;
     SetFontSize(MENU_FONT);
 
-    const char* labels[MENU_MAX] = { "リトライ", " タイトルへ" };
+    const char* labels[MENU_MAX] = { "リトライ", "タイトルへ" };
     int baseY = screenH / 2 - 20;
 
     for (int i = 0; i < MENU_MAX; i++)
     {
-        bool selected = (i == menuIndex_);
+        bool         selected = (i == menuIndex_);
         unsigned int color = selected ? 0xffff60 : 0xaaaaaa;
 
         int textW = GetDrawStringWidth(labels[i], (int)strlen(labels[i]));
         int x = (screenW - textW) / 2;
         int y = baseY + i * ITEM_SPAN;
 
-        if (selected) { DrawString(x - 60, y, ">", color); }
+        if (selected) DrawString(x - 60, y, ">", color);
         DrawString(x, y, labels[i], color);
     }
 

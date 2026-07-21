@@ -2,14 +2,14 @@
 #include <fstream>
 #include "../../../../Application.h"
 #include "../../../../Utility/AsoUtility.h"
-#include "EnemyRat.h"
-#include "EnemyRobot.h"
 #include "EnemyGiant.h"
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager(Player& player)
-	:
-	player_(player)
+EnemyManager::EnemyManager(Player& player, SpawnEnemyFunc spawnFunc)
+	: 
+	ActorBase(),
+	player_(player),
+	spawnFunc_(spawnFunc)
 {
 }
 
@@ -104,36 +104,12 @@ void EnemyManager::LoadCsvData(void)
 
 EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 {
-	EnemyBase* enemy = nullptr;
-
-	// Ží•ÊŽ–‚É“G‚ð¶¬
-	switch (data.type)
-	{
-	case EnemyBase::TYPE::RAT:
-		enemy = new EnemyRat(data, player_);
-		break;
-	case EnemyBase::TYPE::ROBOT:
-		enemy = new EnemyRobot(data, player_);
-		break;
-	case EnemyBase::TYPE::GIANT:
-		enemy = new EnemyGiant(data, player_);
-		break;
-	default:
-		break;
-	}
+	EnemyBase* enemy = spawnFunc_(data);
 
 	if (enemy != nullptr)
 	{
-		enemy->Init(); // ‰Šú‰»
-		enemies_.emplace_back(enemy); // “GƒŠƒXƒg‚É’Ç‰Á
+		enemies_.emplace_back(enemy);
 	}
 
 	return enemy;
-
-	//// “G‚Ì¶¬
-	//EnemyRat* enemyRat = new EnemyRat();
-	//// “GƒŠƒXƒg‚É’Ç‰Á
-	//enemies_.emplace_back(enemyRat);
-	//// “G‚Ì‰Šú‰»
-	//enemyRat->Init();
 }

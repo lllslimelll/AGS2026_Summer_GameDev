@@ -112,26 +112,6 @@ float Math::Bezier(float p1, float p2, float p3, float t)
 // ---------------------------------------------------------------
 // Šp“x
 // ---------------------------------------------------------------
-float Math::ToRadian(float deg)
-{
-    return deg * DEG2RAD;
-}
-
-double Math::ToRadian(double deg)
-{
-    return deg * (static_cast<double>(PI) / 180.0);
-}
-
-float Math::ToDegree(float rad)
-{
-    return rad * RAD2DEG;
-}
-
-double Math::ToDegree(double rad)
-{
-    return rad * (180.0 / static_cast<double>(PI));
-}
-
 double Math::DegIn360(double deg)
 {
     deg = std::fmod(deg, 360.0);

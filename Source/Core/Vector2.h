@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <DxLib.h>
 
 struct Vector2
 {
@@ -51,6 +52,10 @@ struct Vector2
     static float   DistanceSquared(const Vector2& a, const Vector2& b);
     // 線形補間
     static Vector2 Lerp(const Vector2& a, const Vector2& b, float t);
+
+    // DxLib用の変換
+    VECTOR ToVECTOR(void) const { return { x, y, 0.0f }; }
+    static Vector2 FromVECTOR(const VECTOR& v) { return { v.x, v.y }; }
 
     // 定数（cpp に定義）
     static const Vector2 ZERO;

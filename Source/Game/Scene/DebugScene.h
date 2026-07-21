@@ -5,39 +5,33 @@
 #include "SceneBase.h"
 
 class Camera;
+class Planet;
+class Rocket;
 class StageManager;
 
 class DebugScene : public SceneBase
 {
 public:
 
-	// コンストラクタ
-	DebugScene(void);
-	// デストラクタ
-	~DebugScene(void) override;
+    DebugScene(void);
+    ~DebugScene(void) override;
 
-	// ロード
-	void Load(void) override {};
-	// 初期化
-	void Init(void) override;
-	// 更新
-	void Update(void) override;
-	// 描画
-	void Draw(void) override;
+    void Load(void)   override {}
+    void Init(void)   override;
+    void Update(void) override;
+    void Draw(void)   override;
 
 private:
 
-	std::unique_ptr<Camera> camera_;
+    std::unique_ptr<Camera> camera_;
 
-	// ステージ
-	StageManager* stageMng_;
+    Planet* planet_ = nullptr;
+    Rocket* rocket_ = nullptr;
+    StageManager* stageMng_ = nullptr;
 
-	// デバッグポイント群
-	std::vector<VECTOR> points_;
+    // デバッグポイント（DxLib の描画関数に渡すため VECTOR で保持）
+    std::vector<VECTOR> points_;
 
-	// デバッグポイントの配置
-	void PlaceDebugPoint(void);
-	// デバッグポイントの保存
-	void SavePoints(void);
+    void PlaceDebugPoint(void);
+    void SavePoints(void);
 };
-

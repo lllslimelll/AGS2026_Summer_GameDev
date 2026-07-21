@@ -1,6 +1,7 @@
 // Core/Vector3.h
 #pragma once
 #include <string>
+#include <DxLib.h>
 
 struct Vector3
 {
@@ -9,12 +10,17 @@ struct Vector3
     float z = 0.0f;
 
     // コンストラクタ
-    Vector3(void) = default;
-    Vector3(float x, float y, float z);
+    constexpr Vector3() = default;
+
+    constexpr Vector3(float x, float y, float z)
+        : x(x), y(y), z(z)
+    {
+    }
 
     // 演算子オーバーロード
     Vector3  operator+ (const Vector3& other) const;
     Vector3  operator- (const Vector3& other) const;
+    Vector3  operator* (const Vector3& other) const;
     Vector3  operator* (float scalar)         const;
     Vector3  operator/ (float scalar)         const;
     Vector3  operator- (void)                 const;
@@ -64,6 +70,10 @@ struct Vector3
     static float   DistanceSquared(const Vector3& a, const Vector3& b);
     // 線形補間（t: 0.0f?1.0f）
     static Vector3 Lerp(const Vector3& a, const Vector3& b, float t);
+
+    // DxLib用の変換
+    VECTOR    ToVECTOR(void) const { return { x, y, z }; }
+    static Vector3 FromVECTOR(const VECTOR& v) { return { v.x, v.y, v.z }; }
 
     // 定数
     static const Vector3 ZERO;

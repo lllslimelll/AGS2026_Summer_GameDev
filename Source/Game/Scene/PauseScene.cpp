@@ -1,5 +1,5 @@
 #include <DxLib.h>
-#include "../Manager/InputManager.h"
+#include "../../Manager/InputManager.h"
 #include "SceneManager.h"
 #include "PauseScene.h"
 

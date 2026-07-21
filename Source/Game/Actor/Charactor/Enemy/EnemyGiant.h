@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include "../../../../Core/Vector3.h"
 #include "EnemyBase.h"
 
 class Player;
@@ -36,65 +37,47 @@ public:
     // デストラクタ
     ~EnemyGiant(void) override;
 
-protected:
+    void Init(void) override;
+    void Draw(void) override;
 
-    void InitLoad(void)      override;
-    void InitTransform(void) override;
-    void InitCollider(void)  override;
-    void InitAnimation(void) override;
-    void InitPost(void)      override;
+protected:
 
     void UpdateProcess(void)     override;
     void UpdateProcessPost(void) override;
 
-    void Draw(void) override;
-
 private:
-    int attackHandFrame_ = 0;
-    // スケール
+    // コライダー定数
+    static constexpr Vector3 COL_CAPSULE_TOP_LOCAL_POS = Vector3(0.0f, 160.0f, 0.0f);
+    static constexpr Vector3 COL_CAPSULE_DOWN_LOCAL_POS = Vector3(0.0f, 50.0f, 0.0f);
+    static constexpr float   COL_CAPSULE_RADIUS = 40.0f;
+
+    // モデル定数
     static constexpr float SCALE = 1.0f;
+    static constexpr Vector3 DEFAULT_LOCAL_ROT = Vector3(0.0f, 0.0f, 0.0f);
 
-    // モデルローカル回転
-    static constexpr VECTOR DEFAULT_LOCAL_ROT =
-    { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
+    // 視野パラメータ
+    static constexpr float VIEW_DIST = 1000.0f;
+    static constexpr float VIEW_ANGLE = 60.0f;
+    static constexpr float VIEW_HALF_FOV = VIEW_ANGLE * 0.5f * 3.14159265f / 180.0f;
 
-    // 地面衝突用線分
-    static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 120.0f,  0.0f };
-    static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f,  0.0f };
-
-    // カプセルコライダ
-    static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 160.0f, 0.0f };
-    static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f,  50.0f, 0.0f };
-    static constexpr float  COL_CAPSULE_RADIUS = 40.0f;
-
-    // 視野
-    static constexpr float VIEW_DIST = 1000.0f; // 視野距離
-    static constexpr float VIEW_ANGLE = 60.0f;  // 視野角（度）
-    static constexpr float VIEW_HALF_FOV = VIEW_ANGLE * 0.5f * DX_PI_F / 180.0f;  // 半視野角（ラジアン）
-
-    // 攻撃用球体コライダ（手フレームに追従）
+    // 攻撃パラメータ
     static constexpr float ATTACK_SPHERE_RADIUS = 20.0f;
- 
+    static constexpr float ATTACK_DAMAGE = 20.0f;
 
-    // AI距離パラメータ
+    // 移動・AI距離パラメータ
     static constexpr float SPEED_PATROL = 1.0f;
     static constexpr float SPEED_CHASE = 3.0f;
-    static constexpr float DIST_ATTACK = 100.0f;  // 攻撃距離
-    static constexpr float DIST_CHASE = 500.0f;  // チェイス解除距離
-    static constexpr float ATTACK_DAMAGE = 20;
+    static constexpr float DIST_ATTACK = 100.0f;
+    static constexpr float DIST_CHASE = 500.0f;
 
-    VECTOR spawnPos_ = AsoUtility::VECTOR_ZERO;
-    // 状態
-    STATE state_;
+    // 攻撃フレームインデックス
+    int attackHandFrame_ = -1;
 
-    // 更新ステップ（タイマー）
-    float step_;
+    STATE state_ = STATE::NONE;
+    float step_ = 0.0f;
+    bool  attackHit_ = false;
 
-    // 視野用トランスフォーム
-    Transform viewRangeTransform_;
-
-    // 攻撃ヒット済みフラグ（1回の攻撃で1回だけダメージ）
-    bool attackHit_;
+    Vector3 spawnPos_;
 
     // 状態遷移
     void ChangeState(STATE state);
@@ -107,7 +90,7 @@ private:
     void ChangeStateReturn(void);
     void ChangeStateEnd(void);
 
-    // 更新系
+    // 更新
     void UpdateNone(void);
     void UpdateThink(void);
     void UpdateIdle(void);
@@ -117,15 +100,9 @@ private:
     void UpdateReturn(void);
     void UpdateEnd(void);
 
-    // 巡回方向設定
-    void SetMoveDirToTarget(const VECTOR& target);
-
-    // 索敵
-    bool InSearchCone(void) const;
-
-    // プレイヤーとの距離
-    float DistToPlayer(void) const;
-
-    // 押し戻し処理（敵とプレイヤーのカプセル同士）
-    void PushBackFromPlayer(void);
+    // ヘルパー
+    void  SetMoveDirToTarget(const Vector3& target);
+    bool  InSearchCone(void)  const;
+    float DistToPlayer(void)  const;
+    void  PushBackFromPlayer(void);
 };

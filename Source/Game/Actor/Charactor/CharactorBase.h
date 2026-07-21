@@ -1,100 +1,85 @@
 #pragma once
+#include <map>
 #include <functional>
 #include <memory>
 #include "../ActorBase.h"
 class AnimationController;
+class CapsuleComponent;
 
 class CharactorBase : public ActorBase
 {
 public:
 
-	// 衝突判定種別
-	enum class COLLIDER_TYPE
-	{
-		GROUND_LINE,
-		CAPSULE,
-		VIEW_RANGE,
-		MAX,
-	};
+    CharactorBase(void);
+    virtual ~CharactorBase(void) override;
 
-	// コンストラクタ
-	CharactorBase(void);
+    void Init(void)    override;
+    void Update(void)  override;
+    void Draw(void)    override;
+    void Release(void) override;
 
-	// デストラクタ
-	virtual ~CharactorBase(void);
-
-	// 更新
-	virtual void Update(void) override;
-
-	virtual void Draw(void) override;
-
-	void Release() override;
+    // 当たり判定の通知
+    void OnHit(const HitResult& hit)     override;
+    void OnOverlap(const HitResult& hit) override;
 
 protected:
 
-	// アニメーション
-	AnimationController* animCtrl_;
+    // アニメーション
+    AnimationController* animCtrl_ = nullptr;
 
-	// 状態
-	int stateBase_;
+    // 状態
+    int stateBase_ = -1;
 
-	// 状態遷移時の初期処理
-	std::map<int, std::function<void(void)>> stateChanges_;
+    // 状態遷移時の初期処理
+    std::map<int, std::function<void(void)>> stateChanges_;
 
-	// 毎フレームの更新処理
-	std::function<void(void)> stateUpdate_;
+    // 毎フレームの更新処理
+    std::function<void(void)> stateUpdate_;
 
-	// カメラの前方向（キャラの前方向）
-	VECTOR faceDir_;
+    // 向き
+    Vector3 faceDir_ = Vector3::FORWARD;
+    Vector3 moveDir_ = Vector3::ZERO;
 
-	// 移動方向
-	VECTOR moveDir_;
+    // 移動
+    float   moveSpeed_ = 0.0f;
+    Vector3 movePow_ = Vector3::ZERO;
 
-	// 移動スピード
-	float moveSpeed_;
+    // ジャンプ
+    Vector3 jumpPow_ = Vector3::ZERO;
+    bool    isJump_ = false;
+    float   stepJump_ = 0.0f;
 
-	// 移動量
-	VECTOR movePow_;
+    // 移動前座標
+    Vector3 prevPos_ = Vector3::ZERO;
 
-	// ジャンプ量
-	VECTOR jumpPow_;
+    // 丸影
+    int imgShadow_ = -1;
 
-	// 移動前の座標
-	VECTOR prevPos_;
+    // 定数
+    static constexpr float MAX_FALL_SPEED = 5.0f;
+    static constexpr int   CNT_TRY_COLLISION = 20;
+    static constexpr float COLLISION_BACK_DIS = 1.0f;
 
-	// ジャンプ判定
-	bool isJump_;
-	// ジャンプの入力受付時間
-	float stepJump_;
+    // 状態遷移
+    virtual void ChangeState(int state);
 
-	// 丸影画像
-	int imgShadow_;
+    // 移動方向に応じた回転
+    void Rotate(void);
 
-	// 最大落下速度
-	static constexpr float MAX_FALL_SPEED = 5.0f;
+    // 重力計算
+    void CalcGravityPow(void);
 
-	// 衝突時の押し戻し試行回数
-	static constexpr int CNT_TRY_COLLISION = 20;
-	// 衝突時の押し戻し量
-	static constexpr float COLLISION_BACK_DIS = 1.0f;
+    // 衝突判定
+    virtual void CollisionReserve(void) {}
+    void Collision(void);
 
-	// 更新系
-	virtual void UpdateProcess(void) = 0;
-	virtual void UpdateProcessPost(void) = 0;
+    // 更新系
+    virtual void UpdateProcess(void) = 0;
+    virtual void UpdateProcessPost(void) = 0;
 
-	// 状態遷移
-	virtual void ChangeState(int state);
+private:
 
-	// 移動方向に応じた遅延回転
-	void Rotate(void);
-
-	// 重力計算
-	void CalcGravityPow(void);
-
-	// 衝突判定
-	virtual void CollisionReserve(void) {};
-	void Collision(void);
-	void CollisionGravity(void);
-	void CollisionCapsule(void);
+    // 押し戻し処理（OnHit から呼ばれる）
+    void PushBackGravity(const HitResult& hit);
+    void PushBackCapsule(const HitResult& hit);
 };
-

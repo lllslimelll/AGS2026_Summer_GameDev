@@ -76,8 +76,6 @@ public:
 	// 離されたか
 	bool IsReleased(InputCommand cmd) const;
 
-	// マウス座標の取得
-	Vector2 GetMousePos(void) const;
 	// マウスホイールの回転量を取得
 	int GetMouseWheelRot(void) const;
 
@@ -176,7 +174,6 @@ private:
 	std::unordered_map<InputCommand, bool> currentInputInfo_;
 	std::unordered_map<InputCommand, bool> lastInputInfo_;
 
-	Vector2 mousePos_;	// 座標
 	int mouseWheelRot_; // ホイール回転量
 
 	// スティック状態

@@ -1,146 +1,114 @@
 #include <fstream>
 #include <DxLib.h>
-#include "../Common/Vector2.h"
-#include "../Manager/InputManager.h"
+#include "../../Core/Vector2.h"
+#include "../../Manager/InputManager.h"
+#include "../../Component/StaticMeshComponent.h"
 #include "SceneManager.h"
 #include "../Camera/Camera.h"
-#include "../Object/Actor/Stage/StageManager.h"
-#include "../Object/Actor/Stage/Planet.h"
-#include "../Object/Collider/ColliderModel.h"
+#include "../Actor/Stage/Planet.h"
+#include "../Actor/Stage/Rocket.h"
+#include "../Actor/Stage/StageManager.h"
 #include "DebugScene.h"
 
 DebugScene::DebugScene(void)
-	:
-	SceneBase(),
-	stageMng_(nullptr)
+    : SceneBase()
 {
 }
 
 DebugScene::~DebugScene(void)
 {
-	// ステージ解放
-	stageMng_->Release();
-	delete stageMng_;
-
-	// デバッグポイント群
-	points_.clear();
+    if (stageMng_ != nullptr)
+    {
+        stageMng_->Release();
+        delete stageMng_;
+    }
+    if (planet_ != nullptr) { planet_->Release(); delete planet_; }
+    if (rocket_ != nullptr) { rocket_->Release(); delete rocket_; }
 }
 
 void DebugScene::Init(void)
 {
-	// ステージ生成
-	stageMng_ = new StageManager();
-	stageMng_->Init();
+    // Planet / Rocket を生成してから StageManager に渡す
+    planet_ = new Planet();
+    planet_->Init();
+    rocket_ = new Rocket();
+    rocket_->Init();
+    stageMng_ = new StageManager(planet_, rocket_);
 
-	// カメラ
-	camera_ = std::make_unique<Camera>();
-	camera_->ChangeMode(Camera::MODE::FREE);
+    // カメラ（FREE モードで自由移動）
+    camera_ = std::make_unique<Camera>();
+    camera_->Init();
+    camera_->ChangeMode(Camera::MODE::FREE);
 }
 
 void DebugScene::Update(void)
 {
-	// ステージ更新
-	stageMng_->Update();
-
-	// カメラ更新
-	camera_->Update();
-
-	// デバッグポイントの配置
-	PlaceDebugPoint();
+    stageMng_->Update();
+    camera_->Update();
+    PlaceDebugPoint();
 }
 
 void DebugScene::Draw(void)
 {
-	// ステージ描画
-	stageMng_->Draw();
+    camera_->SetBeforeDraw();
+    stageMng_->Draw();
 
-	// デバッグポイント群を球体描画
-	int y = 20;
-	for (const auto& point : points_)
-	{
-		DrawSphere3D(
-			point,
-			30.0f,
-			16,
-			GetColor(255, 0, 0),
-			GetColor(255, 0, 0),
-			false );
-
-		DrawFormatString(20, y,
-			0x000000, "座標（%.2f, %.2f, %.2f）",
-			point.x, point.y, point.z);
-
-		y += 20;
-	}
+    int y = 20;
+    for (const auto& point : points_)
+    {
+        DrawSphere3D(point, 30.0f, 16,
+            GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+        DrawFormatString(20, y, 0x000000,
+            "%.2f, %.2f, %.2f", point.x, point.y, point.z);
+        y += 20;
+    }
 }
 
 void DebugScene::PlaceDebugPoint(void)
 {
-	const auto& ins = InputManager::GetInstance();
+    const auto& ins = InputManager::GetInstance();
 
-	// クリックした場所にデバッグポイント群を設置
-	if (ins.IsTriggered(InputManager::InputCommand::SET_POINT))
-	{
-		// マウス座標の取得
-		Vector2 mousePos = ins.GetMousePos();
+    if (ins.IsTriggered(InputManager::InputCommand::SET_POINT))
+    {
+        int mouseX, mouseY;
+        GetMousePoint(&mouseX, &mouseY);
+        VECTOR screenPos = { static_cast<float>(mouseX),
+                             static_cast<float>(mouseY),
+                             1.0f };
+        VECTOR worldPos = ConvScreenPosToWorldPos(screenPos);
 
-		// スクリーン座標をVECTOR構造体に変換
-		VECTOR screenPos = VECTOR();
-		screenPos.x = static_cast<float>(mousePos.x);
-		screenPos.y = static_cast<float> (mousePos.y);
-		// ｚが１．０ｆでカメラの最奥になる
-		screenPos.z = 1.0f;
+        auto* mesh = stageMng_->GetPlanet().GetComponent<StaticMeshComponent>();
+        if (mesh == nullptr) return;
 
-		// マウスの２Ｄ座標から３Ｄ座標へ変換
-		VECTOR worldPos = ConvScreenPosToWorldPos(screenPos);
+        MV1_COLL_RESULT_POLY hit = MV1CollCheck_Line(
+            mesh->GetModelId(), -1,
+            camera_->GetPos().ToVECTOR(),
+            worldPos);
 
-		// ステージのモデルコライダを取得
-		const ColliderBase* collder = stageMng_->GetPlanet().GetOwnCollider(
-			static_cast<int>(Planet::COLLIDER_TYPE::MODEL));
-		
-		if (collder == nullptr) return;
+        if (hit.HitFlag)
+        {
+            points_.push_back(hit.HitPosition);
+        }
+    }
 
-		const ColliderModel* colliderModel =
-			dynamic_cast<const ColliderModel*>(collder);
+    if (ins.IsTriggered(InputManager::InputCommand::DELETE_POINT))
+    {
+        if (!points_.empty()) points_.pop_back();
+    }
 
-		// カメラの位置からカメラ最奥のワールド座標へ向けてレイを飛ばす
-		auto hit = MV1CollCheck_Line(
-			colliderModel->GetFollow()->modelId, -1,
-			camera_->GetPos(),
-			worldPos);
-
-		if (hit.HitFlag)
-		{
-			//衝突地点をデバッグポイント群に追加
-			points_.push_back(hit.HitPosition);
-		}
-	}
-
-	// 右クリックで最後のデバッグポイントを削除
-	if (ins.IsTriggered(InputManager::InputCommand::DELETE_POINT))
-	{
-		if (points_.size() > 0)
-		{
-			points_.pop_back();
-		}
-	}
-
-	// デバッグポイントの保存
-	if (ins.IsTriggered(InputManager::InputCommand::SAVE_POINT))
-	{
-		SavePoints();
-	}
+    if (ins.IsTriggered(InputManager::InputCommand::SAVE_POINT))
+    {
+        SavePoints();
+    }
 }
 
 void DebugScene::SavePoints(void)
 {
-	std::ofstream ofs("Data/Csv/PointSave.txt");
-	if (!ofs) return;
+    std::ofstream ofs("Data/Csv/PointSave.txt");
+    if (!ofs) return;
 
-	// 形式: x y z
-	for (const VECTOR& p : points_) {
-		ofs << p.x << " " << p.y << " " << p.z << "\n";
-	}
-
-	ofs.close();
+    for (const VECTOR& p : points_)
+    {
+        ofs << p.x << " " << p.y << " " << p.z << "\n";
+    }
 }

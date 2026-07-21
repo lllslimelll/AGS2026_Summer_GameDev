@@ -1,77 +1,94 @@
+// Game/Actor/ActorBase.h
 #pragma once
 #include <vector>
-#include <map>
-#include "../../Common/Transform.h"
+#include <memory>
+#include "../../Component/ActorComponent.h"
+#include "../../Component/SceneComponent.h"
+#include "../../Core/Vector3.h"
+#include "../../Core/Quaternion.h"
+struct HitResult;
 class ResourceManager;
 class SceneManager;
-class ColliderBase;
 
 class ActorBase
 {
-
 public:
 
-	// コンストラクタ
-	ActorBase(void);
+    ActorBase(void);
+    virtual ~ActorBase(void);
 
-	// デストラクタ
-	virtual ~ActorBase(void);
+    // ---------------------------------------------------------------
+    // ライフサイクル
+    // Component を全部自動で呼ぶ
+    // 派生クラスは ActorBase::Init() を先に呼ぶ
+    // ---------------------------------------------------------------
+    virtual void Init(void);
+    virtual void Update(void);
+    virtual void Draw(void);
+    virtual void Release(void);
 
-	// 初期化
-	void Init(void);
+    // ---------------------------------------------------------------
+    // 当たり判定通知
+    // ---------------------------------------------------------------
+    virtual void OnHit(const HitResult& hit) {}
+    virtual void OnOverlap(const HitResult& hit) {}
 
-	// 更新
-	virtual void Update(void) = 0;
+    // ---------------------------------------------------------------
+    // Component 管理
+    // ---------------------------------------------------------------
+    template<typename T, typename... Args>
+    T* AddComponent(Args&&... args)
+    {
+        auto comp = std::make_unique<T>(
+            *this,
+            std::forward<Args>(args)...);
+        T* ptr = comp.get();
 
-	// 描画
-	virtual void Draw(void);
+        // SceneComponent なら RootComponent に attach
+        if (auto* scene = dynamic_cast<SceneComponent*>(ptr))
+        {
+            scene->AttachTo(rootComponent_);
+        }
 
-	// 解放
-	virtual void Release(void);
+        components_.push_back(std::move(comp));
+        return ptr;
+    }
 
-	// 大きさ、回転、座標等の取得
-	const Transform& GetTransform(void) const;
+    template<typename T>
+    T* GetComponent(void) const
+    {
+        for (auto& comp : components_)
+        {
+            if (auto* ptr = dynamic_cast<T*>(comp.get()))
+            {
+                return ptr;
+            }
+        }
+        return nullptr;
+    }
 
-	// 自身の衝突情報取得
-	const std::map<int, ColliderBase*>& GetOwnColliders(void) const
-	{
-		return ownColliders_;
-	}
+    // ---------------------------------------------------------------
+    // Transform アクセス（RootComponent 経由）
+    // ---------------------------------------------------------------
+    Vector3    GetPos(void) const;
+    Quaternion GetRot(void) const;
+    Vector3    GetScl(void)    const;
 
-	// 特定の自身の衝突情報
-	const ColliderBase* GetOwnCollider(int key) const;
+    void SetPos(const Vector3& pos);
+    void SetRot(const Quaternion& rot);
+    void SetScl(const Vector3& scl);
+
+    Vector3 GetForward(void) const;
+    Vector3 GetRight(void)   const;
+    Vector3 GetUp(void)      const;
+
+    SceneComponent* GetRootComponent(void) const;
 
 protected:
 
-	// シングルトン参照
-	ResourceManager& resMng_;
-	SceneManager& scnMng_;
+    ResourceManager& resMng_;
+    SceneManager& scnMng_;
 
-	// モデル制御の基本情報
-	Transform transform_;
-
-	// 自身の衝突情報
-	std::map<int, ColliderBase*> ownColliders_;
-
-	// 月の中央座標
-	static constexpr VECTOR MOON_CENTER_POS = { 0.0f, 0.0f, 0.0f };
-
-	// リソースロード
-	virtual void InitLoad(void) = 0;
-
-	// 大きさ、回転、座標の初期化
-	virtual void InitTransform(void) = 0;
-
-	// 衝突判定の初期化
-	virtual void InitCollider(void) = 0;
-
-	// アニメーションの初期化
-	virtual void InitAnimation(void) = 0;
-
-	// 初期化後の個別処理
-	virtual void InitPost(void) = 0;
-
-	// コライダーを CollisionManager に登録する
-	void RegisterCollider(ColliderBase* collider, int key);
-
+    SceneComponent* rootComponent_ = nullptr;
+    std::vector<std::unique_ptr<ActorComponent>> components_;
 };

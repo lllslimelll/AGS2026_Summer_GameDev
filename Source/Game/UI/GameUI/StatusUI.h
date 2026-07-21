@@ -1,5 +1,6 @@
 #pragma once
 #include "GameUI.h"
+
 class StatusUI : public GameUI
 {
 public:

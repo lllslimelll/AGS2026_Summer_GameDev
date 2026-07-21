@@ -1,21 +1,19 @@
 #include "../../../../Utility/AsoUtility.h"
+#include "../../../../Utility/Math.h"
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../Scene/SceneManager.h"
 #include "../../../../Common/AnimationController.h"
-#include "../../../../Collision/ColliderLine.h"
-#include "../../../../Collision/ColliderCapsule.h"
-#include "../../../../Collision/ColliderSphere.h"
-#include "../../../../Collision/ColliderModel.h"
+#include "../../../../Component/CapsuleComponent.h"
+#include "../../../../Component/StaticMeshComponent.h"
 #include "../../../../Collision/CollisionManager.h"
 #include "../Player.h"
 #include "EnemyGiant.h"
 
 EnemyGiant::EnemyGiant(const EnemyBase::EnemyData& data, Player& player)
-    :
-    EnemyBase(data, player),
-    state_(STATE::NONE),
-    step_(0.0f),
-    attackHit_(false)
+    : EnemyBase(data, player)
+    , state_(STATE::NONE)
+    , step_(0.0f)
+    , attackHit_(false)
 {
 }
 
@@ -23,84 +21,51 @@ EnemyGiant::~EnemyGiant(void)
 {
 }
 
-void EnemyGiant::InitLoad(void)
+void EnemyGiant::Init(void)
 {
-    transform_.SetModel(
-        resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_GIANT));
-}
+    // モデルロード
+    int modelId = resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_GIANT);
+    auto* mesh = AddComponent<StaticMeshComponent>(modelId);
+    mesh->SetProfile(CollisionProfileType::PAWN);
+    animCtrl_ = new AnimationController(modelId);
 
-void EnemyGiant::InitTransform(void)
-{
-    transform_.scl = VScale(AsoUtility::VECTOR_ONE, SCALE);
-    transform_.quaRot = Quaternion();
-    transform_.quaRotLocal = Quaternion::Euler(DEFAULT_LOCAL_ROT);
-    transform_.pos = defaultPos_;
-    // 月面の法線方向に少し浮かせる（地面にめり込まないように）
-    VECTOR upVec = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-    transform_.pos = VAdd(transform_.pos, VScale(upVec, 50.0f));  // 値は調整が必要
+    // アニメーション
+    animCtrl_->AddInFbx(static_cast<int>(ANIM_TYPE::IDLE), 10.0f, static_cast<int>(ANIM_TYPE::IDLE));
+    animCtrl_->AddInFbx(static_cast<int>(ANIM_TYPE::WALK), 10.0f, static_cast<int>(ANIM_TYPE::WALK));
+    animCtrl_->AddInFbx(static_cast<int>(ANIM_TYPE::RUN), 10.0f, static_cast<int>(ANIM_TYPE::RUN));
+    animCtrl_->AddInFbx(static_cast<int>(ANIM_TYPE::ATTACK), 10.0f, static_cast<int>(ANIM_TYPE::ATTACK));
 
-    transform_.Update();
-}
+    // トランスフォーム
+    SetScl(Vector3(SCALE, SCALE, SCALE));
+    SetRot(Quaternion::Euler(DEFAULT_LOCAL_ROT));
+    SetPos(defaultPos_ + Vector3::UP * 50.0f);
 
-void EnemyGiant::InitCollider(void)
-{
-    // 地面衝突用線分
-    ColliderLine* colLine = new ColliderLine(
-        CollisionProfileType::PAWN,
-        this,
-        COL_LINE_START_LOCAL_POS,
-        COL_LINE_END_LOCAL_POS);
-    RegisterCollider(colLine, static_cast<int>(COLLIDER_TYPE::GROUND_LINE));
+    // カプセルコライダー
+    constexpr float centerY = (COL_CAPSULE_TOP_LOCAL_POS.y + COL_CAPSULE_DOWN_LOCAL_POS.y) * 0.5f;
+    constexpr float halfH = (COL_CAPSULE_TOP_LOCAL_POS.y - COL_CAPSULE_DOWN_LOCAL_POS.y) * 0.5f;
+    auto* cap = AddComponent<CapsuleComponent>(COL_CAPSULE_RADIUS, halfH);
+    cap->SetProfile(CollisionProfileType::PAWN);
+    cap->SetLocalPos(Vector3(0.0f, centerY, 0.0f));
 
-    // 本体カプセル
-    ColliderCapsule* colCapsule = new ColliderCapsule(
-        CollisionProfileType::PAWN,
-        this,
-        COL_CAPSULE_TOP_LOCAL_POS,
-        COL_CAPSULE_DOWN_LOCAL_POS,
-        COL_CAPSULE_RADIUS);
-    RegisterCollider(colCapsule, static_cast<int>(COLLIDER_TYPE::CAPSULE));
-}
+    ActorBase::Init();
 
-void EnemyGiant::InitAnimation(void)
-{
-    animCtrl_ = new AnimationController(transform_.modelId);
-    animCtrl_->SetBlendTime(0.2f);
+    // 攻撃フレームを検索
+    attackHandFrame_ = MV1SearchFrame(modelId, "mixamorig:LeftHand");
 
-    animCtrl_->Add(static_cast<int>(ANIM_TYPE::IDLE), 20.0f,
-        resMng_.Load(ResourceManager::SRC::IDLE).path_);
-    animCtrl_->Add(static_cast<int>(ANIM_TYPE::WALK), 25.0f,
-        resMng_.Load(ResourceManager::SRC::RUN).path_);
-    animCtrl_->Add(static_cast<int>(ANIM_TYPE::RUN), 30.0f,
-        resMng_.Load(ResourceManager::SRC::FAST_RUN).path_);
-    animCtrl_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 200.0f,
-        resMng_.Load(ResourceManager::SRC::ATTACK).path_);
+    // 状態遷移バインド
+    stateChanges_.emplace(static_cast<int>(STATE::NONE), std::bind(&EnemyGiant::ChangeStateNone, this));
+    stateChanges_.emplace(static_cast<int>(STATE::THINK), std::bind(&EnemyGiant::ChangeStateThink, this));
+    stateChanges_.emplace(static_cast<int>(STATE::IDLE), std::bind(&EnemyGiant::ChangeStateIdle, this));
+    stateChanges_.emplace(static_cast<int>(STATE::PATROL), std::bind(&EnemyGiant::ChangeStatePatrol, this));
+    stateChanges_.emplace(static_cast<int>(STATE::CHASE), std::bind(&EnemyGiant::ChangeStateChase, this));
+    stateChanges_.emplace(static_cast<int>(STATE::ATTACK), std::bind(&EnemyGiant::ChangeStateAttack, this));
+    stateChanges_.emplace(static_cast<int>(STATE::RETURN), std::bind(&EnemyGiant::ChangeStateReturn, this));
+    stateChanges_.emplace(static_cast<int>(STATE::END), std::bind(&EnemyGiant::ChangeStateEnd, this));
 
-    animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-}
-
-void EnemyGiant::InitPost(void)
-{
-    stateChanges_.emplace(static_cast<int>(STATE::NONE),
-        std::bind(&EnemyGiant::ChangeStateNone, this));
-    stateChanges_.emplace(static_cast<int>(STATE::THINK),
-        std::bind(&EnemyGiant::ChangeStateThink, this));
-    stateChanges_.emplace(static_cast<int>(STATE::IDLE),
-        std::bind(&EnemyGiant::ChangeStateIdle, this));
-    stateChanges_.emplace(static_cast<int>(STATE::PATROL),
-        std::bind(&EnemyGiant::ChangeStatePatrol, this));
-    stateChanges_.emplace(static_cast<int>(STATE::CHASE),
-        std::bind(&EnemyGiant::ChangeStateChase, this));
-    stateChanges_.emplace(static_cast<int>(STATE::ATTACK),
-        std::bind(&EnemyGiant::ChangeStateAttack, this));
-    stateChanges_.emplace(static_cast<int>(STATE::RETURN),
-        std::bind(&EnemyGiant::ChangeStateReturn, this));
-    stateChanges_.emplace(static_cast<int>(STATE::END),
-        std::bind(&EnemyGiant::ChangeStateEnd, this));
-
-    attackHandFrame_ = MV1SearchFrame(transform_.modelId, "mixamorig:LeftHand");
     ChangeState(STATE::THINK);
 }
+
+// ===== ライフサイクル =====
 
 void EnemyGiant::UpdateProcess(void)
 {
@@ -114,12 +79,10 @@ void EnemyGiant::UpdateProcessPost(void)
     // 移動可能範囲外に出たら戻す
     if (state_ == STATE::PATROL && !InMovableRange())
     {
-        transform_.pos = prevPos_;
-        transform_.Update();
+        SetPos(prevPos_);
         ChangeState(STATE::THINK);
     }
 
-    // プレイヤーとの押し戻し
     PushBackFromPlayer();
 }
 
@@ -128,8 +91,8 @@ void EnemyGiant::Draw(void)
     CharactorBase::Draw();
 
 #ifdef _DEBUG
-    // 攻撃コライダの可視化
-    VECTOR handPos = MV1GetFramePosition(transform_.modelId, attackHandFrame_);
+    int modelId = GetComponent<StaticMeshComponent>()->GetModelId();
+    VECTOR handPos = MV1GetFramePosition(modelId, attackHandFrame_);
     DrawSphere3D(handPos, ATTACK_SPHERE_RADIUS, 16, 0xff0000, 0xff0000, false);
 #endif
 }
@@ -150,33 +113,31 @@ void EnemyGiant::ChangeStateNone(void)
 void EnemyGiant::ChangeStateThink(void)
 {
     stateUpdate_ = std::bind(&EnemyGiant::UpdateThink, this);
-
     int rand = GetRand(100);
-    if (rand < 30) { ChangeState(STATE::IDLE); }
-    else { ChangeState(STATE::PATROL); }
+    ChangeState(rand < 30 ? STATE::IDLE : STATE::PATROL);
 }
 
 void EnemyGiant::ChangeStateIdle(void)
 {
     stateUpdate_ = std::bind(&EnemyGiant::UpdateIdle, this);
     step_ = 2.0f + static_cast<float>(GetRand(3));
-    movePow_ = AsoUtility::VECTOR_ZERO;
+    movePow_ = Vector3::ZERO;
     animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyGiant::ChangeStatePatrol(void)
 {
     stateUpdate_ = std::bind(&EnemyGiant::UpdatePatrol, this);
-    movePow_ = AsoUtility::VECTOR_ZERO;
+    movePow_ = Vector3::ZERO;
 
-    // 接平面上でランダム方向
-    VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-    VECTOR ref = (fabsf(upDir.y) < 0.99f) ? AsoUtility::AXIS_Y : AsoUtility::AXIS_X;
-    VECTOR tangent = VNorm(VCross(upDir, ref));
-    VECTOR binormal = VNorm(VCross(upDir, tangent));
+    // 接平面上でランダム方向を決める
+    Vector3 upDir = Vector3::UP;
+    Vector3 ref = (fabsf(upDir.y) < 0.99f) ? Vector3::UP : Vector3::RIGHT;
+    Vector3 tangent = Vector3::Cross(upDir, ref).Normalized();
+    Vector3 binormal = Vector3::Cross(upDir, tangent).Normalized();
 
-    float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-    moveDir_ = VAdd(VScale(tangent, cosf(angle)), VScale(binormal, sinf(angle)));
+    float angle = static_cast<float>(GetRand(360)) * Math::ToRadian(1.0f);
+    moveDir_ = tangent * cosf(angle) + binormal * sinf(angle);
     faceDir_ = moveDir_;
 
     step_ = 3.0f + static_cast<float>(GetRand(4));
@@ -194,7 +155,7 @@ void EnemyGiant::ChangeStateChase(void)
 void EnemyGiant::ChangeStateAttack(void)
 {
     stateUpdate_ = std::bind(&EnemyGiant::UpdateAttack, this);
-    movePow_ = AsoUtility::VECTOR_ZERO;
+    movePow_ = Vector3::ZERO;
     attackHit_ = false;
     animCtrl_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 }
@@ -209,49 +170,31 @@ void EnemyGiant::ChangeStateReturn(void)
 void EnemyGiant::ChangeStateEnd(void)
 {
     stateUpdate_ = std::bind(&EnemyGiant::UpdateEnd, this);
-    //isEnd_ = true;
 }
 
-// ===== 更新系 =====
+// ===== 更新 =====
 
-void EnemyGiant::UpdateNone(void)
-{
-}
-
-void EnemyGiant::UpdateThink(void)
-{
-}
+void EnemyGiant::UpdateNone(void) {}
+void EnemyGiant::UpdateThink(void) {}
+void EnemyGiant::UpdateEnd(void) {}
 
 void EnemyGiant::UpdateIdle(void)
 {
     step_ -= scnMng_.GetDeltaTime();
-    if (step_ < 0.0f)
-    {
-        ChangeState(STATE::THINK);
-        return;
-    }
-
-    if (InSearchCone())
-    {
-        ChangeState(STATE::CHASE);
-    }
+    if (step_ < 0.0f) { ChangeState(STATE::THINK); return; }
+    if (InSearchCone()) { ChangeState(STATE::CHASE); }
 }
 
 void EnemyGiant::UpdatePatrol(void)
 {
     step_ -= scnMng_.GetDeltaTime();
-    if (step_ < 0.0f)
-    {
-        ChangeState(STATE::THINK);
-        return;
-    }
+    if (step_ < 0.0f) { ChangeState(STATE::THINK); return; }
 
     // 接平面に再投影
-    VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-    float d = VDot(moveDir_, upDir);
-    moveDir_ = VNorm(VSub(moveDir_, VScale(upDir, d)));
+    float   d = Vector3::Dot(moveDir_, Vector3::UP);
+    moveDir_ = (moveDir_ - Vector3::UP * d).Normalized();
     faceDir_ = moveDir_;
-    movePow_ = VScale(moveDir_, moveSpeed_);
+    movePow_ = moveDir_ * moveSpeed_;
 
     if (InSearchCone()) { ChangeState(STATE::CHASE); }
 }
@@ -259,24 +202,11 @@ void EnemyGiant::UpdatePatrol(void)
 void EnemyGiant::UpdateChase(void)
 {
     float dist = DistToPlayer();
+    if (dist <= DIST_ATTACK) { ChangeState(STATE::ATTACK); return; }
+    if (dist > DIST_CHASE) { ChangeState(STATE::RETURN); return; }
 
-    // 攻撃距離内に入ったら攻撃
-    if (dist <= DIST_ATTACK)
-    {
-        ChangeState(STATE::ATTACK);
-        return;
-    }
-
-    // 追跡解除距離を超えたら帰還
-    if (dist > DIST_CHASE)
-    {
-        ChangeState(STATE::RETURN);
-        return;
-    }
-
-    // プレイヤーに向かって移動
-    SetMoveDirToTarget(player_.GetTransform().pos);
-    movePow_ = VScale(moveDir_, moveSpeed_);
+    SetMoveDirToTarget(player_.GetPos());
+    movePow_ = moveDir_ * moveSpeed_;
 }
 
 void EnemyGiant::UpdateAttack(void)
@@ -290,78 +220,50 @@ void EnemyGiant::UpdateAttack(void)
         return;
     }
 
-    if (!attackHit_)
+    if (attackHit_) return;
+
+    int    modelId = GetComponent<StaticMeshComponent>()->GetModelId();
+    VECTOR handPos = MV1GetFramePosition(modelId, attackHandFrame_);
+    Vector3 hand = Vector3::FromVECTOR(handPos);
+
+    // CapsuleComponent 経由でプレイヤーとの当たりを判定
+    auto* playerCap = player_.GetComponent<CapsuleComponent>();
+    if (playerCap == nullptr) return;
+
+    if (Vector3::Distance(hand, player_.GetPos()) < ATTACK_SPHERE_RADIUS + playerCap->GetRadius())
     {
-        VECTOR handPos = MV1GetFramePosition(
-            transform_.modelId, attackHandFrame_);
-
-        // OVERLAP の結果からプレイヤーを探す
-        auto overlapHits = CollisionManager::GetInstance().GetOverlapHits(this);
-        for (const auto& hit : overlapHits)
-        {
-            if (hit.otherCollider->GetChannel() != CollisionChannel::PAWN) continue;
-
-            // プレイヤーかどうか確認
-            Player* player = dynamic_cast<Player*>(hit.otherActor);
-            if (player == nullptr) continue;
-
-            const ColliderCapsule* playerCapsule =
-                dynamic_cast<const ColliderCapsule*>(hit.otherCollider);
-            if (playerCapsule == nullptr) continue;
-
-            if (AsoUtility::IsHitSphereCapsule(
-                handPos, ATTACK_SPHERE_RADIUS,
-                playerCapsule->GetPosTop(),
-                playerCapsule->GetPosDown(),
-                playerCapsule->GetRadius()))
-            {
-                player_.OnDamaged(static_cast<int>(ATTACK_DAMAGE));
-                attackHit_ = true;
-                break;
-            }
-        }
+        player_.OnDamaged(static_cast<int>(ATTACK_DAMAGE));
+        attackHit_ = true;
     }
 }
 
 void EnemyGiant::UpdateReturn(void)
 {
-    if (AsoUtility::IsHitSphere(transform_.pos, spawnPos_, 120.0f))
+    if (Vector3::Distance(GetPos(), spawnPos_) < 120.0f)
     {
         ChangeState(STATE::THINK);
         return;
     }
 
-    movePow_ = VScale(moveDir_, moveSpeed_);
+    SetMoveDirToTarget(spawnPos_);
+    movePow_ = moveDir_ * moveSpeed_;
 
-    // 帰還中もプレイヤーが近づいてきたら追いかける
-    if (InSearchCone())
-    {
-        ChangeState(STATE::CHASE);
-    }
-}
-
-void EnemyGiant::UpdateEnd(void)
-{
+    if (InSearchCone()) { ChangeState(STATE::CHASE); }
 }
 
 // ===== ヘルパー =====
 
-void EnemyGiant::SetMoveDirToTarget(const VECTOR& target)
+void EnemyGiant::SetMoveDirToTarget(const Vector3& target)
 {
-    // 月面の上方向
-    VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+    Vector3 dir = (target - GetPos()).Normalized();
 
-    // ターゲット方向を計算
-    VECTOR dir = VNorm(VSub(target, transform_.pos));
+    // 接平面に投影
+    float   d = Vector3::Dot(dir, Vector3::UP);
+    Vector3 projected = dir - Vector3::UP * d;
 
-    // 接平面に投影（上方向成分を除去）
-    float d = VDot(dir, upDir);
-    VECTOR projected = VSub(dir, VScale(upDir, d));
+    if (projected.Length() < 0.01f) return;
 
-    // 投影後のベクトルが極端に小さい場合（目標がほぼ真上/真下）は無視
-    if (VSize(projected) < 0.01f) return;
-
-    moveDir_ = VNorm(projected);
+    moveDir_ = projected.Normalized();
     faceDir_ = moveDir_;
 }
 
@@ -372,47 +274,24 @@ bool EnemyGiant::InSearchCone(void) const
 
 float EnemyGiant::DistToPlayer(void) const
 {
-    return VSize(VSub(player_.GetTransform().pos, transform_.pos));
+    return Vector3::Distance(GetPos(), player_.GetPos());
 }
 
 void EnemyGiant::PushBackFromPlayer(void)
 {
-    int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
-    if (ownColliders_.count(capsuleType) == 0) return;
+    // CapsuleComponent 経由で押し戻し
+    auto* myCap = GetComponent<CapsuleComponent>();
+    auto* playerCap = player_.GetComponent<CapsuleComponent>();
+    if (!myCap || !playerCap) return;
 
-    ColliderCapsule* myCapsule =
-        dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
-    if (myCapsule == nullptr) return;
+    Vector3 myCenter = GetPos();
+    Vector3 playerCenter = player_.GetPos();
+    float   dist = Vector3::Distance(myCenter, playerCenter);
+    float   minDist = myCap->GetRadius() + playerCap->GetRadius();
 
-    // BLOCK の結果からプレイヤーを探す
-    auto blockHits = CollisionManager::GetInstance().GetBlockHits(this);
-    for (const auto& hit : blockHits)
+    if (dist < minDist && dist > 0.01f)
     {
-        if (hit.otherCollider->GetChannel() != CollisionChannel::PAWN) continue;
-
-        Player* player = dynamic_cast<Player*>(hit.otherActor);
-        if (player == nullptr) continue;
-
-        const ColliderCapsule* playerCapsule =
-            dynamic_cast<const ColliderCapsule*>(hit.otherCollider);
-        if (playerCapsule == nullptr) continue;
-
-        VECTOR myCenter = VScale(
-            VAdd(myCapsule->GetPosTop(), myCapsule->GetPosDown()), 0.5f);
-        VECTOR plCenter = VScale(
-            VAdd(playerCapsule->GetPosTop(), playerCapsule->GetPosDown()), 0.5f);
-
-        float dist = VSize(VSub(myCenter, plCenter));
-        float minDist = myCapsule->GetRadius() + playerCapsule->GetRadius();
-
-        if (dist < minDist && dist > 0.01f)
-        {
-            VECTOR pushDir = VNorm(VSub(myCenter, plCenter));
-            float  overlap = minDist - dist;
-            transform_.pos = VAdd(transform_.pos,
-                VScale(pushDir, overlap * 0.5f));
-            transform_.Update();
-        }
-        break;
+        Vector3 pushDir = (myCenter - playerCenter).Normalized();
+        SetPos(GetPos() + pushDir * (minDist - dist) * 0.5f);
     }
 }
