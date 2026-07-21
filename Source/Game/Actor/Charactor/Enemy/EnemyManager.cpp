@@ -5,11 +5,9 @@
 #include "EnemyGiant.h"
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager(Player& player, SpawnEnemyFunc spawnFunc)
+EnemyManager::EnemyManager(Player& player)
 	: 
-	ActorBase(),
-	player_(player),
-	spawnFunc_(spawnFunc)
+	player_(player)
 {
 }
 
@@ -49,6 +47,7 @@ void EnemyManager::Release(void)
 		enemy->Release();
 		delete enemy;
 	}
+	enemies_.clear();
 }
 
 void EnemyManager::LoadCsvData(void)
@@ -104,12 +103,20 @@ void EnemyManager::LoadCsvData(void)
 
 EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 {
-	EnemyBase* enemy = spawnFunc_(data);
+	EnemyBase* enemy = nullptr;
 
-	if (enemy != nullptr)
+	switch (data.type)
 	{
-		enemies_.emplace_back(enemy);
+	case EnemyBase::TYPE::GIANT:
+		enemy = new EnemyGiant(data, player_);
+		break;
+	default: break;
 	}
 
+	if (enemy)
+	{
+		enemy->Init();
+		enemies_.emplace_back(enemy);
+	}
 	return enemy;
 }

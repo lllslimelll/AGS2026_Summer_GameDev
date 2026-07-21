@@ -114,22 +114,29 @@ void Camera::UpdateFollow(void)
 {
     if (followTarget_ == nullptr) return;
 
+    // 注視点までの距離（位置と注視点が一致すると前方向が
+    // ゼロベクトルになり壊れるため、必ず一定距離離す）
+    constexpr float LOOK_DIST = 100.0f;
+
     // 回転入力を受け取る
     ProcessRot(true);
 
-    // ---- 王道サードパーソンカメラ ----
-    // yaw（水平）と pitch（垂直）から回転を作る
+    // ---- 一人称視点カメラ ----
+    // yaw（水平）と pitch（垂直）から「視線方向」を直接作る。
     Quaternion rot = Quaternion::AngleAxis(yawAngle_, Vector3::UP)
         * Quaternion::AngleAxis(pitchAngle_, Vector3::RIGHT);
 
-    // カメラ位置 = プレイヤー位置 + 回転させたオフセット
-    SetPos(followTarget_->GetPos() + rot.RotateVector(FOLLOW_CAMERA_OFFSET));
+    // カメラ位置 = プレイヤーの目の高さ（オフセットは回転させない）
+    SetPos(followTarget_->GetPos() + FOLLOW_CAMERA_OFFSET);
 
-    // 注視点 = プレイヤーの少し上
-    targetPos_ = followTarget_->GetPos() + Vector3::UP * FOLLOW_TARGET_HEIGHT;
+    // 注視点 = カメラ位置から視線方向へ一定距離延ばした点
+    targetPos_ = GetPos() + rot.RotateVector(Vector3::FORWARD) * LOOK_DIST;
 
     // プレイヤーにカメラ前方向を直接注入する
     followTarget_->SetCameraForward(GetCameraForward());
+
+    // 照準・インタラクト用にカメラのレイ（位置と生の向き）も注入する
+    followTarget_->SetCameraRay(GetPos(), GetCameraForward());
 }
 
 // ---- 内部処理 ----

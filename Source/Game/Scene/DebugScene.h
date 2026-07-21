@@ -24,12 +24,8 @@ public:
 private:
 
     std::unique_ptr<Camera> camera_;
-
-    Planet* planet_ = nullptr;
-    Rocket* rocket_ = nullptr;
     StageManager* stageMng_ = nullptr;
 
-    // デバッグポイント（DxLib の描画関数に渡すため VECTOR で保持）
     std::vector<VECTOR> points_;
 
     void PlaceDebugPoint(void);

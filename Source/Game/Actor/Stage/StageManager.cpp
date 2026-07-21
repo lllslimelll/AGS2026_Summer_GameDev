@@ -2,23 +2,37 @@
 #include "Rocket.h"
 #include "StageManager.h"
 
-StageManager::StageManager(Planet* planet, Rocket* rocket)
-    : ActorBase()
-    , planet_(planet)
-    , rocket_(rocket)
+StageManager::StageManager(void)
 {
 }
 
-StageManager::~StageManager(void)
+StageManager::~StageManager(void) {}
+
+void StageManager::Init(void)
 {
+    planet_ = std::make_unique<Planet>();
+    planet_->Init();
+    rocket_ = std::make_unique<Rocket>();
+    rocket_->Init();
 }
 
-Rocket& StageManager::GetRocket(void)
+void StageManager::Update(void)
 {
-    return *rocket_;
+    planet_->Update();
+    rocket_->Update();
 }
 
-Planet& StageManager::GetPlanet(void)
+void StageManager::Draw(void)
 {
-    return *planet_;
+    planet_->Draw();
+    rocket_->Draw();
 }
+
+void StageManager::Release(void)
+{
+    if (planet_) planet_->Release();
+    if (rocket_) rocket_->Release();
+}
+
+Rocket& StageManager::GetRocket(void) { return *rocket_; }
+Planet& StageManager::GetPlanet(void) { return *planet_; }

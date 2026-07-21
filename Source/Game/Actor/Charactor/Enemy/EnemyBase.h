@@ -32,6 +32,10 @@ public:
 	// 描画
 	virtual void Draw(void) override;
 
+	// 当たり判定の通知
+	// キャラ同士（PAWN）に当たったら敵側が押し出される
+	void OnHit(const HitResult& hit) override;
+
 protected:
 
 	// プレイヤー

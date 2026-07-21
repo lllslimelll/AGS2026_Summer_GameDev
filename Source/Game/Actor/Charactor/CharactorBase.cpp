@@ -28,6 +28,9 @@ void CharactorBase::Update(void)
     // 移動前座標を保存
     prevPos_ = GetPos();
 
+    // 接地フラグは毎フレームリセットし、押し戻し時に再設定する
+    isGrounded_ = false;
+
     // キャラクターごとの更新
     UpdateProcess();
 
@@ -78,12 +81,12 @@ void CharactorBase::OnHit(const HitResult& hit)
 
     CollisionChannel ch = hit.otherCollider->GetChannel();
 
+    // ステージ・ロケットなどのワールドオブジェクトからの押し戻し
     if (hit.isBlocking &&
         (ch == CollisionChannel::WORLD_STATIC ||
             ch == CollisionChannel::WORLD_DYNAMIC))
     {
-        PushBackGravity(hit);
-        PushBackCapsule(hit);
+        PushBackFromWorld(hit);
     }
 }
 
@@ -96,32 +99,34 @@ void CharactorBase::OnOverlap(const HitResult& hit)
 // 押し戻し処理
 // ---------------------------------------------------------------
 
-void CharactorBase::PushBackGravity(const HitResult& hit)
+void CharactorBase::PushBackFromWorld(const HitResult& hit)
 {
-    // XY 平面化後は上方向が Y 固定
-    Vector3 upDir = Vector3::UP;
-
-    // 上昇中は地面との押し戻しをしない
-    float upSpeed = Vector3::Dot(jumpPow_, upDir);
-    if (upSpeed > 0.0f) return;
-
-    auto* mesh = dynamic_cast<StaticMeshComponent*>(hit.otherCollider);
-    if (mesh == nullptr) return;
-
-    // 接地判定：ジャンプ量をリセット
-    isJump_ = false;
-    jumpPow_ = Vector3::ZERO;
-    stepJump_ = 0.0f;
-
+    // CollisionManager が計算した「貫通が解消される座標」へ移動
     SetPos(Vector3::FromVECTOR(hit.pushBackPos));
-}
 
-void CharactorBase::PushBackCapsule(const HitResult& hit)
-{
-    auto* mesh = dynamic_cast<StaticMeshComponent*>(hit.otherCollider);
-    if (mesh == nullptr) return;
+    // 代表法線で床・天井を判別する
+    float ny = hit.normal.y;
 
-    SetPos(Vector3::FromVECTOR(hit.pushBackPos));
+    if (ny > 0.5f)
+    {
+        // 床に当たった：落下中なら接地扱いにする
+        if (jumpPow_.y <= 0.0f)
+        {
+            isJump_ = false;
+            isGrounded_ = true;
+            jumpPow_ = Vector3::ZERO;
+            stepJump_ = 0.0f;
+        }
+    }
+    else if (ny < -0.5f)
+    {
+        // 天井に当たった：上昇を打ち切る
+        if (jumpPow_.y > 0.0f)
+        {
+            jumpPow_ = Vector3::ZERO;
+            stepJump_ = 0.0f;
+        }
+    }
 }
 
 // ---------------------------------------------------------------

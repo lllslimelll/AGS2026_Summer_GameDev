@@ -36,9 +36,9 @@ public:
     static constexpr float VIEW_FAR = 20000.0f;
 
     // 追従カメラのオフセット（プレイヤー位置基準、後ろ・上にずらす）
-    static constexpr Vector3 FOLLOW_CAMERA_OFFSET = Vector3(0.0f, 150.0f, -350.0f);
+    static constexpr Vector3 FOLLOW_CAMERA_OFFSET = Vector3(0.0f, 150.0f, 0.0f);
     // 注視点のプレイヤーからの高さオフセット
-    static constexpr float   FOLLOW_TARGET_HEIGHT = 100.0f;
+    static constexpr float   FOLLOW_TARGET_HEIGHT = 0.0f;
 
     // 上下回転制限（ラジアン）
     static constexpr float LIMIT_PITCH_MAX = Math::ToRadian(60.0f);

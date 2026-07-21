@@ -30,6 +30,10 @@ GameScene::~GameScene(void)
 {
     CollisionManager::GetInstance().Clear();
 
+    enemyMng_->Release();
+    itemMng_->Release();
+    stageMng_->Release();
+
     for (auto& actor : actors_)
     {
         actor->Release();
@@ -43,66 +47,31 @@ void GameScene::Load(void)
 
 void GameScene::Init(void)
 {
-    // ステージ（Planet/Rocket を先に World に配置してから StageManager に渡す）
-    auto* planet = SpawnActor<Planet>();
-    planet->Init();
-    auto* rocket = SpawnActor<Rocket>();
-    rocket->Init();
-    stageMng_ = SpawnActor<StageManager>(planet, rocket);
+    stageMng_ = std::make_unique<StageManager>();
+    stageMng_->Init();
 
-    // アイテム
-    // Item 生成を SpawnActor 経由で行うためラムダを渡す
-    itemMng_ = SpawnActor<ItemManager>(
-        [this](const Item::ItemData& data) -> Item*
-        {
-            auto* item = SpawnActor<Item>(data);
-            item->Init();
-            return item;
-        });
+    itemMng_ = std::make_unique<ItemManager>();
 
-    // プレイヤー
-    player_ = SpawnActor<Player>(itemMng_, *stageMng_);
+    player_ = SpawnActor<Player>(itemMng_.get(), *stageMng_);
     player_->Init();
 
-    // カメラ
     camera_ = SpawnActor<Camera>();
     camera_->SetFollowTarget(player_);
     camera_->ChangeMode(Camera::MODE::FOLLOW);
     camera_->Init();
 
-    // 敵
-    // Enemy 生成を SpawnActor 経由で行うためラムダを渡す
-    enemyMng_ = SpawnActor<EnemyManager>(
-        *player_,
-        [this](const EnemyBase::EnemyData& data) -> EnemyBase*
-        {
-            EnemyBase* enemy = nullptr;
-            switch (data.type)
-            {
-            case EnemyBase::TYPE::GIANT:
-                enemy = SpawnActor<EnemyGiant>(data, *player_);
-                break;
-            default: break;
-            }
-            if (enemy) enemy->Init();
-            return enemy;
-        });
+    enemyMng_ = std::make_unique<EnemyManager>(*player_);
     enemyMng_->Init();
 
-    // スカイドーム（プレイヤーに追従）
     skyDome_ = SpawnActor<SkyDome>(player_);
     skyDome_->Init();
 
-    // UI
     gameUIs_.emplace_back(std::make_unique<StatusUI>(*player_));
     gameUIs_.emplace_back(std::make_unique<GuideUI>(*player_));
     gameUIs_.emplace_back(std::make_unique<InventoryUI>(player_->GetInventory()));
     gameUIs_.emplace_back(std::make_unique<RocketLocatorUI>(*player_, stageMng_->GetRocket()));
 
-    for (auto& ui : gameUIs_)
-    {
-        ui->Load();
-    }
+    for (auto& ui : gameUIs_) ui->Load();
 
     itemMng_->Init();
 }
@@ -118,29 +87,30 @@ void GameScene::Update(void)
         return;
     }
 
-    // 当たり判定
-    CollisionManager::GetInstance().Update();
+    stageMng_->Update();
+    itemMng_->Update();
+    enemyMng_->Update();
 
-    // 全 Actor を更新
-    // Camera::UpdateFollow 内で player_->SetCameraForward() が呼ばれるため
-    // カメラを先に更新する
     for (auto& actor : actors_)
-    {
         actor->Update();
-    }
+
+    // 当たり判定（全アクターの移動が終わった後に実行し、
+    // その場で押し戻すことで描画前にめり込みを解消する）
+    CollisionManager::GetInstance().Update();
 }
 
 void GameScene::Draw(void)
 {
     camera_->SetBeforeDraw();
-
-    // SkyDome は最初に描画（深度バッファに書き込まない）
     skyDome_->Draw();
 
     int shadowMapHandle = CreateShadowMap();
     SetUseShadowMap(0, shadowMapHandle);
 
-    // 全 Actor を描画（SkyDome 以外）
+    stageMng_->Draw();
+    itemMng_->Draw();
+    enemyMng_->Draw();
+
     for (auto& actor : actors_)
     {
         if (actor.get() == skyDome_) continue;
@@ -150,11 +120,8 @@ void GameScene::Draw(void)
     SetUseShadowMap(0, -1);
     DeleteShadowMap(shadowMapHandle);
 
-    // UI 描画
     for (auto& ui : gameUIs_)
-    {
         ui->Draw();
-    }
 }
 
 int GameScene::CreateShadowMap(void)

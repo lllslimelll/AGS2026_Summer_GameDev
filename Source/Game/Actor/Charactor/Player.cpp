@@ -30,7 +30,8 @@ void Player::Init(void)
     // ---- モデルロード ----
     int modelId = resMng_.Load(ResourceManager::SRC::PLAYER).handleId_;
     auto* mesh = AddComponent<StaticMeshComponent>(modelId);
-    mesh->SetProfile(CollisionProfileType::PAWN);
+    // 見た目用メッシュは当たり判定に参加させない（判定はカプセルが担う）
+    mesh->SetProfile(CollisionProfileType::NO_COLLISION);
 
     // ---- アニメーション ----
     animCtrl_ = new AnimationController(modelId);
@@ -41,8 +42,8 @@ void Player::Init(void)
 
     // ---- トランスフォーム ----
     SetScl(Vector3::ONE);
-    SetRot(Quaternion::AngleAxis(Math::ToRadian(180.0f), Vector3::UP));
-    SetPos(Vector3(1386.0f, -910.0f, -94.8f));
+    SetRot(Quaternion::AngleAxis(Math::ToRadian(0.0f), Vector3::UP));
+    SetPos(Vector3(0,300,-100));
 
     // ---- カプセルコライダー ----
     constexpr float centerY = (COL_CAPSULE_TOP_LOCAL_POS.y + COL_CAPSULE_DOWN_LOCAL_POS.y) * 0.5f;
@@ -310,11 +311,23 @@ void Player::UpdateItem(void)
 
 void Player::UpdateAimedItem(void)
 {
-    // カメラ前方向でレイを飛ばして照準中のアイテムを取得
+    // カメラの位置からカメラの向きへレイを飛ばして照準中のアイテムを取得
+    // （カメラはプレイヤーの後方にあるため、その距離ぶんレイを延長する）
+    float rayLength =
+        Item::RANGE_PICKUP +
+        Vector3::Distance(cameraRayOrigin_, GetPos());
+
     Item* newAimed = itemMgr_->GetAimedItem(
-        GetPos(),
-        cameraForward_,
-        Item::RANGE_PICKUP);
+        cameraRayOrigin_,
+        cameraRayDir_,
+        rayLength);
+
+    // 照準に入っていてもプレイヤーから遠すぎるアイテムは拾えない
+    if (newAimed != nullptr &&
+        Vector3::Distance(newAimed->GetPos(), GetPos()) > Item::RANGE_PICKUP)
+    {
+        newAimed = nullptr;
+    }
 
     if (newAimed == aimedItem_) return;
 
@@ -385,6 +398,12 @@ void Player::SetCameraForward(const Vector3& forward)
     cameraForward_ = Vector3(forward.x, 0.0f, forward.z).Normalized();
 }
 
+void Player::SetCameraRay(const Vector3& origin, const Vector3& dir)
+{
+    cameraRayOrigin_ = origin;
+    cameraRayDir_ = dir.Normalized();
+}
+
 int   Player::GetHp(void)     const { return hp_; }
 float Player::GetOxygen(void) const { return oxygen_; }
 
@@ -415,19 +434,32 @@ bool Player::CanPickUp(void) const
 
 bool Player::IsAimingRocket(void) const
 {
-    // カメラ前方向にレイを飛ばして Rocket に当たるか判定
-    Vector3 origin = GetPos();
-    Vector3 end = origin + cameraForward_ * Item::RANGE_PICKUP;
+    // カメラの位置からカメラの向きへレイを飛ばして Rocket に当たるか判定
+    float rayLength =
+        Item::RANGE_PICKUP +
+        Vector3::Distance(cameraRayOrigin_, GetPos());
+
+    Vector3 origin = cameraRayOrigin_;
+    Vector3 end = origin + cameraRayDir_ * rayLength;
+
+    // 自分自身はレイの対象から外す
+    CollisionQueryParams params;
+    params.ignoredActors.push_back(this);
 
     HitResult hit = CollisionManager::GetInstance().LineTrace(
         origin.ToVECTOR(),
         end.ToVECTOR(),
-        CollisionChannel::WORLD_STATIC,
-        CollisionQueryParams());
+        CollisionChannel::VISIBILITY,
+        params);
 
     if (!hit.isHit) return false;
 
-    return dynamic_cast<Rocket*>(hit.otherActor) != nullptr;
+    // 最初に当たったものがロケットでなければ（地面等に遮られていれば）不可
+    if (dynamic_cast<Rocket*>(hit.otherActor) == nullptr) return false;
+
+    // ヒット地点がプレイヤーのインタラクト範囲内であること
+    return Vector3::Distance(
+        Vector3::FromVECTOR(hit.point), GetPos()) <= Item::RANGE_PICKUP;
 }
 
 void Player::ChangeSelectedSlot(void)

@@ -59,9 +59,9 @@ private:
     // 今は直接参照が必要なものだけポインタで持つ
     Player* player_ = nullptr;
     Camera* camera_ = nullptr;
-    StageManager* stageMng_ = nullptr;
-    ItemManager* itemMng_ = nullptr;
-    EnemyManager* enemyMng_ = nullptr;
+    std::unique_ptr<StageManager>  stageMng_;
+    std::unique_ptr<ItemManager>   itemMng_;
+    std::unique_ptr<EnemyManager>  enemyMng_;
     SkyDome* skyDome_ = nullptr;
 
     int CreateShadowMap(void);

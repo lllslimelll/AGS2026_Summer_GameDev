@@ -2,6 +2,7 @@
 
 enum class CollisionProfileType
 {
+	NO_COLLISION,  // コリジョンなし
 	PAWN,		   // キャラクター全般
 	WORLD_STATIC,  // 静的オブジェクト
 	WORLD_DYNAMIC, // 動的オブジェクト

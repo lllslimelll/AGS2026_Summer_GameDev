@@ -12,7 +12,10 @@ SceneComponent::SceneComponent(ActorBase& owner)
 
 SceneComponent::~SceneComponent(void)
 {
-    Detach();
+    // ActorBase::Release() で components_ ごと破棄されるため
+   // ここで Detach() を呼ぶと既に破棄された parent_ にアクセスしてクラッシュする
+   // Detach() は明示的に呼ぶ場合のみ使用する
+   // Detach();
 }
 
 // ---------------------------------------------------------------

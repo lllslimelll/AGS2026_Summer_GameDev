@@ -1,24 +1,18 @@
 #pragma once
 #include <vector>
-#include <functional>
-#include "../ActorBase.h"
 #include "Item.h"
 
-class ItemManager : public ActorBase
+class ItemManager
 {
 public:
 
-    // Item 生成を GameScene に委譲するための関数オブジェクト
-    // GameScene が World 相当なので SpawnActor 権限をここで受け取る
-    using SpawnItemFunc = std::function<Item* (const Item::ItemData&)>;
+    ItemManager(void);
+    ~ItemManager(void);
 
-    ItemManager(SpawnItemFunc spawnFunc);
-    ~ItemManager(void) override;
-
-    void Init(void)    override;
-    void Update(void)  override;
-    void Draw(void)    override;
-    void Release(void) override;
+    void Init(void);
+    void Update(void);
+    void Draw(void);
+    void Release(void);
 
     // アイテム生成
     Item* Create(const Item::ItemData& data);
@@ -36,8 +30,6 @@ public:
     const std::vector<Item*>& GetAllItems(void) const;
 
 private:
-
-    SpawnItemFunc spawnFunc_;
 
     std::vector<Item*> items_;
     std::vector<Item*> flyingItems_;

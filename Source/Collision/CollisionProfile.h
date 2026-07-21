@@ -14,7 +14,12 @@ struct CollisionProfile
 	CollisionChannel channel_;
 
 	// コンストラクタ
-	CollisionProfile(void) = default;
+	CollisionProfile(void)
+		: type_(CollisionProfileType::NO_COLLISION)
+		, channel_(CollisionChannel::NONE)
+	{
+		responses_.fill(CollisionResponse::NONE);
+	}
 	CollisionProfile(CollisionProfileType type, CollisionChannel channel);
 
 	// 相手チャンネルへの反応を設定する

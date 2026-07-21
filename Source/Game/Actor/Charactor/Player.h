@@ -47,8 +47,11 @@ public:
     // 酸素量取得
     float GetOxygen(void) const;
 
-    // カメラの前方向を設定
+    // カメラの前方向を設定（移動用・XZ 平面に投影される）
     void SetCameraForward(const Vector3& forward);
+
+    // カメラのレイ（位置と向き）を設定（照準・インタラクト用）
+    void SetCameraRay(const Vector3& origin, const Vector3& dir);
 
     // インベントリ取得
     const Inventory& GetInventory(void) const;
@@ -62,8 +65,8 @@ public:
 private:
 
     // ---- 移動速度 ----
-    static constexpr float SPEED_MOVE = 2.5f;
-    static constexpr float SPEED_DASH = 5.0f;
+    static constexpr float SPEED_MOVE = 15.0f;
+    static constexpr float SPEED_DASH = 30.0f;
 
     // ---- カプセルコライダー定数 ----
     static constexpr Vector3 COL_CAPSULE_TOP_LOCAL_POS = Vector3(0.0f, 110.0f, 0.0f);
@@ -78,8 +81,8 @@ private:
     static constexpr float TIME_JUMP_INPUT = 0.5f;
 
     // ---- 酸素・HP 定数 ----
-    static constexpr float OXYGEN_DASH_RATE = 2.0f;
-    static constexpr float SUFFOCATE_INTERVAL = 0.4f;
+    static constexpr float OXYGEN_DASH_RATE = 5.0f;
+    static constexpr float SUFFOCATE_INTERVAL = 1.0f;
     static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;
 
     // ---- メンバ ----
@@ -96,6 +99,10 @@ private:
 
     // GameScene から注入されるカメラ前方向（XZ 平面上に投影済み）
     Vector3 cameraForward_ = Vector3::FORWARD;
+
+    // カメラのレイ（照準・インタラクト用、投影なしの生の向き）
+    Vector3 cameraRayOrigin_ = Vector3::ZERO;
+    Vector3 cameraRayDir_ = Vector3::FORWARD;
 
     bool  isBoost_ = false;
     Item* aimedItem_ = nullptr;

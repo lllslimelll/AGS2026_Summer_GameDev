@@ -1,27 +1,22 @@
 #pragma once
 #include <vector>
-#include <functional>
-#include "../../../../Game/Actor/ActorBase.h"
 #include "EnemyBase.h"
 
 class Player;
 
-class EnemyManager : public ActorBase
+class EnemyManager
 {
 public:
 
-	// Enemy 生成を GameScene(World 相当)に委譲するための関数オブジェクト
-	using SpawnEnemyFunc = std::function<EnemyBase* (const EnemyBase::EnemyData&)>;
-
 	// コンストラクタ
-	EnemyManager(Player& player, SpawnEnemyFunc spawnFunc);
+	EnemyManager(Player& player);
 	// デストラクタ
 	~EnemyManager(void);
 
-	void Init(void)    override;
-	void Update(void)  override;
-	void Draw(void)    override;
-	void Release(void) override;
+	void Init(void);
+	void Update(void);
+	void Draw(void);
+	void Release(void);
 
 	// CSV読み込み
 	void LoadCsvData(void);
@@ -36,8 +31,6 @@ private:
 
 	// プレイヤー
 	Player& player_;
-
-	SpawnEnemyFunc spawnFunc_;
 
 	// エネミーリスト
 	std::vector<EnemyBase*> enemies_;

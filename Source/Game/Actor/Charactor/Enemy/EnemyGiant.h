@@ -4,6 +4,7 @@
 #include "EnemyBase.h"
 
 class Player;
+class CapsuleComponent;
 
 class EnemyGiant : public EnemyBase
 {
@@ -61,8 +62,9 @@ private:
     static constexpr float VIEW_HALF_FOV = VIEW_ANGLE * 0.5f * 3.14159265f / 180.0f;
 
     // 攻撃パラメータ
-    static constexpr float ATTACK_SPHERE_RADIUS = 20.0f;
-    static constexpr float ATTACK_DAMAGE = 20.0f;
+    static constexpr float ATTACK_CAPSULE_RADIUS = 20.0f;      // 手カプセルの半径
+    static constexpr float ATTACK_CAPSULE_HALF_HEIGHT = 15.0f; // 手カプセルの半分の高さ
+    static constexpr int   ATTACK_DAMAGE = 20;                 // プレイヤーへのダメージ
 
     // 移動・AI距離パラメータ
     static constexpr float SPEED_PATROL = 1.0f;
@@ -72,6 +74,9 @@ private:
 
     // 攻撃フレームインデックス
     int attackHandFrame_ = -1;
+
+    // 手のフレームに追従する攻撃判定カプセル
+    CapsuleComponent* attackCapsule_ = nullptr;
 
     STATE state_ = STATE::NONE;
     float step_ = 0.0f;
@@ -104,5 +109,10 @@ private:
     void  SetMoveDirToTarget(const Vector3& target);
     bool  InSearchCone(void)  const;
     float DistToPlayer(void)  const;
-    void  PushBackFromPlayer(void);
+
+    // 攻撃カプセルを手のフレーム位置へ追従させる
+    void  UpdateAttackCapsule(void);
+
+    // 攻撃カプセルとプレイヤーカプセルの当たり判定
+    void  CheckAttackHit(void);
 };

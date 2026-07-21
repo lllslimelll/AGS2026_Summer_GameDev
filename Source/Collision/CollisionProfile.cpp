@@ -1,12 +1,10 @@
 #include "CollisionProfile.h"
 
 CollisionProfile::CollisionProfile(CollisionProfileType type, CollisionChannel channel)
-	: 
-	type_(type),
-	channel_(channel)
+    : type_(type)
+    , channel_(channel)
 {
-	// 全チャンネル判定反応無視に初期化
-	responses_.fill(CollisionResponse::NONE);
+    responses_.fill(CollisionResponse::NONE);
 }
 
 void CollisionProfile::SetResponse(CollisionChannel channel, CollisionResponse response)
@@ -16,5 +14,12 @@ void CollisionProfile::SetResponse(CollisionChannel channel, CollisionResponse r
 
 CollisionResponse CollisionProfile::GetResponse(CollisionChannel channel) const
 {
-	return responses_[static_cast<int>(channel)];
+    // NONE は範囲外なのでガード
+    if (channel == CollisionChannel::NONE) return CollisionResponse::NONE;
+
+    int index = static_cast<int>(channel);
+    if (index < 0 || index >= static_cast<int>(CollisionChannel::MAX))
+        return CollisionResponse::NONE;
+
+    return responses_[index];
 }

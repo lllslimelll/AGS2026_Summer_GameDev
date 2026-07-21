@@ -35,6 +35,9 @@ struct HitResult
     // Õ“Ë‚Ü‚Å‚Ì‹——£
     float distance = 0.0f;
 
+    // ŠÑ’Ê[“xi‰Ÿ‚µ–ß‚µ—Êj
+    float depth = 0.0f;
+
     // BLOCK ‚Å“–‚½‚Á‚½‚©
     bool isBlocking = false;
 };

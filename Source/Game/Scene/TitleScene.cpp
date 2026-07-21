@@ -50,7 +50,6 @@ TitleScene::~TitleScene(void)
 
 void TitleScene::Init(void)
 {
-    SoundManager::GetInstance().PlayBgmTitle();
 
     // ---- 球体惑星 ----
     planetModelId_ = resMng_.Load(ResourceManager::SRC::MAIN_STAGE).handleId_;
@@ -151,7 +150,9 @@ void TitleScene::UpdateInput(void)
 void TitleScene::Draw(void)
 {
     camera_->SetBeforeDraw();
-
+    // カメラ位置をデバッグ表示
+    Vector3 pos = camera_->GetPos();
+    DrawFormatString(0, 0, 0xffffff, "CamPos: %.1f %.1f %.1f", pos.x, pos.y, pos.z);
     // スカイドーム
     skyDome_->Draw();
 

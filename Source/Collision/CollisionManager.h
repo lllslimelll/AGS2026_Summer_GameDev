@@ -90,9 +90,20 @@ private:
         CollisionChannel channel,
         const CollisionQueryParams& params) const;
 
-    // HitResult を生成して OnHit / OnOverlap に通知する
+    // HitResult を OnHit / OnOverlap で両者に通知する
     void NotifyHit(
         PrimitiveComponent* a,
         PrimitiveComponent* b,
-        const HitResult& hit);
+        const HitResult& hitA,
+        const HitResult& hitB);
+
+    // 線分同士の最近接点を求める
+    static void ClosestPtSegmentSegment(
+        const VECTOR& p1, const VECTOR& q1,
+        const VECTOR& p2, const VECTOR& q2,
+        VECTOR& c1, VECTOR& c2);
+
+    // 押し戻し計算の定数
+    static constexpr int   PUSH_TRY_COUNT = 64;   // 押し戻し試行回数
+    static constexpr float PUSH_BACK_DIS = 0.6f; // 1回あたりの押し戻し距離
 };

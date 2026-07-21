@@ -2,6 +2,8 @@
 
 enum class CollisionChannel
 {
+	NONE = -1,     // 未設定・コリジョンなし
+
 	WORLD_STATIC,  // 静的オブジェクト用
 	WORLD_DYNAMIC, // 動的オブジェクト用
 	PHYSICS_BODY,  // 物理演算で動く用

@@ -20,5 +20,5 @@ private:
 	StaticMeshComponent* mesh_ = nullptr;
 
 	const std::vector<std::string> EXCLUDE_FRAME_NAMES = {};
-	const std::vector<std::string> TARGET_FRAME_NAMES = { "Ground" };
+	const std::vector<std::string> TARGET_FRAME_NAMES = {  };
 };

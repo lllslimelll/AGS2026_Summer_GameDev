@@ -1,26 +1,26 @@
 #pragma once
-#include "../ActorBase.h"
+#include <memory>
 
 class Planet;
 class Rocket;
 
-class StageManager : public ActorBase
+class StageManager
 {
 public:
 
-    StageManager(Planet* planet, Rocket* rocket);
-    ~StageManager(void) override;
+    StageManager(void);
+    ~StageManager(void);
 
-    void Init(void)    override {}
-    void Update(void)  override {}
-    void Draw(void)    override {}
-    void Release(void) override {}
+    void Init(void);
+    void Update(void);
+    void Draw(void);
+    void Release(void);
 
     Rocket& GetRocket(void);
     Planet& GetPlanet(void);
 
 private:
 
-    Planet* planet_;
-    Rocket* rocket_;
+    std::unique_ptr<Planet> planet_;
+    std::unique_ptr<Rocket> rocket_;
 };

@@ -77,9 +77,9 @@ protected:
     virtual void UpdateProcess(void) = 0;
     virtual void UpdateProcessPost(void) = 0;
 
-private:
+    // 接地しているか
+    bool isGrounded_ = false;
 
-    // 押し戻し処理（OnHit から呼ばれる）
-    void PushBackGravity(const HitResult& hit);
-    void PushBackCapsule(const HitResult& hit);
+    // ワールド（ステージ・ロケット等）からの押し戻し処理
+    void PushBackFromWorld(const HitResult& hit);
 };

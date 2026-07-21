@@ -26,7 +26,8 @@ void EnemyGiant::Init(void)
     // モデルロード
     int modelId = resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_GIANT);
     auto* mesh = AddComponent<StaticMeshComponent>(modelId);
-    mesh->SetProfile(CollisionProfileType::PAWN);
+    // 見た目用メッシュは当たり判定に参加させない（判定はカプセルが担う）
+    mesh->SetProfile(CollisionProfileType::NO_COLLISION);
     animCtrl_ = new AnimationController(modelId);
 
     // アニメーション
@@ -47,10 +48,20 @@ void EnemyGiant::Init(void)
     cap->SetProfile(CollisionProfileType::PAWN);
     cap->SetLocalPos(Vector3(0.0f, centerY, 0.0f));
 
+    // 手のフレームに追従する攻撃判定カプセル
+    // NO_COLLISION なので CollisionManager の総当たりには参加せず、
+    // 攻撃中のみ手動でプレイヤーカプセルと判定する
+    attackCapsule_ = AddComponent<CapsuleComponent>(
+        ATTACK_CAPSULE_RADIUS, ATTACK_CAPSULE_HALF_HEIGHT);
+    attackCapsule_->SetProfile(CollisionProfileType::NO_COLLISION);
+
     ActorBase::Init();
 
     // 攻撃フレームを検索
     attackHandFrame_ = MV1SearchFrame(modelId, "mixamorig:LeftHand");
+
+    // 帰還先を初期位置に設定
+    spawnPos_ = defaultPos_;
 
     // 状態遷移バインド
     stateChanges_.emplace(static_cast<int>(STATE::NONE), std::bind(&EnemyGiant::ChangeStateNone, this));
@@ -83,18 +94,20 @@ void EnemyGiant::UpdateProcessPost(void)
         ChangeState(STATE::THINK);
     }
 
-    PushBackFromPlayer();
+    // 攻撃カプセルを手のフレームへ追従させる
+    UpdateAttackCapsule();
+
+    // 攻撃中ならプレイヤーとの当たり判定
+    if (state_ == STATE::ATTACK)
+    {
+        CheckAttackHit();
+    }
 }
 
 void EnemyGiant::Draw(void)
 {
+    // カプセルのデバッグ描画は各 Component の Draw が行う
     CharactorBase::Draw();
-
-#ifdef _DEBUG
-    int modelId = GetComponent<StaticMeshComponent>()->GetModelId();
-    VECTOR handPos = MV1GetFramePosition(modelId, attackHandFrame_);
-    DrawSphere3D(handPos, ATTACK_SPHERE_RADIUS, 16, 0xff0000, 0xff0000, false);
-#endif
 }
 
 // ===== 状態遷移 =====
@@ -219,22 +232,6 @@ void EnemyGiant::UpdateAttack(void)
         else { ChangeState(STATE::CHASE); }
         return;
     }
-
-    if (attackHit_) return;
-
-    int    modelId = GetComponent<StaticMeshComponent>()->GetModelId();
-    VECTOR handPos = MV1GetFramePosition(modelId, attackHandFrame_);
-    Vector3 hand = Vector3::FromVECTOR(handPos);
-
-    // CapsuleComponent 経由でプレイヤーとの当たりを判定
-    auto* playerCap = player_.GetComponent<CapsuleComponent>();
-    if (playerCap == nullptr) return;
-
-    if (Vector3::Distance(hand, player_.GetPos()) < ATTACK_SPHERE_RADIUS + playerCap->GetRadius())
-    {
-        player_.OnDamaged(static_cast<int>(ATTACK_DAMAGE));
-        attackHit_ = true;
-    }
 }
 
 void EnemyGiant::UpdateReturn(void)
@@ -277,21 +274,40 @@ float EnemyGiant::DistToPlayer(void) const
     return Vector3::Distance(GetPos(), player_.GetPos());
 }
 
-void EnemyGiant::PushBackFromPlayer(void)
+// 攻撃カプセルを手のフレーム位置へ追従させる
+void EnemyGiant::UpdateAttackCapsule(void)
 {
-    // CapsuleComponent 経由で押し戻し
-    auto* myCap = GetComponent<CapsuleComponent>();
+    if (attackCapsule_ == nullptr || attackHandFrame_ < 0) return;
+
+    auto* mesh = GetComponent<StaticMeshComponent>();
+    if (mesh == nullptr) return;
+
+    // アニメーション適用後の手のフレーム位置（ワールド座標）
+    VECTOR handPos = MV1GetFramePosition(mesh->GetModelId(), attackHandFrame_);
+    attackCapsule_->SetWorldPos(Vector3::FromVECTOR(handPos));
+}
+
+// 攻撃カプセルとプレイヤーカプセルの当たり判定
+// 当たったらプレイヤーの HP を 20 減らす（1 回の攻撃につき 1 回のみ）
+void EnemyGiant::CheckAttackHit(void)
+{
+    if (attackHit_) return;
+    if (attackCapsule_ == nullptr) return;
+
     auto* playerCap = player_.GetComponent<CapsuleComponent>();
-    if (!myCap || !playerCap) return;
+    if (playerCap == nullptr) return;
 
-    Vector3 myCenter = GetPos();
-    Vector3 playerCenter = player_.GetPos();
-    float   dist = Vector3::Distance(myCenter, playerCenter);
-    float   minDist = myCap->GetRadius() + playerCap->GetRadius();
+    bool isHit = HitCheck_Capsule_Capsule(
+        attackCapsule_->GetTopPos().ToVECTOR(),
+        attackCapsule_->GetBottomPos().ToVECTOR(),
+        attackCapsule_->GetRadius(),
+        playerCap->GetTopPos().ToVECTOR(),
+        playerCap->GetBottomPos().ToVECTOR(),
+        playerCap->GetRadius());
 
-    if (dist < minDist && dist > 0.01f)
+    if (isHit)
     {
-        Vector3 pushDir = (myCenter - playerCenter).Normalized();
-        SetPos(GetPos() + pushDir * (minDist - dist) * 0.5f);
+        player_.OnDamaged(ATTACK_DAMAGE);
+        attackHit_ = true;
     }
 }

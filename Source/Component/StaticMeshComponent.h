@@ -54,6 +54,13 @@ public:
     void ClearIncludeFrames(void);
     bool IsIncludeFrame(int frameIndex) const;
 
+    // 当たり判定対象フレームの一覧を取得する
+    // （対象フレーム未指定なら { -1 } = モデル全体）
+    std::vector<int> GetCollisionFrames(void) const;
+
+    // 更新
+    void Update(void) override;
+
     // ---------------------------------------------------------------
     // 描画
     // ---------------------------------------------------------------
@@ -70,6 +77,16 @@ private:
 
     // 対象フレームインデックス
     std::vector<int> includeFrameIds_;
+
+    // コリジョン情報が既にセットアップ済みか
+    bool isCollSetup_ = false;
+
+    // 前回のワールド行列（動いたときだけコリジョン情報を更新するため）
+    MATRIX prevMat_;
+    bool   hasPrevMat_ = false;
+
+    // コリジョン情報のセットアップ
+    void SetupCollision(void);
 
     // フレーム名からインデックスを取得して登録する
     void RegisterFrameIds(

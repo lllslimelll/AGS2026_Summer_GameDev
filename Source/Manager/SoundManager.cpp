@@ -28,6 +28,7 @@ SoundManager& SoundManager::GetInstance(void)
 void SoundManager::Init(void)
 {
 	bgmTitleH_ = LoadSoundMem(BGM_TITLE_PATH);
+	bgmGameH_ = LoadSoundMem(BGM_GAME_PATH);
 	walkH_ = LoadSoundMem(WALK_PATH);
 	pickUpH_ = LoadSoundMem(PICKUP_PATH);
 	boostH_ = LoadSoundMem(BOOST_PATH);
@@ -35,6 +36,7 @@ void SoundManager::Init(void)
 
 	// âπó í≤êÆ
 	ChangeVolumeSoundMem(BGM_TITLE_VOLUME, bgmTitleH_);
+	ChangeVolumeSoundMem(BGM_GAME_VOLUME, bgmGameH_);
 	ChangeVolumeSoundMem(WALK_VOLUME, walkH_);
 	ChangeVolumeSoundMem(PICKUP_VOLUME, pickUpH_);
 	ChangeVolumeSoundMem(BOOST_VOLUME, boostH_);
@@ -49,6 +51,7 @@ void SoundManager::Update(void)
 void SoundManager::Destroy(void)
 {
 	DeleteSoundMem(bgmTitleH_);
+	DeleteSoundMem(bgmGameH_);
 	DeleteSoundMem(walkH_);
 	DeleteSoundMem(pickUpH_);
 	DeleteSoundMem(boostH_);
@@ -64,6 +67,15 @@ void SoundManager::PlayBgmTitle()
 	if (CheckSoundMem(bgmTitleH_) == 0)
 	{
 		PlaySoundMem(bgmTitleH_, DX_PLAYTYPE_LOOP, true);
+	}
+}
+
+void SoundManager::PlayBgmGame()
+{
+	// çƒê∂
+	if (CheckSoundMem(bgmGameH_) == 0)
+	{
+		PlaySoundMem(bgmGameH_, DX_PLAYTYPE_LOOP, true);
 	}
 }
 
@@ -98,6 +110,11 @@ void SoundManager::PlayDamaged()
 void SoundManager::StopBGMTitle()
 {
 	StopSoundMem(bgmTitleH_);
+}
+
+void SoundManager::StopBGMGame()
+{
+	StopSoundMem(bgmGameH_);
 }
 
 void SoundManager::StopWalk()

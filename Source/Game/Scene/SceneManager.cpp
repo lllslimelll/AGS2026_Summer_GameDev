@@ -135,6 +135,9 @@ void SceneManager::Draw(void)
 	
 	// ˆÃ“]E–¾“]
 	fader_->Draw();
+
+	SetDrawScreen(DX_SCREEN_BACK);
+	DrawGraph(0, 0, mainScreen, false);
 }
 
 void SceneManager::Destroy(void)
@@ -177,11 +180,15 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		scenes_.push_back(std::make_unique<TitleScene>());
 		SetMouseDispFlag(true);
 		SoundManager::GetInstance().StopWalk();
+		SoundManager::GetInstance().PlayBgmTitle();
+		SoundManager::GetInstance().StopBGMGame();
 		break;
 	case SCENE_ID::GAME:
 		// ’Ç‰Á
 		scenes_.push_back(std::make_unique<GameScene>());
 		SoundManager::GetInstance().StopWalk();
+		SoundManager::GetInstance().PlayBgmTitle();
+		SoundManager::GetInstance().PlayBgmGame();
 		SetMouseDispFlag(false);
 		break;
 	case SCENE_ID::DEBUG:
@@ -211,6 +218,7 @@ void SceneManager::PushOverlay(SCENE_ID sceneId)
 	{
 	case SCENE_ID::PAUSE:
 		scenes_.push_back(std::make_unique<PauseScene>());
+		SoundManager::GetInstance().StopBGMGame();
 		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::DEAD:
@@ -219,6 +227,7 @@ void SceneManager::PushOverlay(SCENE_ID sceneId)
 		break;
 	case SCENE_ID::RESULT:
 		scenes_.push_back(std::make_unique<ResultScene>());
+		SoundManager::GetInstance().StopBGMGame();
 		SoundManager::GetInstance().StopWalk();
 		SetMouseDispFlag(true);
 		break;

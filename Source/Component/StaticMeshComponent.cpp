@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstring>
 #include "StaticMeshComponent.h"
 
 StaticMeshComponent::StaticMeshComponent(
@@ -23,10 +24,32 @@ void StaticMeshComponent::Init(void)
     PrimitiveComponent::Init();
 
     // モデルの当たり判定情報をセットアップ
-    if (modelId_ != -1)
+    SetupCollision();
+}
+
+// コリジョン情報のセットアップ
+// 対象フレームが指定されていればフレーム単位で構築する
+void StaticMeshComponent::SetupCollision(void)
+{
+    isCollSetup_ = false;
+
+    if (modelId_ == -1) return;
+
+    // コリジョンに参加しないなら重いセットアップは行わない
+    if (GetProfile().type_ == CollisionProfileType::NO_COLLISION) return;
+
+    if (includeFrameIds_.empty())
     {
         MV1SetupCollInfo(modelId_);
     }
+    else
+    {
+        for (int frame : includeFrameIds_)
+        {
+            MV1SetupCollInfo(modelId_, frame);
+        }
+    }
+    isCollSetup_ = true;
 }
 
 // ---------------------------------------------------------------
@@ -41,11 +64,9 @@ int StaticMeshComponent::GetModelId(void) const
 void StaticMeshComponent::SetModelId(int modelId)
 {
     modelId_ = modelId;
+    hasPrevMat_ = false;
 
-    if (modelId_ != -1)
-    {
-        MV1SetupCollInfo(modelId_);
-    }
+    SetupCollision();
 }
 
 // ---------------------------------------------------------------
@@ -92,6 +113,55 @@ bool StaticMeshComponent::IsIncludeFrame(int frameIndex) const
         frameIndex) != includeFrameIds_.end();
 }
 
+// 当たり判定対象フレームの一覧を取得する
+std::vector<int> StaticMeshComponent::GetCollisionFrames(void) const
+{
+    if (includeFrameIds_.empty())
+    {
+        // 未指定ならモデル全体（-1）
+        return { -1 };
+    }
+    return includeFrameIds_;
+}
+
+void StaticMeshComponent::Update(void)
+{
+    if (modelId_ == -1) return;
+
+    // ワールド行列をモデルに反映
+    Matrix4x4 worldMat = GetWorldMat();
+    MATRIX dxMat;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            dxMat.m[i][j] = worldMat.m[i][j];
+
+    MV1SetMatrix(modelId_, dxMat);
+
+    // コリジョン情報の更新（重いので行列が変わったときだけ）
+    if (!isCollSetup_) return;
+
+    bool isMoved =
+        !hasPrevMat_ ||
+        std::memcmp(&prevMat_, &dxMat, sizeof(MATRIX)) != 0;
+
+    if (isMoved)
+    {
+        if (includeFrameIds_.empty())
+        {
+            MV1RefreshCollInfo(modelId_);
+        }
+        else
+        {
+            for (int frame : includeFrameIds_)
+            {
+                MV1RefreshCollInfo(modelId_, frame);
+            }
+        }
+        prevMat_ = dxMat;
+        hasPrevMat_ = true;
+    }
+}
+
 // ---------------------------------------------------------------
 // 描画
 // ---------------------------------------------------------------
@@ -100,16 +170,6 @@ void StaticMeshComponent::Draw(void)
 {
     if (modelId_ == -1) return;
 
-    // ワールド行列をモデルに適用
-    Matrix4x4 worldMat = GetWorldMat();
-
-    // Matrix4x4 → MATRIX に変換して DxLib に渡す
-    MATRIX dxMat;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            dxMat.m[i][j] = worldMat.m[i][j];
-
-    MV1SetMatrix(modelId_, dxMat);
     MV1DrawModel(modelId_);
 }
 

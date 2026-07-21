@@ -6,9 +6,7 @@
 #include "Item.h"
 #include "ItemManager.h"
 
-ItemManager::ItemManager(SpawnItemFunc spawnFunc)
-    : ActorBase()
-    , spawnFunc_(spawnFunc)
+ItemManager::ItemManager(void)
 {
 }
 
@@ -40,20 +38,23 @@ void ItemManager::Draw(void)
 
 void ItemManager::Release(void)
 {
-    // Item の解放は GameScene(actors_) が担当するため
-    // ここではリストをクリアするだけ
+    for (auto& item : items_)
+    {
+        item->Release();
+        delete item;
+    }
     items_.clear();
     flyingItems_.clear();
 }
 
 Item* ItemManager::Create(const Item::ItemData& data)
 {
-    // Item の生成は GameScene(World 相当)に委譲する
-    Item* item = spawnFunc_(data);
-    if (item != nullptr)
-    {
-        items_.emplace_back(item);
-    }
+    Item* item = new Item(data);
+
+    item->Init();
+
+    items_.emplace_back(item);
+
     return item;
 }
 
@@ -125,14 +126,18 @@ void ItemManager::LoadCsvData(void)
 
 void ItemManager::RemoveDeliveredItems(void)
 {
-    // 納品済みアイテムをリストから除外する
-    // 実体の解放は GameScene の actors_ が担当するため erase のみ
     for (auto it = items_.begin(); it != items_.end();)
     {
         if ((*it)->GetState() == Item::STATE::DELIVERED)
-            it = items_.erase(it);  // eraseが次のイテレータを返す
+        {
+            (*it)->Release();
+            delete* it;
+            it = items_.erase(it);
+        }
         else
+        {
             ++it;
+        }
     }
 }
 

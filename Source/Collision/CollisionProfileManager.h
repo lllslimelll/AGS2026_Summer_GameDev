@@ -1,4 +1,4 @@
-#pragma onc
+#pragma once
 #include <array>
 #include "CollisionProfile.h"
 #include "CollisionProfileType.h"

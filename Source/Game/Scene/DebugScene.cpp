@@ -22,18 +22,12 @@ DebugScene::~DebugScene(void)
         stageMng_->Release();
         delete stageMng_;
     }
-    if (planet_ != nullptr) { planet_->Release(); delete planet_; }
-    if (rocket_ != nullptr) { rocket_->Release(); delete rocket_; }
 }
 
 void DebugScene::Init(void)
 {
-    // Planet / Rocket を生成してから StageManager に渡す
-    planet_ = new Planet();
-    planet_->Init();
-    rocket_ = new Rocket();
-    rocket_->Init();
-    stageMng_ = new StageManager(planet_, rocket_);
+    stageMng_ = new StageManager();
+    stageMng_->Init();
 
     // カメラ（FREE モードで自由移動）
     camera_ = std::make_unique<Camera>();
