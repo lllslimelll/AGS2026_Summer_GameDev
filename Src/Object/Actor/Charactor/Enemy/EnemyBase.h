@@ -1,7 +1,9 @@
 #pragma once
 #include <DxLib.h>
 #include "../CharactorBase.h"
+
 class Player;
+class ColliderCapsule;
 
 class EnemyBase : public CharactorBase
 {
@@ -31,6 +33,11 @@ public:
 
 	// 描画
 	virtual void Draw(void) override;
+
+	 // 押し戻し用に外部から位置調整を許可（XZ平面上でのみ使う想定）
+    void ApplyPushBackXZ(const VECTOR& deltaXZ);
+    // 自身のカプセルコライダを返す（EnemyManager から使う）
+    const ColliderCapsule* GetBodyCapsule(void) const;
 
 protected:
 

@@ -2,8 +2,7 @@
 #include <fstream>
 #include "../../../../Application.h"
 #include "../../../../Utility/AsoUtility.h"
-#include "EnemyRat.h"
-#include "EnemyRobot.h"
+#include "../../../Collider/ColliderCapsule.h"
 #include "EnemyGiant.h"
 #include "EnemyManager.h"
 
@@ -30,6 +29,9 @@ void EnemyManager::Update(void)
 	{
 		enemy->Update();
 	}
+
+	// 全敵の位置更新後に一括で解決（更新順序依存を消すため）
+	ResolveEnemyPairPushBacks();
 }
 
 // 描画
@@ -109,12 +111,6 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 	// 種別事に敵を生成
 	switch (data.type)
 	{
-	case EnemyBase::TYPE::RAT:
-		enemy = new EnemyRat(data, player_);
-		break;
-	case EnemyBase::TYPE::ROBOT:
-		enemy = new EnemyRobot(data, player_);
-		break;
 	case EnemyBase::TYPE::GIANT:
 		enemy = new EnemyGiant(data, player_);
 		break;
@@ -146,3 +142,50 @@ void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 		enemy->AddHitCollider(hitCollider);
 	}
 }
+
+void EnemyManager::ResolveEnemyPairPushBacks(void)
+{
+	const size_t n = enemies_.size();
+	for (size_t i = 0; i < n; ++i)
+	{
+		const ColliderCapsule* capA = enemies_[i]->GetBodyCapsule();
+		if (capA == nullptr) continue;
+
+		for (size_t j = i + 1; j < n; ++j)
+		{
+			const ColliderCapsule* capB = enemies_[j]->GetBodyCapsule();
+			if (capB == nullptr) continue;
+
+			// 円柱として XZ 平面上で重なりを見る（Y は無視）
+			VECTOR centerA = capA->GetCenter();
+			VECTOR centerB = capB->GetCenter();
+
+			float dx = centerA.x - centerB.x;
+			float dz = centerA.z - centerB.z;
+			float distSq = dx * dx + dz * dz;
+
+			float minDist = capA->GetRadius() + capB->GetRadius();
+			if (distSq >= minDist * minDist) continue;
+
+			float dist = sqrtf(distSq);
+			if (dist < 0.0001f)
+			{
+				// 完全重なり：任意方向で分離
+				dx = 1.0f;
+				dz = 0.0f;
+				dist = 1.0f;
+			}
+
+			float overlap = minDist - dist;
+			float invDist = 1.0f / dist;
+
+			// A を A→B の反対方向、B を A→B 方向へ、それぞれ半量ずつ
+			VECTOR pushA = { dx * invDist * overlap * 0.5f, 0.0f, dz * invDist * overlap * 0.5f };
+			VECTOR pushB = { -pushA.x, 0.0f, -pushA.z };
+
+			enemies_[i]->ApplyPushBackXZ(pushA);
+			enemies_[j]->ApplyPushBackXZ(pushB);
+		}
+	}
+}
+

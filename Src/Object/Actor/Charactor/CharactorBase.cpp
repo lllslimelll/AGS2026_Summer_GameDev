@@ -87,23 +87,16 @@ void CharactorBase::ChangeState(int state)
 
 void CharactorBase::Rotate(void)
 {
-	// faceDir_がほぼゼロなら回転しない
 	if (VSize(faceDir_) < 0.01f) return;
 
-	// 上方向
-	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-
-	// 移動方向から回転に変換する
-	Quaternion goalRot = Quaternion::LookRotation(faceDir_, upDir);
-
-	// 直接回転
+	Quaternion goalRot = Quaternion::LookRotation(faceDir_, AsoUtility::AXIS_Y);
 	transform_.quaRot = goalRot;
 }
 
 void CharactorBase::CalcGravityPow(void)
 {
 	// 重力方向
-	VECTOR dirGravity = VNorm(VSub(MOON_CENTER_POS, transform_.pos));
+	const VECTOR dirGravity = AsoUtility::DIR_D;
 
 	// 重力の強さ
 	float gravityPow = Application::GetInstance().GetGravityPow() * scnMng_.GetDeltaTime();
@@ -112,12 +105,10 @@ void CharactorBase::CalcGravityPow(void)
 	VECTOR gravity = VScale(dirGravity, gravityPow);
 	jumpPow_ = VAdd(jumpPow_, gravity);
 
-	// ---- 追加: 球状重力に対応した終端速度クランプ ----
-   // 重力方向の速度成分（正値 = 落下方向）
+	// 落下速度クランプ（-Y方向成分を制限）
 	float fallSpeed = VDot(jumpPow_, dirGravity);
 	if (fallSpeed > MAX_FALL_SPEED)
 	{
-		// 落下方向成分だけをクランプ、横方向は据え置く
 		VECTOR lateralVec = VSub(jumpPow_, VScale(dirGravity, fallSpeed));
 		jumpPow_ = VAdd(lateralVec, VScale(dirGravity, MAX_FALL_SPEED));
 	}
@@ -165,10 +156,9 @@ void CharactorBase::CollisionGravity(void)
 		if (colliderModel == nullptr) continue;
 
 		// 上方向
-		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+		const VECTOR upDir = AsoUtility::AXIS_Y;
 
 		// 上昇中は衝突判定を発生させない
-		// Y軸ではなく、UP方向への速度成分（内積）で上昇中か判断
 		float upSpeed = VDot(upDir, jumpPow_);
 		if (upSpeed > 0.0f) continue;
 

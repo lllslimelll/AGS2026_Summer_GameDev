@@ -170,59 +170,21 @@ void Camera::SetDefault(void)
 void Camera::SyncFollow(void)
 {
 
-	//// 同期先の位置
-	//VECTOR pos = followTransform_->pos;
+	// 足元位置 → 頭位置（ワールド Y に沿って持ち上げる、回転前）
+	VECTOR headPos = followTransform_->pos;
+	headPos.y += HEAD_OFFSET_Y; 
 
-	//// Y軸
-	//rotY_ = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y);
+	// yaw + pitch を絶対角で合成
+	rotY_ = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y);
+	transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
 
-	//// Y軸 + X軸
-	//transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
+	// 注視点：頭を基準に回転オフセットを加算（pitch/yaw に追従してほしい）
+	VECTOR localPos = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
+	targetPos_ = VAdd(headPos, localPos);
 
-	//VECTOR localPos;
-
-	//// 注視点
-	//localPos = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
-	//targetPos_ = VAdd(pos, localPos);
-
-	//// カメラ位置
-	//localPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
-	//transform_.pos = VAdd(pos, localPos);
-
-	//VECTOR playerPos = MV1GetFramePosition(followTransform_->modelId, 6);
-	// 1. プレイヤーの現在の座標を取得
-	VECTOR playerPos = followTransform_->pos;
-
-	// 2. 星の中心からプレイヤーへの方向を、カメラにとっての「真上(Up)」とする
-	VECTOR upDir = VNorm(VSub(playerPos, MOON_CENTER_POS));
-
-	// 回転の基準点を頭の位置にずらす
-	VECTOR headPos = VAdd(playerPos, VScale(upDir, 120.0f));
-
-	// 3. プレイヤーの「前」と「真上」から、カメラの基準となる回転を作る
-	Quaternion baseRot = Quaternion::LookRotation(followTransform_->GetForward(), upDir);
-
-	// 4. マウスやスティックの操作分(angles_)の回転を作る
-	Quaternion rotY = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y); // 左右
-	Quaternion rotX = Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X); // 上下
-
-	// 5. 基準の回転に、操作分の回転を重ねて最終的な向きを決定
-	transform_.quaRot = baseRot.Mult(rotY).Mult(rotX);
-
-	// 6. 「後ろ・上」のオフセット位置を計算
-	VECTOR cameraOffset = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
-	transform_.pos = VAdd(headPos, cameraOffset);
-
-	// 7. 注視点（どこを見るか）を計算
-	VECTOR targetOffset = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
-	targetPos_ = VAdd(headPos, targetOffset);
-
-	// ==========================================
-	// ★ 超重要：勝手に回り続けるのを防ぐ「魔法の1行」
-	// 左右の回転はプレイヤーの体が回ることで吸収されるため、
-	// カメラ側のオフセットはここで 0 にリセットします。
-	// ==========================================
-	angles_.y = 0.0f;
+	// カメラ位置：回転オフセットは 0 でよければそのまま headPos
+	localPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
+	transform_.pos = VAdd(headPos, localPos);
 }
 
 void Camera::ProcessRot(bool isLimit)
@@ -304,7 +266,7 @@ void Camera::UpdateFollow(void)
 	SyncFollow();
 
 	// 衝突判定
-	Collision();
+	//Collision();
 
 	// カメラ位置の線形補完
 	/*transform_.pos =

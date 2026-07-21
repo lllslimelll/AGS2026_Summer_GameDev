@@ -2,6 +2,7 @@
 #include <DxLib.h>
 
 #define BGM_TITLE_PATH "Data/Sound/BGM_Title.mp3"
+#define BGM_GAME_PATH "Data/Sound/BGM_Game.mp3"
 #define WALK_PATH "Data/Sound/Walk.mp3"
 #define BOOST_PATH "Data/Sound/Boost.mp3"
 #define PICKUP_PATH "Data/Sound/PickUp.wav"
@@ -14,6 +15,7 @@ public:
 
 	// 音量（０～２５５）
 	static constexpr int BGM_TITLE_VOLUME = 200; // タイトルBGM
+	static constexpr int BGM_GAME_VOLUME = 200; // タイトルBGM
 	static constexpr int WALK_VOLUME = 200;		 // 歩き
 	static constexpr int PICKUP_VOLUME = 255;	 // 取得
 	static constexpr int BOOST_VOLUME = 200;	 // ブースト
@@ -32,6 +34,7 @@ public:
 
 	// 音源再生
 	void PlayBgmTitle();		// タイトルBGM
+	void PlayBGMGame();
 	void PlayWalk();	// 歩き
 	void PlayPickUp();	// 取得
 	void PlayBoost();	// ブースト
@@ -39,6 +42,7 @@ public:
 
 	//音源停止	
 	void StopBGMTitle();		// タイトルBGM
+	void StopBGMGame();
 	void StopWalk();	// 歩き
 	void StopPickUp();	// 取得
 	void StopBoost();	// ブースト
@@ -61,6 +65,7 @@ private:
 	static SoundManager* instance_;
 
 	int bgmTitleH_;
+	int bgmGameH_;
 	int walkH_;
 	int pickUpH_;
 	int boostH_;

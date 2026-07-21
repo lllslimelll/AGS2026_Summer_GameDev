@@ -44,8 +44,8 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/SpherePlanet/SpherePlanet.mv1");
 	resourcesMap_.emplace(SRC::SPHERE_PLANET, res);
 
-	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player.mv1");
-	resourcesMap_.emplace(SRC::PLAYER, res);
+	//res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player.mv1");
+	//resourcesMap_.emplace(SRC::PLAYER, res);
 
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Idle.mv1");
 	resourcesMap_.emplace(SRC::IDLE, res);
@@ -62,7 +62,7 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/JumpRising.mv1");
 	resourcesMap_.emplace(SRC::JUMP_RISING, res);
 
-	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/planet.mv1");
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/Stage.mv1");
 	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
 
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/roket.mv1");

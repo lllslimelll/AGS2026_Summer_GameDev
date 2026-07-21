@@ -94,6 +94,7 @@ void GameScene::Init(void)
 
 	enemyManager_->AddHitCollider(planetCollider); // ステージモデルのコライダー登録
 	enemyManager_->AddHitCollider(playerCollider);
+	enemyManager_->AddHitCollider(rocketCollider);
 
 	skyDome_->Init();
 	

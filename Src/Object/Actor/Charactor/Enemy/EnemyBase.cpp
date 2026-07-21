@@ -1,4 +1,5 @@
 #include "../../../../Utility/AsoUtility.h"
+#include "../../../Collider/ColliderCapsule.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, Player& player)
@@ -45,4 +46,19 @@ bool EnemyBase::InMovableRange(void) const
 	}
 
 	return ret;
+}
+
+void EnemyBase::ApplyPushBackXZ(const VECTOR& deltaXZ)
+{
+	transform_.pos.x += deltaXZ.x;
+	transform_.pos.z += deltaXZ.z;
+	// Y は触らない：落下・ジャンプに干渉させない
+	transform_.Update();
+}
+
+const ColliderCapsule* EnemyBase::GetBodyCapsule(void) const
+{
+	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
+	if (ownColliders_.count(capsuleType) == 0) return nullptr;
+	return dynamic_cast<const ColliderCapsule*>(ownColliders_.at(capsuleType));
 }

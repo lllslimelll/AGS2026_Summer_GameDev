@@ -65,7 +65,7 @@ void Player::UpdateIdle(void)
 {
 	// 移動・ジャンプ
 	ProcessMove();
-	ProcessJump();
+	//ProcessJump();
 
 	// 当たり判定調整
 	CollisionReserve();
@@ -86,107 +86,81 @@ void Player::ProcessMove(void)
 {
 	auto& ins = InputManager::GetInstance();
 
-	// 移動量
 	movePow_ = AsoUtility::VECTOR_ZERO;
-	// 移動方向
 	VECTOR kDir = AsoUtility::VECTOR_ZERO;
 	VECTOR dDir = AsoUtility::VECTOR_ZERO;
 
-	// 移動操作（キーボード）
+	// 入力取得（省略、そのまま）
 	if (ins.IsPressed(InputManager::InputCommand::MOVE_FORWARD)) { kDir = VAdd(kDir, AsoUtility::DIR_F); }
-	if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK))	 { kDir = VAdd(kDir, AsoUtility::DIR_B); }
-	if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT))	 { kDir = VAdd(kDir, AsoUtility::DIR_L); }
-	if (ins.IsPressed(InputManager::InputCommand::MOVE_RIGHT))	 { kDir = VAdd(kDir, AsoUtility::DIR_R); }
-	// 斜め入力時に正規化（長さを1に統一）
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK)) { kDir = VAdd(kDir, AsoUtility::DIR_B); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT)) { kDir = VAdd(kDir, AsoUtility::DIR_L); }
+	if (ins.IsPressed(InputManager::InputCommand::MOVE_RIGHT)) { kDir = VAdd(kDir, AsoUtility::DIR_R); }
 	if (!AsoUtility::EqualsVZero(kDir)) { kDir = VNorm(kDir); }
-
-	// 移動操作（ゲームパッド）
 	dDir = ins.GetInstance().GetLeftStickDirection();
-	
-	// ブースト
+
 	if (ins.IsTriggered(InputManager::InputCommand::BOOST)) { isBoost_ = true; }
+	if (isJump_) SoundManager::GetInstance().StopWalk();
 
-	if(isJump_) SoundManager::GetInstance().StopWalk();
+	// ---- ここが変更点 ----
+	// 上方向は +Y 固定
+	const VECTOR upDir = AsoUtility::AXIS_Y;
 
-	// 移動入力がある場合
+	// カメラのforward/rightを取得して XZ 平面へ射影
+	Quaternion cameraRot = cameraTransform_->quaRot;
+	VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
+	VECTOR camRight = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_R);
+
+	// Y成分を落とすだけで平面射影が完了する（球面射影より単純）
+	VECTOR planeForward = { camForward.x, 0.0f, camForward.z };
+	VECTOR planeRight = { camRight.x,   0.0f, camRight.z };
+
+	// ゼロ長対策（真上/真下を向いてる時の防護）
+	if (VSize(planeForward) < 0.0001f) planeForward = AsoUtility::DIR_F;
+	if (VSize(planeRight) < 0.0001f) planeRight = AsoUtility::DIR_R;
+	planeForward = VNorm(planeForward);
+	planeRight = VNorm(planeRight);
+
 	if (!AsoUtility::EqualsVZero(kDir) || !AsoUtility::EqualsVZero(dDir))
 	{
 		SoundManager::GetInstance().PlayWalk();
 
-		// 上方向を取得（地面の法線方向）
-		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+		// 顔向きはカメラforwardに固定（1人称なので体もカメラ方向を向く）
+		faceDir_ = planeForward;
 
-		// カメラの回転を取得
-		Quaternion cameraRot = cameraTransform_->quaRot;
-
-		// カメラの「前」と「右」をベクトルとして取り出す
-		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
-		VECTOR camRight = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_R);
-
-		// 星の表面に沿わせる
-		float dotF = VDot(camForward, upDir);
-		VECTOR surfaceForward = VNorm(VSub(camForward, VScale(upDir, dotF)));
-
-		float dotR = VDot(camRight, upDir);
-		VECTOR surfaceRight = VNorm(VSub(camRight, VScale(upDir, dotR)));
-
-		// キャラの向く方向をカメラの前方に固定
-		faceDir_ = surfaceForward;
-
-		// dirに合わせて移動ベクトルを合成
 		VECTOR moveVec = AsoUtility::VECTOR_ZERO;
-		moveVec = VAdd(moveVec, VScale(surfaceForward, kDir.z)); // 左右の移動を加算（キーボード）
-		moveVec = VAdd(moveVec, VScale(surfaceRight, kDir.x));	 // 前後の移動を加算（キーボード）
-		moveVec = VAdd(moveVec, VScale(surfaceForward, dDir.z)); // 左右の移動を加算（ゲームパッド）
-		moveVec = VAdd(moveVec, VScale(surfaceRight, dDir.x));	 // 前後の移動を加算（ゲームパッド）
+		moveVec = VAdd(moveVec, VScale(planeForward, kDir.z));
+		moveVec = VAdd(moveVec, VScale(planeRight, kDir.x));
+		moveVec = VAdd(moveVec, VScale(planeForward, dDir.z));
+		moveVec = VAdd(moveVec, VScale(planeRight, dDir.x));
 
-		// 移動ベクトルの正規化
 		moveDir_ = VNorm(moveVec);
 
-		if (isBoost_)
-		{
-			// ダッシュ速度
+		if (isBoost_) {
 			moveSpeed_ = SPEED_DASH;
-
-			// 速く走るアニメーション再生
 			animCtrl_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
-
 			SoundManager::GetInstance().StopWalk();
 			SoundManager::GetInstance().PlayBoost();
 		}
-		else
-		{
-			// 歩行速度
+		else {
 			moveSpeed_ = SPEED_MOVE;
-
-			// 走るアニメーション再生
 			animCtrl_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
 		}
 
-		// 移動速度を反映
 		movePow_ = VScale(moveDir_, moveSpeed_);
 	}
-	else // 移動入力がない場合
+	else
 	{
 		SoundManager::GetInstance().StopWalk();
 		SoundManager::GetInstance().StopBoost();
 
-		// 入力がない時も、常にカメラの方向を向かせ続ける場合
-		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-		Quaternion cameraRot = cameraTransform_->quaRot;
-		VECTOR camForward = Quaternion::PosAxis(cameraRot, AsoUtility::DIR_F);
-		float dotF = VDot(camForward, upDir);
-		faceDir_ = VNorm(VSub(camForward, VScale(upDir, dotF)));
+		// 入力なしでもカメラ方向に体を合わせる
+		faceDir_ = planeForward;
 
-		// ジャンプ中はアニメーションを変えない
 		if (!isJump_) { animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true); }
-
-		// ブーストフラグを折る
 		isBoost_ = false;
 	}
-	
-	// 後退中はブーストを無効化
-	if(kDir.z < 0.0f || dDir.z < 0.0f) { isBoost_ = false; }
+
+	if (kDir.z < 0.0f || dDir.z < 0.0f) { isBoost_ = false; }
 }
 
 void Player::ProcessJump(void)
@@ -194,7 +168,7 @@ void Player::ProcessJump(void)
 	auto& ins = InputManager::GetInstance();
 
 	// プレイヤーの上方向を計算（地面の法線方向）
-	VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+	const VECTOR upDir = AsoUtility::AXIS_Y;
 
 	// ジャンプキーが押されたか
 	bool isHitKey = ins.IsTriggered(InputManager::InputCommand::JUMP);
@@ -613,10 +587,10 @@ void Player::InitTransform(void)
 	
 	transform_.quaRot = Quaternion::Identity();
 	// Y軸を180度
-	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
+	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(0), AsoUtility::AXIS_Y);
 
 	// 座標
-	transform_.pos = { 1386, -910, -94.8f };
+	transform_.pos = { 0, 0, -500.0f };
 
 	transform_.Update();
 
@@ -670,25 +644,5 @@ void Player::InitPost(void)
 
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
-
-	{
-		// 上方向（星の中心→プレイヤー）
-		VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-
-		// faceDir_ を接平面へ投影して、表面に沿った前方向にする
-		float dotFU = VDot(faceDir_, upDir);
-		VECTOR f = VSub(faceDir_, VScale(upDir, dotFU));
-
-		// 万一 faceDir_ が upDir とほぼ平行で潰れた場合の保険
-		if (VSize(f) < 0.0001f)
-		{
-			f = VCross(upDir, AsoUtility::AXIS_X);
-			if (VSize(f) < 0.0001f) { f = VCross(upDir, AsoUtility::AXIS_Z); }
-		}
-
-		faceDir_ = VNorm(f);
-		transform_.quaRot = Quaternion::LookRotation(faceDir_, upDir);
-		transform_.Update();
-	}
 }
 

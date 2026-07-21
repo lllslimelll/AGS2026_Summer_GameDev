@@ -42,5 +42,7 @@ private:
 
 	// エネミーリスト
 	std::vector<EnemyBase*> enemies_;
+
+	void ResolveEnemyPairPushBacks(void);
 };
 

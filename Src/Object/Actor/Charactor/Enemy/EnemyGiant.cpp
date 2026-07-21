@@ -37,12 +37,13 @@ void EnemyGiant::InitTransform(void)
     transform_.quaRot = Quaternion();
     transform_.quaRotLocal = Quaternion::Euler(DEFAULT_LOCAL_ROT);
     transform_.pos = defaultPos_;
-    // 月面の法線方向に少し浮かせる（地面にめり込まないように）
-    VECTOR upVec = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-    transform_.pos = VAdd(transform_.pos, VScale(upVec, 50.0f));  // 値は調整が必要
+
+    // 地面にめり込まないよう +Y に少し持ち上げる
+    transform_.pos.y += 10.0f;
 
     transform_.Update();
 
+    // 以下 viewRange の初期化はそのまま
     viewRangeTransform_.scl = VIEW_RANGE_SCL;
     viewRangeTransform_.pos =
         MV1GetFramePosition(transform_.modelId, VIEW_RANGE_SYNC_FRAME);
@@ -52,6 +53,8 @@ void EnemyGiant::InitTransform(void)
     viewRangeTransform_.quaRotLocal =
         Quaternion::AngleAxis(VIEW_RANGE_LOCAL_ROT_X, AsoUtility::AXIS_X);
     viewRangeTransform_.Update();
+
+   // spawnPos_ = defaultPos_;
 }
 
 void EnemyGiant::InitCollider(void)
@@ -191,14 +194,9 @@ void EnemyGiant::ChangeStatePatrol(void)
     stateUpdate_ = std::bind(&EnemyGiant::UpdatePatrol, this);
     movePow_ = AsoUtility::VECTOR_ZERO;
 
-    // 接平面上でランダム方向
-    VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-    VECTOR ref = (fabsf(upDir.y) < 0.99f) ? AsoUtility::AXIS_Y : AsoUtility::AXIS_X;
-    VECTOR tangent = VNorm(VCross(upDir, ref));
-    VECTOR binormal = VNorm(VCross(upDir, tangent));
-
+    // XZ平面上でランダム方向
     float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-    moveDir_ = VAdd(VScale(tangent, cosf(angle)), VScale(binormal, sinf(angle)));
+    moveDir_ = { cosf(angle), 0.0f, sinf(angle) };
     faceDir_ = moveDir_;
 
     step_ = 3.0f + static_cast<float>(GetRand(4));
@@ -268,10 +266,11 @@ void EnemyGiant::UpdatePatrol(void)
         return;
     }
 
-    // 接平面に再投影
-    VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
-    float d = VDot(moveDir_, upDir);
-    moveDir_ = VNorm(VSub(moveDir_, VScale(upDir, d)));
+    // XZ平面上に矯正（Y成分を捨てる）
+    moveDir_.y = 0.0f;
+    if (VSize(moveDir_) < 0.0001f) moveDir_ = AsoUtility::DIR_F;
+    moveDir_ = VNorm(moveDir_);
+
     faceDir_ = moveDir_;
     movePow_ = VScale(moveDir_, moveSpeed_);
 
@@ -378,20 +377,13 @@ void EnemyGiant::UpdateEnd(void)
 
 void EnemyGiant::SetMoveDirToTarget(const VECTOR& target)
 {
-    // 月面の上方向
-    VECTOR upDir = VNorm(VSub(transform_.pos, MOON_CENTER_POS));
+    VECTOR dir = VSub(target, transform_.pos);
+    dir.y = 0.0f;  // XZ平面へ射影
 
-    // ターゲット方向を計算
-    VECTOR dir = VNorm(VSub(target, transform_.pos));
+    // ターゲットがほぼ真上/真下なら無視
+    if (VSize(dir) < 0.01f) return;
 
-    // 接平面に投影（上方向成分を除去）
-    float d = VDot(dir, upDir);
-    VECTOR projected = VSub(dir, VScale(upDir, d));
-
-    // 投影後のベクトルが極端に小さい場合（目標がほぼ真上/真下）は無視
-    if (VSize(projected) < 0.01f) return;
-
-    moveDir_ = VNorm(projected);
+    moveDir_ = VNorm(dir);
     faceDir_ = moveDir_;
 }
 
@@ -429,38 +421,40 @@ float EnemyGiant::DistToPlayer(void) const
 
 void EnemyGiant::PushBackFromPlayer(void)
 {
-    // 自身のカプセルコライダ取得
     int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
     if (ownColliders_.count(capsuleType) == 0) return;
 
-    ColliderCapsule* myCapsule =
-        dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
+    ColliderCapsule* myCapsule = dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
     if (myCapsule == nullptr) return;
 
-    // プレイヤーのカプセルコライダと比較
     for (const auto& hitCol : hitColliders_)
     {
         if (hitCol->GetTag() != ColliderBase::TAG::PLAYER) continue;
 
-        const ColliderCapsule* playerCapsule =
-            dynamic_cast<const ColliderCapsule*>(hitCol);
+        const ColliderCapsule* playerCapsule = dynamic_cast<const ColliderCapsule*>(hitCol);
         if (playerCapsule == nullptr) continue;
 
-        // カプセル間の中心同士のベクトル
-        VECTOR myCenter = VScale(VAdd(myCapsule->GetPosTop(), myCapsule->GetPosDown()), 0.5f);
-        VECTOR plCenter = VScale(VAdd(playerCapsule->GetPosTop(), playerCapsule->GetPosDown()), 0.5f);
+        VECTOR myC = myCapsule->GetCenter();
+        VECTOR plC = playerCapsule->GetCenter();
 
-        float dist = VSize(VSub(myCenter, plCenter));
+        // XZ 距離のみ
+        float dx = myC.x - plC.x;
+        float dz = myC.z - plC.z;
+        float distSq = dx * dx + dz * dz;
+
         float minDist = myCapsule->GetRadius() + playerCapsule->GetRadius();
+        if (distSq >= minDist * minDist) return;
 
-        if (dist < minDist && dist > 0.01f)
-        {
-            // 押し戻し方向（プレイヤーから離れる方向）
-            VECTOR pushDir = VNorm(VSub(myCenter, plCenter));
-            float  overlap = minDist - dist;
-            transform_.pos = VAdd(transform_.pos, VScale(pushDir, overlap * 0.5f));
-            transform_.Update();
-        }
-        break;
+        float dist = sqrtf(distSq);
+        if (dist < 0.0001f) { dx = 1.0f; dz = 0.0f; dist = 1.0f; }
+
+        float overlap = minDist - dist;
+        float k = overlap * 0.5f / dist;
+
+        // 敵側のみ動かす（プレイヤーは既存挙動を維持）
+        transform_.pos.x += dx * k;
+        transform_.pos.z += dz * k;
+        transform_.Update();
+        return;
     }
 }

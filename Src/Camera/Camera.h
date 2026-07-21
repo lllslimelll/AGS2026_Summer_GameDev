@@ -38,6 +38,8 @@ public:
 	// 追従位置から注視点までの相対座標
 	static constexpr VECTOR FOLLOW_TARGET_LOCAL_POS = { 0.0f, 0.0f, 100.0f };
 
+	static constexpr float HEAD_OFFSET_Y = 160.0f;
+
 	// カメラのX回転上限度角
 	static constexpr float LIMIT_X_UP_RAD = 65.0f * (DX_PI_F / 180.0f);
 	static constexpr float LIMIT_X_DW_RAD = 80.0f * (DX_PI_F / 180.0f);

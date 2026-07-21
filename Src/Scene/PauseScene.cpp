@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include "SceneManager.h"
 #include "PauseScene.h"
 
@@ -58,7 +59,7 @@ void PauseScene::UpdatePauseMenu(void)
 
 	if (mouseMoved)
 	{
-		const char* labels[MENU_MAX] = { "Resume", "Option", "Back to Title" };
+		const char* labels[MENU_MAX] = { "ゲームに戻る", "設定", "タイトルへ戻る" };
 
 		int baseY = screenH / 2 - 20;
 		constexpr int ITEM_SPAN = 110;
@@ -98,12 +99,14 @@ void PauseScene::UpdatePauseMenu(void)
 	{
 	case MENU::RESUME:
 		sceMng_.PopOverlay();
+		SoundManager::GetInstance().PlayBGMGame();
 		break;
 	case MENU::OPTION:
 		break;
 	case MENU::TITLE:
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
-		//SoundManager::GetInstance().StopWalk();
+		SoundManager::GetInstance().StopBGMGame();
+		SoundManager::GetInstance().StopWalk();
 		break;
 	default: break;
 	}
@@ -126,9 +129,9 @@ void PauseScene::DrawPauseMenu(void)
 
 	const char* labels[MENU_MAX] =
 	{
-		"RETURN TO GAME",
-		"OPTIONS",
-		"BACK TO TITLE",
+		"ゲームに戻る",
+		"設定",
+		"タイトルへ戻る",
 	};
 
 	constexpr int ITEM_SPAN = 110;

@@ -131,12 +131,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\ScreenManager.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\RocketLocatorUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\GuideUI.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Rocket.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Planet.cpp" />
     <ClCompile Include="Src\Object\Inventory\Inventory.cpp" />
+    <ClCompile Include="Src\PostEffect\PostEffect.cpp" />
+    <ClCompile Include="Src\Renderer\Material\Material.cpp" />
+    <ClCompile Include="Src\Renderer\ModelRenderer.cpp" />
+    <ClCompile Include="Src\Renderer\PixelRenderer.cpp" />
     <ClCompile Include="Src\Scene\DeadScene.cpp" />
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\InventoryUI.cpp" />
@@ -161,8 +166,6 @@
     <ClCompile Include="Src\Object\Actor\Charactor\CharactorBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyManager.cpp" />
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyRat.cpp" />
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyRobot.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Player.cpp" />
     <ClCompile Include="Src\Object\Actor\SkyDome.cpp" />
     <ClCompile Include="Src\Object\Collider\ColliderBase.cpp" />
@@ -181,14 +184,20 @@
     <ClCompile Include="Src\Object\UI\TitleUI\TitleUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\StatusUI.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageManager.cpp" />
+    <ClCompile Include="Src\PostEffect\UIPostEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\ScreenManager.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.h" />
     <ClInclude Include="Src\Object\UI\GameUI\RocketLocatorUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\GuideUI.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Rocket.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Planet.h" />
     <ClInclude Include="Src\Object\Inventory\Inventory.h" />
+    <ClInclude Include="Src\PostEffect\PostEffect.h" />
+    <ClInclude Include="Src\Renderer\Material\Material.h" />
+    <ClInclude Include="Src\Renderer\ModelRenderer.h" />
+    <ClInclude Include="Src\Renderer\PixelRenderer.h" />
     <ClInclude Include="Src\Scene\DeadScene.h" />
     <ClInclude Include="Src\Manager\SoundManager.h" />
     <ClInclude Include="Src\Object\UI\GameUI\InventoryUI.h" />
@@ -213,8 +222,6 @@
     <ClInclude Include="Src\Object\Actor\Charactor\CharactorBase.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyManager.h" />
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyRat.h" />
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyRobot.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Player.h" />
     <ClInclude Include="Src\Object\Actor\SkyDome.h" />
     <ClInclude Include="Src\Object\Collider\ColliderBase.h" />
@@ -234,6 +241,7 @@
     <ClInclude Include="Src\Object\UI\TitleUI\TitleUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\StatusUI.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageManager.h" />
+    <ClInclude Include="Src\PostEffect\UIPostEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Csv\EnemyData.csv" />
@@ -266,6 +274,28 @@
     <Media Include="Data\Sound\BGM_Title.mp3" />
     <Media Include="Data\Sound\PickUp.wav" />
     <Media Include="Data\Sound\Walk.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Shader\StagePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Data/Shader/%(Filename).pso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Data/Shader/%(Filename).pso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\StageVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Data/Shader/%(Filename).pso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Data/Shader/%(Filename).pso</ObjectFileOutput>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
