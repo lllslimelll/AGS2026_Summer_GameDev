@@ -9,52 +9,52 @@
 #define VS_OUTPUT VertexToPixelLit
 #include "Common/Vertex/VertexShader3DHeader.hlsli"
 
+//定数バッファ
+cbuffer cbUser : register(b7)
+{
+    float4 g_pivotPos; // xyz: 基準座標(カメラ)
+}
+
+// 曲率
+static const float CURVE_AMOUNT = 0.00006f;
+
 VS_OUTPUT main(VS_INPUT VSInput)
 {
+    VS_OUTPUT ret;
 
-	VS_OUTPUT ret;
-
-	// 頂点座標変換 +++++++++++++++++++++++++++++++++++++( 開始 )
     float4 lLocalPosition;
     float4 lWorldPosition;
     float4 lViewPosition;
 
-	// float3 → float4
     lLocalPosition.xyz = VSInput.pos;
     lLocalPosition.w = 1.0f;
 
-	// ローカル座標をワールド座標に変換(剛体)
+    // ローカル → ワールド
     lWorldPosition.w = 1.0f;
     lWorldPosition.xyz = mul(lLocalPosition, g_base.localWorldMatrix);
-    
-	// ワールド座標をビュー座標に変換
+
+    // ===== World Bending =====
+    float2 offset = lWorldPosition.xz - g_pivotPos.xz;
+    float bend = (offset.x * offset.x + offset.y * offset.y) * CURVE_AMOUNT;
+    lWorldPosition.y -= bend;
+    // =========================
+
+    // ワールド → ビュー
     lViewPosition.w = 1.0f;
     lViewPosition.xyz = mul(lWorldPosition, g_base.viewMatrix);
     ret.vwPos.xyz = lViewPosition.xyz;
 
-	// ビュー座標を射影座標に変換
+    // ビュー → プロジェクション
     ret.svPos = mul(lViewPosition, g_base.projectionMatrix);
 
-	// 頂点座標変換 +++++++++++++++++++++++++++++++++++++( 終了 )
-
-	
-	// その他、ピクセルシェーダへ引継&初期化 ++++++++++++( 開始 )
-	// UV座標
     ret.uv.x = VSInput.uv0.x;
     ret.uv.y = VSInput.uv0.y;
     ret.worldPos = lWorldPosition.xyz;
-	// 法線をローカル空間からワールド空間へ変換
+    // 法線をローカル空間からワールド空間へ変換
     ret.normal = normalize(mul(VSInput.norm, (float3x3) g_base.localWorldMatrix));
-	// ディフューズカラー
     ret.diffuse = VSInput.diffuse;
-	// ライト方向(ローカル)
-    ret.lightDir = float3(0.0f, 0.0f, 0.0f);
-	// ライトから見た座標
+    ret.lightDir = float3(0.3f, -0.7f, 0.8f);
     ret.lightAtPos = float3(0.0f, 0.0f, 0.0f);
-	// その他、ピクセルシェーダへ引継&初期化 ++++++++++++( 終了 )
-	
 
-	// 出力パラメータを返す
     return ret;
-
 }

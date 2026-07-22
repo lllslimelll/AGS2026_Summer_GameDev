@@ -6,6 +6,7 @@
 
 class SceneBase;
 class Fader;
+class Camera;
 
 class SceneManager
 {
@@ -60,6 +61,9 @@ public:
 	// オーバーレイの削除
 	void PopOverlay();
 
+	// カメラの取得
+	Camera& GetCamera(void);
+
 	// シーンIDの取得
 	SCENE_ID GetSceneID(void);
 
@@ -90,6 +94,12 @@ private:
 
 	// フェード
 	std::unique_ptr<Fader> fader_;
+
+	// カメラ
+	std::unique_ptr<Camera> camera_;
+
+	// メインスクリーン　
+	int mainScreen_;
 
 	// シーン遷移中判定
 	bool isSceneChanging_;

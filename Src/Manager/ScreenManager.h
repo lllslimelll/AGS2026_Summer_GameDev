@@ -19,7 +19,7 @@ public:
 	int GetMainScreen() const;
 
 	// UI用スクリーンを取得(仮)
-	int GetUIScreen() const;
+	int GetGuideUIScreen() const;
 
 	// ピンポンバッファ用スクリーンを取得(仮)
 	int GetPingPongScreen(int index) const;
@@ -37,7 +37,7 @@ private:
 
 	// スクリーン
 	int mainScreen_; // メイン
-	int uiScreen_;   // UI
+	int guideUIScreen_;   // ガイドUI
 	int pingPongScreen_[2]; // ピンポンバッファ用
 
 };

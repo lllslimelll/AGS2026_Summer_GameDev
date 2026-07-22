@@ -28,7 +28,7 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
     color *= PSInput.diffuse;
 
     // ランバート反射
-    float lightPow = saturate(dot(PSInput.normal, -g_light_dir.xyz));
+    float lightPow = saturate(dot(PSInput.normal, -PSInput.lightDir));
     color.rgb *= lightPow;
     
     // エミッシブを加算
@@ -36,7 +36,7 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
     color.rgb += emissive;
     
     // アンビエントを加算
-    float3 ambient = float3(0.1f, 0.1f, 0.1f);
+    float3 ambient = float3(0.0f, 0.0f, 0.0f);
     color.rgb += ambient;
     
     return color;

@@ -1,12 +1,25 @@
 // GuideUI.cpp
 #include <DxLib.h>
 #include "../../Actor/Charactor/Player.h"
+#include "../../../Manager/ScreenManager.h"
+#include "../../../PostEffect/PostEffectGuideUI.h"
 #include "GuideUI.h"
 
 GuideUI::GuideUI(const Player& player)
-    : GameUI(),
+    : 
+    GameUI(),
     player_(player)
 {
+    // ガイドUI用ポストエフェクト
+    int screen = ScreenManager::GetInstance().GetGuideUIScreen(); // メインスクリーン取得
+    pEffectGuideUI_ = std::make_unique<PostEffectGuideUI>(); // 生成
+    // 初期化と対象スクリーンの設定
+    pEffectGuideUI_->Init(screen);
+}
+
+void GuideUI::Update(void)
+{
+    pEffectGuideUI_->Update();
 }
 
 void GuideUI::Draw(void)
@@ -21,6 +34,7 @@ void GuideUI::Draw(void)
     constexpr int MARGIN_RIGHT = 60;
     constexpr int MARGIN_TOP = 60;
     constexpr int GOAL_FONT = 42;
+
     constexpr int SCORE_FONT = 50;
     constexpr int NORMA_FONT = 32;
     constexpr int LINE_FONT = 36;
@@ -66,7 +80,7 @@ void GuideUI::Draw(void)
     int scoreW = GetDrawStringWidth(scoreBuf, (int)strlen(scoreBuf));
     DrawString(screenW - scoreW - MARGIN_RIGHT, y, scoreBuf, 0xffffff);
     y += SCORE_FONT + 4;
-
+    
     // ===== ノルマ金額 =====
     SetFontSize(NORMA_FONT);
 
@@ -118,4 +132,7 @@ void GuideUI::Draw(void)
     }
 
     SetFontSize(prevSize);
+
+    // ポストエフェクト
+    pEffectGuideUI_->Draw();
 }

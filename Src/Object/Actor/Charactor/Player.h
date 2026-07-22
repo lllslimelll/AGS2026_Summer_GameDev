@@ -206,7 +206,7 @@ private:
 
 	// ===== HP・酸素 =====
 	static constexpr float OXYGEN_DASH_RATE = 6.0f; 	// 酸素消費倍率（ブースト中）
-	static constexpr float SUFFOCATE_INTERVAL = 2.0f;   // ダメージ周期
+	static constexpr float SUFFOCATE_INTERVAL = 0.5f;   // ダメージ周期
 	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
 
 	int   hp_;

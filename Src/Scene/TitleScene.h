@@ -50,7 +50,6 @@ private:
 	// 選択インデックス
 	int selectIndex_ = -1;
 
-	std::unique_ptr<Camera> camera_;
 	std::unique_ptr<SkyDome> skyDome_;
 
 	int imgTitle_;

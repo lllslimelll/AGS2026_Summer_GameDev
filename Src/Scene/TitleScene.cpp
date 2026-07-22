@@ -75,10 +75,8 @@ void TitleScene::Init(void)
 		Quaternion::AngleAxis(AsoUtility::Deg2RadF(30.0f), AsoUtility::AXIS_Z));
 	spherePlanet_.Update();
 
-	// カメラ
-	camera_ = std::make_unique<Camera>();
-	// 定点モードに設定
-	camera_->ChangeMode(Camera::MODE::FIXED_POINT);
+	// 定点カメラ
+	SceneManager::GetInstance().GetCamera().ChangeMode(Camera::MODE::FIXED_POINT);
 
 	// スカイドーム
 	skyDome_ = std::make_unique<SkyDome>(empty_);
@@ -88,7 +86,6 @@ void TitleScene::Init(void)
 
 void TitleScene::Update(void)
 {
-	camera_->Update();
 	skyDome_->Update();
 
 	// 惑星にX軸に毎フレーム1°ずつ回転を追加
@@ -172,8 +169,6 @@ void TitleScene::UpdateInput(void)
 // 描画
 void TitleScene::Draw(void)
 {
-	// 描画前処理の適用
-	camera_->SetBeforeDraw();
 
 	// スカイドーム
 	skyDome_->Draw();

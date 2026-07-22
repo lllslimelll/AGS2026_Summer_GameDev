@@ -10,6 +10,7 @@ public:
     virtual ~GameUI(void) = default;
 
     virtual void Load(void) {};
+    virtual void Update(void) {};
     virtual void Draw(void) override = 0;
 };
 

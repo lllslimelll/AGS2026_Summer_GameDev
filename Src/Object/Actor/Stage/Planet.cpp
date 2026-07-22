@@ -1,4 +1,6 @@
 #include "../../../Manager/ResourceManager.h"
+#include "../../../Scene/SceneManager.h"
+#include "../../../Camera/Camera.h"
 #include "../../Common/Transform.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../Collider/ColliderModel.h"
@@ -11,11 +13,16 @@ Planet::~Planet(void)
 void Planet::Update(void)
 {
     transform_.Update();
+
+    // カメラ座標をVSに送る
+    Camera& cam = SceneManager::GetInstance().GetCamera();
+    VECTOR camPos = cam.GetPos(); // 要確認: Camera側のgetter名
+    material_->SetConstBufVS(0, {camPos.x, camPos.y, camPos.z, 0.0f});
 }
 
 void Planet::Draw(void)
 {
-    ActorBase::Draw();
+    renderer_->Draw();
 }
 
 void Planet::InitLoad(void)
@@ -59,5 +66,17 @@ void Planet::InitAnimation(void)
 
 void Planet::InitPost(void)
 {
-    transform_.Update();
+    // モデル描画用
+    // マテリアル
+    material_ = std::make_unique<ModelMaterial>(
+        "StageVS.vso", 1,
+        "StagePS.pso", 0);
+
+    Camera& cam = SceneManager::GetInstance().GetCamera();
+    VECTOR camPos = cam.GetPos();
+    material_->AddConstBufVS({ camPos.x, camPos.y, camPos.z, 0.0f });
+
+    // レンダラー
+    renderer_ = std::make_unique<ModelRenderer>(
+        *material_, transform_.modelId);
 }

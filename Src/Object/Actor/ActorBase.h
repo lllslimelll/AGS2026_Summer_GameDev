@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <memory>
+#include "../../Renderer/ModelMaterial.h"
+#include "../../Renderer/ModelRenderer.h"
 #include "../Common/Transform.h"
 class ResourceManager;
 class SceneManager;
@@ -82,5 +85,10 @@ protected:
 
 	// 衝突相手の情報
 	std::vector<const ColliderBase*> hitColliders_;
+
+	// マテリアル
+	std::unique_ptr<ModelMaterial> material_;
+	// レンダラー
+	std::unique_ptr<ModelRenderer> renderer_;
 
 };

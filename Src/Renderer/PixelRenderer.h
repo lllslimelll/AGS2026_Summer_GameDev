@@ -1,33 +1,58 @@
 #pragma once
 #include <DxLib.h>
+#include "PixelMaterial.h"
 #include "../Common/Vector2.h"
 
-class Material;
-
-// 2D矩形ポリゴンにピクセルシェーダーをかけて描画するクラス
 class PixelRenderer
 {
 public:
+	/// <summary>
+	///	コンストラクタ
+	/// </summary>
+	/// <param name="material">マテリアル</param>
+	PixelRenderer(PixelMaterial& material);
 
-    explicit PixelRenderer(Material& material);
+	/// <summary>
+	///	描画矩形の生成
+	/// </summary>
+	/// <param name="size">描画矩形のサイズ</param>
+	/// <param name="pos">描画矩形の座標</param>
+	void MakeSquareVertex(Vector2 size, Vector2 pos);
 
-    void MakeSquareVertex(Vector2 size, Vector2 pos);
-    void Draw(void);
+	// 頂点インデックスの生成
+	void MakeVertexIndex(void);
+
+	// 描画
+	void Draw(void);
 
 private:
 
-    static constexpr int NUM_VERTEX = 4;
-    static constexpr int NUM_VERTEX_INDEX = 6;
-    static constexpr int NUM_POLYGON = 2;
+	// 頂点数
+	static constexpr int NUM_VERTEX = 4;
+	// 頂点インデックス数
+	static constexpr int NUM_VERTEX_INDEX = 6;
 
-    Material& material_;
+	// ポリゴン数
+	static constexpr int NUM_POLYGON = 2;
 
-    Vector2          pos_;
-    Vector2          size_;
-    VERTEX2DSHADER   vertexs_[NUM_VERTEX];
-    WORD             indexes_[NUM_VERTEX_INDEX];
+	// マテリアル
+	PixelMaterial& material_;
 
-    void MakeVertexIndex(void);
-    void SetToDevice(void);
-    void Reset(void);
+	// 座標
+	Vector2 pos_;
+
+	// 描画サイズ
+	Vector2 size_;
+
+	// 頂点
+	VERTEX2DSHADER vertexs_[NUM_VERTEX];
+
+	// 頂点インデックス
+	WORD indexes_[NUM_VERTEX_INDEX];
+
+	// マテリアルの設定をGPUに反映
+	void SetToDevice();
+	// マテリアルの設定をリセット
+	void Reset();
 };
+

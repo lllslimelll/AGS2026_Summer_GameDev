@@ -11,6 +11,7 @@ public:
         MODEL = 0,
         MAX,
     };
+
     static constexpr int QUOTA = 5000;
     ~Rocket(void) override;
 

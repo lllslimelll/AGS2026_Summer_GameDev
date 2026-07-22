@@ -139,8 +139,9 @@
     <ClCompile Include="Src\Object\Actor\Stage\Planet.cpp" />
     <ClCompile Include="Src\Object\Inventory\Inventory.cpp" />
     <ClCompile Include="Src\PostEffect\PostEffect.cpp" />
-    <ClCompile Include="Src\Renderer\Material\Material.cpp" />
+    <ClCompile Include="Src\Renderer\ModelMaterial.cpp" />
     <ClCompile Include="Src\Renderer\ModelRenderer.cpp" />
+    <ClCompile Include="Src\Renderer\PixelMaterial.cpp" />
     <ClCompile Include="Src\Renderer\PixelRenderer.cpp" />
     <ClCompile Include="Src\Scene\DeadScene.cpp" />
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
@@ -184,7 +185,7 @@
     <ClCompile Include="Src\Object\UI\TitleUI\TitleUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\StatusUI.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageManager.cpp" />
-    <ClCompile Include="Src\PostEffect\UIPostEffect.cpp" />
+    <ClCompile Include="Src\PostEffect\PostEffectGuideUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\ScreenManager.h" />
@@ -195,8 +196,9 @@
     <ClInclude Include="Src\Object\Actor\Stage\Planet.h" />
     <ClInclude Include="Src\Object\Inventory\Inventory.h" />
     <ClInclude Include="Src\PostEffect\PostEffect.h" />
-    <ClInclude Include="Src\Renderer\Material\Material.h" />
+    <ClInclude Include="Src\Renderer\ModelMaterial.h" />
     <ClInclude Include="Src\Renderer\ModelRenderer.h" />
+    <ClInclude Include="Src\Renderer\PixelMaterial.h" />
     <ClInclude Include="Src\Renderer\PixelRenderer.h" />
     <ClInclude Include="Src\Scene\DeadScene.h" />
     <ClInclude Include="Src\Manager\SoundManager.h" />
@@ -241,7 +243,7 @@
     <ClInclude Include="Src\Object\UI\TitleUI\TitleUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\StatusUI.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageManager.h" />
-    <ClInclude Include="Src\PostEffect\UIPostEffect.h" />
+    <ClInclude Include="Src\PostEffect\PostEffectGuideUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Csv\EnemyData.csv" />
@@ -253,6 +255,9 @@
     <None Include="Data\Model\Stage\MainStage\Moon.mv1" />
     <None Include="Data\Model\Stage\MainStage\planet.mv1" />
     <None Include="Data\Model\Stage\roket.mv1" />
+    <None Include="Data\Shader\StagePS.pso" />
+    <None Include="Data\Shader\StageVS.vso" />
+    <None Include="Data\Shader\UIPS.pso" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -276,6 +281,16 @@
     <Media Include="Data\Sound\Walk.mp3" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Src\Shader\PostEffect\UIPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Data/Shader/%(Filename).pso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Data/Shader/%(Filename).pso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Src\Shader\StagePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

@@ -45,18 +45,18 @@ void ScreenManager::Init()
 		Application::SCREEN_SIZE_Y,
 		true);
 
-	//// UIスクリーン(仮)
-	//uiScreen_ = MakeScreen(
-	// Application::SCREEN_SIZE_X,
-	// Application::SCREEN_SIZE_Y,
-	// true);
+	// UIスクリーン(仮)
+	guideUIScreen_ = MakeScreen(
+	 Application::SCREEN_SIZE_X,
+	 Application::SCREEN_SIZE_Y,
+	 true);
 }
 
 void ScreenManager::Destroy()
 {
 	// スクリーンの破棄
 	DeleteGraph(mainScreen_);
-	DeleteGraph(uiScreen_);
+	DeleteGraph(guideUIScreen_);
 	DeleteGraph(pingPongScreen_[0]);
 	DeleteGraph(pingPongScreen_[1]);
 
@@ -69,9 +69,9 @@ int ScreenManager::GetMainScreen() const
 	return mainScreen_;
 }
 
-int ScreenManager::GetUIScreen() const
+int ScreenManager::GetGuideUIScreen() const
 {
-	return uiScreen_;
+	return guideUIScreen_;
 }
 
 int ScreenManager::GetPingPongScreen(int index) const

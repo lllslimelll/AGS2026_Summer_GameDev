@@ -1,53 +1,77 @@
 #pragma once
-#include <string>
 #include <vector>
+#include <string>
 #include <memory>
 #include <DxLib.h>
 
-class Material;
+class PixelMaterial;
 class PixelRenderer;
 
-// ポストエフェクトの基底クラス
 class PostEffect
 {
 public:
 
-    PostEffect(void);
-    virtual ~PostEffect(void);
+	/// コンストラクタ
+	PostEffect(void);
 
-    // 初期化。targetScreen に ScreenManager::GetMainScreen() を渡す。
-    virtual void Init(int targetScreen);
+	// デストラクタ
+	virtual ~PostEffect(void);
 
-    // 毎フレーム更新（定数バッファの更新が必要な派生クラスでオーバーライド）
-    virtual void Update(void) {}
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="targetScreen">ポストエフェクトをかけるスクリーン</param>
+	virtual void Init(int targetScreen);
 
-    // エフェクトを描画する
-    void Draw(void);
+	// 更新
+	virtual void Update(void) {};
 
-    // エフェクトの有効 / 無効を設定する
-    void SetEnabled(bool enabled);
+	// 描画
+	void Draw(void);
+
+	/// <summary>
+	/// ポストエフェクト適用設定
+	/// </summary>
+	/// <param name="enabled">適用フラグ</param>
+	void SetEnabled(bool enabled);
 
 protected:
 
-    // 派生クラスでエフェクトを登録する（純粋仮想）
-    virtual void InitEffect(void) = 0;
+	// エフェクト追加
+	virtual void InitEffect(void) = 0;
 
-    // エフェクトを 1 つ追加する
-    void AddEffect(const std::string& psFile, int constBufSize, int texSlotNum,
-        int texAddress = DX_TEXADDRESS_CLAMP);
+	/// <summary>
+	/// エフェクト追加
+	/// </summary>
+	/// <param name="shaderFileName">シェーダーファイル名</param>
+	/// <param name="constBufFloat4Size">定数バッファのサイズ(FLOAT4の個数)</param>
+	/// <param name="texSlotNum">テクスチャのスロット数</param>
+	/// /// <param name="texAdress">テクスチャアドレス(デフォルト:クランプ)</param>
+	void Add(std::string shaderFileName, int constBufFloat4Size, int texSlotNum,
+		int texAddress = DX_TEXADDRESS_CLAMP);
 
-    // 定数バッファの値をセットする
-    void SetConstBuffer(int effectIndex, int bufIndex, float x);
-    void SetConstBuffer(int effectIndex, int bufIndex, float x, float y);
-    void SetConstBuffer(int effectIndex, int bufIndex, float x, float y, float z);
-    void SetConstBuffer(int effectIndex, int bufIndex, float x, float y, float z, float w);
+	/// <summary>
+	/// 定数バッファの値をセット
+	/// </summary>
+	/// <param name="effectIndex">エフェクトのインデックス</param>
+	/// <param name="bufIndex">定数バッファのインデックス</param>
+	/// <param name="value">設定する値</param>
+	void SetConstBuffer(int effectIndex, int bufIndex, const FLOAT4& value);
 
-    std::vector<std::unique_ptr<Material>>      materials_;
-    std::vector<std::unique_ptr<PixelRenderer>> renderers_;
+	//private:
 
-private:
+		// マテリアルのリスト
+	std::vector<std::unique_ptr<PixelMaterial>> materials_;
+	// レンダラーのリスト
+	std::vector <std::unique_ptr <PixelRenderer>> renderers_;
 
-    int  targetScreen_;
-    int  pingPongScreens_[2];
-    bool enabled_;
+	// 2枚のスクリーン(ピンポンバッファ用)
+	int pingPongScreens_[2];
+
+	// 対象スクリーン
+	int targetScreen_;
+
+	// ポストエフェクト適用フラグ
+	bool enabled_;
 };
+

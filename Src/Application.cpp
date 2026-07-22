@@ -4,6 +4,7 @@
 #include "Manager/ResourceManager.h"
 #include "Scene/SceneManager.h"
 #include "Manager/SoundManager.h"
+#include "Manager/ScreenManager.h"
 #include "Common/FpsController.h"
 #include "Application.h"
 
@@ -71,6 +72,9 @@ void Application::Init(void)
 	// リソース管理初期化
 	ResourceManager::CreateInstance();
 
+	// スクリーン管理初期化
+	ScreenManager::GetInstance().Init();
+
 	// サウンド管理初期化
 	SoundManager::CreateInstance();
 
@@ -122,6 +126,8 @@ void Application::Destroy(void)
 	SceneManager::GetInstance().Destroy();
 	// サウンド管理破棄
 	SoundManager::GetInstance().Destroy();
+
+	ScreenManager::GetInstance().Destroy();
 
 	// Effekseerを終了する。
 	Effkseer_End();

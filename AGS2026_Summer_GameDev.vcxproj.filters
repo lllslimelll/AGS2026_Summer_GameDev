@@ -165,16 +165,19 @@
     <ClCompile Include="Src\Renderer\PixelRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\Material\Material.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\PostEffect\PostEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Manager\ScreenManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PostEffect\UIPostEffect.cpp">
+    <ClCompile Include="Src\PostEffect\PostEffectGuideUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\ModelMaterial.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Renderer\PixelMaterial.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -332,16 +335,19 @@
     <ClInclude Include="Src\Renderer\PixelRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\Material\Material.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\PostEffect\PostEffect.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Manager\ScreenManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\PostEffect\UIPostEffect.h">
+    <ClInclude Include="Src\PostEffect\PostEffectGuideUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\ModelMaterial.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Renderer\PixelMaterial.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -356,6 +362,9 @@
     <None Include="Data\Model\SkyDome\SpaceDome.mv1" />
     <None Include="Data\Model\SpaceDome\SpaceDome.mv1" />
     <None Include="Data\Model\Stage\roket.mv1" />
+    <None Include="Data\Shader\StagePS.pso" />
+    <None Include="Data\Shader\StageVS.vso" />
+    <None Include="Data\Shader\UIPS.pso" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />
@@ -402,5 +411,6 @@
   <ItemGroup>
     <FxCompile Include="Src\Shader\StageVS.hlsl" />
     <FxCompile Include="Src\Shader\StagePS.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\UIPS.hlsl" />
   </ItemGroup>
 </Project>

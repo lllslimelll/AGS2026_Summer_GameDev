@@ -22,7 +22,6 @@ GameScene::GameScene(void)
 	stageMng_(nullptr),
 	itemMng_(nullptr),
 	player_(nullptr),
-	camera_(nullptr),
 	enemyManager_(nullptr),
 	skyDome_(nullptr),
 	SceneBase()
@@ -56,7 +55,8 @@ void GameScene::Init(void)
 	player_->Init();
 
 	// カメラ
-	camera_ = std::make_unique<Camera>();
+	SceneManager::GetInstance().GetCamera().SetFollow(&player_->GetTransform());
+	SceneManager::GetInstance().GetCamera().ChangeMode(Camera::MODE::FOLLOW);
 
 	enemyManager_ = new EnemyManager(*player_);
 	enemyManager_->Init();
@@ -98,12 +98,10 @@ void GameScene::Init(void)
 
 	skyDome_->Init();
 	
-	camera_->SetFollow(&player_->GetTransform());// 追従対象の設定
-	camera_->ChangeMode(Camera::MODE::FOLLOW);	 // モード変更
-	camera_->AddHitCollider(planetCollider);		 // ステージモデルのコライダー登録
-	camera_->AddHitCollider(rocketCollider);
+	SceneManager::GetInstance().GetCamera().AddHitCollider(planetCollider);		 // ステージモデルのコライダー登録
+	SceneManager::GetInstance().GetCamera().AddHitCollider(rocketCollider);
 
-	player_->SetCameraTransform(&camera_->GetTransform()); // カメラのTransformをプレイヤーに渡す
+	player_->SetCameraTransform(&SceneManager::GetInstance().GetCamera().GetTransform()); // カメラのTransformをプレイヤーに渡す
 }
 
 void GameScene::Update(void)
@@ -122,17 +120,14 @@ void GameScene::Update(void)
 	stageMng_->Update();
 	itemMng_->Update();
 	player_->Update();
-	camera_->Update();
 	enemyManager_->Update();
 	skyDome_->Update();
 
-	player_->SetForward(camera_->GetForward()); // カメラの前方向をプレイヤーに渡す
+	player_->SetForward(SceneManager::GetInstance().GetCamera().GetForward()); // カメラの前方向をプレイヤーに渡す
 }
 
 void GameScene::Draw(void)
 {
-	// 描画前処理の適用
-	camera_->SetBeforeDraw();
 	skyDome_->Draw();
 
 	// シャドウマップのハンドル

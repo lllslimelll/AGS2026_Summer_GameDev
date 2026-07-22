@@ -12,6 +12,7 @@
 #include "../Camera/Camera.h"
 #include "../Manager/ResourceManager.h"
 #include "../Manager/SoundManager.h"
+#include "../Manager/ScreenManager.h"
 #include "SceneManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
@@ -40,11 +41,18 @@ void SceneManager::Init(void)
 	fader_ = std::make_unique<Fader>();
 	fader_->Init();
 
+	// カメラ
+	camera_ = std::make_unique<Camera>();
+	camera_->Init();
+
 	// 画面遷移中判定
 	isSceneChanging_ = false;
 
 	// デルタタイム
 	preTime_ = std::chrono::system_clock::now();
+
+	// メインスクリーンの取得
+	mainScreen_ = ScreenManager::GetInstance().GetMainScreen();
 
 	// 3D用の設定
 	Init3D();
@@ -82,9 +90,6 @@ void SceneManager::Init3D(void)
 	SetFogEnable(false);
 	SetFogColor(5, 5, 5);
 	SetFogStartEnd(10000.0f, 20000.0f);
-
-	// マウスカーソルを非表示にする
-	SetMouseDispFlag(FALSE);
 }
 
 void SceneManager::Update(void)
@@ -112,6 +117,9 @@ void SceneManager::Update(void)
 		scenes_.back()->Update();
 	}
 
+	// カメラ更新
+	camera_->Update();
+
 }
 
 void SceneManager::Draw(void)
@@ -123,17 +131,27 @@ void SceneManager::Draw(void)
 	// 画面を初期化
 	ClearDrawScreen();
 
+	// カメラ設定
+	camera_->SetBeforeDraw();
+
 	// スタック内のシーンを描画
 	for (auto& scene : scenes_)
 	{
 		scene->Draw();
 	}
 
+	// カメラ
+	camera_->Draw();
+
 	// Effekseerにより再生中のエフェクトを描画する。
 	DrawEffekseer3D();
 	
 	// 暗転・明転
 	fader_->Draw();
+
+	// 背面スクリーンにメインスクリーンを描画
+	SetDrawScreen(DX_SCREEN_BACK);
+	DrawGraph(0, 0, mainScreen_, true);
 }
 
 void SceneManager::Destroy(void)
@@ -141,6 +159,7 @@ void SceneManager::Destroy(void)
 	// シーンリストの破棄
 	scenes_.clear();
 
+	DeleteGraph(mainScreen_);
 	// インスタンスのメモリ解放
 	delete instance_;
 }
@@ -242,6 +261,11 @@ void SceneManager::PopOverlay()
 	{
 		scenes_.pop_back();
 	}
+}
+
+Camera& SceneManager::GetCamera(void)
+{
+	return *camera_;
 }
 
 

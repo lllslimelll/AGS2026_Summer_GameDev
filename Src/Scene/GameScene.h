@@ -7,7 +7,6 @@ class SkyDome;
 class StageManager;
 class ItemManager;
 class Player;
-class Camera;
 class EnemyManager;
 class GameUI;
 
@@ -41,8 +40,6 @@ private:
 	ItemManager* itemMng_;
 	// プレイヤー
 	std::unique_ptr<Player> player_;
-	// カメラ
-	std::unique_ptr<Camera> camera_;
 	// 敵
 	EnemyManager* enemyManager_;
 	// ゲームUI
