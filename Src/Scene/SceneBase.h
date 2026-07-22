@@ -23,6 +23,8 @@ public:
 	// •`‰æ
 	virtual void Draw(void) = 0;
 
+	virtual bool NeedsCamera(void) const { return false; }
+
 protected:
 
 	// ƒŠƒ\[ƒXŠÇ—

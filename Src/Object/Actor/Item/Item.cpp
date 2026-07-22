@@ -50,6 +50,8 @@ void Item::Update(void)
 	// モデル制御更新
 	transform_.Update();
 
+    UpdateCurvatureShader();
+
 	// 更新後処理
 	//UpdateProcessPost();
 }
@@ -212,23 +214,13 @@ void Item::InitTransform(void)
     transform_.scl = { 50.0f,50.0f ,50.0f };
 
     // モデル本来の向き
-    transform_.quaRot = Quaternion::Identity();
-    // ローカル回転
-    transform_.quaRotLocal = Quaternion::Euler({ 0.0f, DX_PI_F / 180.0f, 0.0f });
+    transform_.quaRot = Quaternion::Euler({ 0.0f, 0.0f, 0.0f });
 
     // 座標
     transform_.pos = defaultPos_;
 
-    VECTOR upVec = VNorm((VSub(transform_.pos, { 0,0,0 })));
-    transform_.pos = VAdd(transform_.pos, VScale(upVec, 34));
-
-    // 月面の法線方向を上として向きを設定
-    VECTOR up = VNorm(VSub(transform_.pos, { 0.0f, 0.0f, 0.0f }));
-    VECTOR forward = AsoUtility::DIR_F;
-    float dot = VDot(forward, up);
-    if (fabsf(dot) > 0.99f) { forward = AsoUtility::DIR_R; }
-    forward = VNorm(VSub(forward, VScale(up, dot)));
-    transform_.quaRot = Quaternion::LookRotation(forward, up);
+    VECTOR upVec = AsoUtility::DIR_U;
+    transform_.pos = VAdd(transform_.pos, VScale(upVec, 60));
 
     transform_.Update();
 }
@@ -261,6 +253,8 @@ void Item::InitPost(void)
 
     // 初期状態
     ChangeState(STATE::DROPPED);
+
+    InitCurvatureShader();
 
 }
 

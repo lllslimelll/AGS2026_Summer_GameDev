@@ -10,6 +10,8 @@ Rocket::~Rocket(void)
 void Rocket::Update(void)
 {
     transform_.Update();
+
+    UpdateCurvatureShader();
 }
 
 void Rocket::Draw(void)
@@ -45,13 +47,9 @@ void Rocket::InitLoad(void)
 
 void Rocket::InitTransform(void)
 {
-    transform_.pos = { 1300, -860, 430 };
+    transform_.pos = { 300, 30, 430 };
 
-    Quaternion rotX = Quaternion::AngleAxis(AsoUtility::Deg2RadF(15.0f), AsoUtility::AXIS_X);
-    Quaternion rotY = Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.0f), AsoUtility::AXIS_Y);
-    Quaternion rotZ = Quaternion::AngleAxis(AsoUtility::Deg2RadF(-130.0f), AsoUtility::AXIS_Z);
-
-    transform_.quaRotLocal = rotZ.Mult(rotY).Mult(rotX);
+    transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.0f), AsoUtility::AXIS_Y);
 
     transform_.Update();
 }
@@ -73,4 +71,6 @@ void Rocket::InitAnimation(void)
 void Rocket::InitPost(void)
 {
     transform_.Update();
+
+    InitCurvatureShader();
 }

@@ -58,9 +58,11 @@ protected:
 	/// <param name="value">設定する値</param>
 	void SetConstBuffer(int effectIndex, int bufIndex, const FLOAT4& value);
 
+	void SetSkew(int rendererIndex, float skewX, int offsetY = 0);
+
 	//private:
 
-		// マテリアルのリスト
+	// マテリアルのリスト
 	std::vector<std::unique_ptr<PixelMaterial>> materials_;
 	// レンダラーのリスト
 	std::vector <std::unique_ptr <PixelRenderer>> renderers_;

@@ -31,4 +31,7 @@ private:
 
 	void UpdatePauseMenu(void);
 	void DrawPauseMenu(void);
+
+	static void DrawDottedLineH(int x1, int x2, int y, unsigned int color,
+		int dashLen, int gapLen, int thickness);
 };

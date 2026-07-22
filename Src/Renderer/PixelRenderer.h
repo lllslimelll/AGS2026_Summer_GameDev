@@ -21,6 +21,7 @@ public:
 
 	// 頂点インデックスの生成
 	void MakeVertexIndex(void);
+	void MakeSkewVertex(Vector2 size, Vector2 pos, float skewX);
 
 	// 描画
 	void Draw(void);

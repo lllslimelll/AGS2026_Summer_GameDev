@@ -71,6 +71,7 @@ public:
 	float GetDeltaTime(void) const;
 	void SetResultScore(int score);
 	int  GetResultScore(void) const;
+
 private:
 	int resultScore_ = 0;
 	// デフォルトコンストラクタをprivateにして、

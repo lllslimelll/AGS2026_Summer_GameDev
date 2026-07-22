@@ -82,7 +82,7 @@ private:
     static constexpr float SPEED_CHASE = 3.0f;
     static constexpr float DIST_ATTACK = 100.0f;  // 攻撃距離
     static constexpr float DIST_CHASE = 500.0f;  // チェイス解除距離
-    static constexpr float ATTACK_DAMAGE = 20;
+    static constexpr int ATTACK_DAMAGE = 20;
     VECTOR spawnPos_ = AsoUtility::VECTOR_ZERO;
     // 状態
     STATE state_;

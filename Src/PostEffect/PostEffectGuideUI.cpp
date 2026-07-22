@@ -14,13 +14,13 @@ void PostEffectGuideUI::InitEffect(void)
     Add((Application::PATH_SHADER + "UIPS.pso").c_str(),
         CONST_BUF_FLOAT4_SIZE, TEX_SLOT_NUM, DX_TEXADDRESS_CLAMP);
 
-    distortion_ = 0.25f; // óví≤êÆ
-    SetConstBuffer(0, 0, { distortion_, 0.0f, 0.0f, 0.0f });
+    SetSkew(0, 130.0f, 120); // è„ï”Ç40pxâEÇ…Ç∏ÇÁÇ∑(óví≤êÆ)
+
+    SetConstBuffer(0, 0, { 0.0f, 0.0f, 0.0f, 0.0f });
+    SetEnabled(true);
 }
 
 void PostEffectGuideUI::Update()
 {
-	if (CheckHitKey(KEY_INPUT_P)) distortion_ += 0.1;
-	if (CheckHitKey(KEY_INPUT_L)) distortion_ -= 0.1;
-	SetConstBuffer(0, 0, { distortion_, 0.0f, 0.0f, 0.0f });
+
 }

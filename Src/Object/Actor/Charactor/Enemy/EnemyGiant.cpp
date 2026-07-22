@@ -117,6 +117,8 @@ void EnemyGiant::InitPost(void)
 
     attackHandFrame_ = MV1SearchFrame(transform_.modelId, "mixamorig:LeftHand");
     ChangeState(STATE::THINK);
+
+    InitCurvatureShaderSkinned();
 }
 
 void EnemyGiant::UpdateProcess(void)
@@ -150,7 +152,7 @@ void EnemyGiant::UpdateProcessPost(void)
 
 void EnemyGiant::Draw(void)
 {
-    CharactorBase::Draw();
+    EnemyBase::Draw();
 
 #ifdef _DEBUG
     // çUåÇÉRÉâÉCÉ_ÇÃâ¬éãâª
@@ -344,7 +346,7 @@ void EnemyGiant::UpdateAttack(void)
                 handPos, ATTACK_SPHERE_RADIUS,
                 capTop, capDown, capR))
             {
-                player_.OnDamaged(static_cast<int>(ATTACK_DAMAGE));
+                player_.OnDamaged(ATTACK_DAMAGE);
                 attackHit_ = true;
                 break;
             }

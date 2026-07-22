@@ -1,6 +1,7 @@
 #include "../../Manager/ResourceManager.h"
 #include "../../Scene/SceneManager.h"
 #include "../Collider/ColliderBase.h"
+#include "../../Camera/Camera.h" 
 #include "ActorBase.h"
 
 ActorBase::ActorBase(void)
@@ -37,9 +38,9 @@ void ActorBase::Init(void)
 
 void ActorBase::Draw(void)
 {
-	if (transform_.modelId != -1)
+	if (renderer_)
 	{
-		MV1DrawModel(transform_.modelId);
+		renderer_->Draw();
 	}
 
 #ifdef _DEBUG
@@ -109,4 +110,36 @@ bool ActorBase::IsOccludedByColliders(const VECTOR& from, const VECTOR& to) cons
 		if (c->IsOccluded(from, to)) return true;
 	}
 	return false;
+}
+
+void ActorBase::InitCurvatureShader(void)
+{
+	material_ = std::make_unique<ModelMaterial>(
+		"StageVS.vso", 1,
+		"StagePS.pso", 0);
+
+	Camera& cam = SceneManager::GetInstance().GetCamera();
+	VECTOR camPos = cam.GetPos();
+	material_->AddConstBufVS({ camPos.x, camPos.y, camPos.z, 0.0f });
+
+	renderer_ = std::make_unique<ModelRenderer>(*material_, transform_.modelId);
+}
+
+void ActorBase::InitCurvatureShaderSkinned(void)
+{
+	material_ = std::make_unique<ModelMaterial>(
+		"EnemyVS.vso", 1,
+		"StagePS.pso", 0);
+	Camera& cam = SceneManager::GetInstance().GetCamera();
+	VECTOR camPos = cam.GetPos();
+	material_->AddConstBufVS({ camPos.x, camPos.y, camPos.z, 0.0f });
+	renderer_ = std::make_unique<ModelRenderer>(*material_, transform_.modelId);
+}
+
+void ActorBase::UpdateCurvatureShader(void)
+{
+	if (!material_) return;
+	Camera& cam = SceneManager::GetInstance().GetCamera();
+	VECTOR camPos = cam.GetPos();
+	material_->SetConstBufVS(0, { camPos.x, camPos.y, camPos.z, 0.0f });
 }

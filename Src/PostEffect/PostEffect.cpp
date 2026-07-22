@@ -72,6 +72,7 @@ void PostEffect::Draw(void)
 
 	// 描画先を対象スクリーンに設定
 	SetDrawScreen(targetScreen_);
+	ClearDrawScreen();
 	// 最終的なエフェクトのスクリーンを描画
 	DrawGraph(0, 0, currentRead, true);
 }
@@ -108,4 +109,11 @@ void PostEffect::Add(std::string shaderFileName, int constBufFloat4Size, int tex
 void PostEffect::SetConstBuffer(int effectIndex, int bufIndex, const FLOAT4& value)
 {
 	materials_[effectIndex]->SetConstBuffer(bufIndex, value);
+}
+
+void PostEffect::SetSkew(int rendererIndex, float skewX, int offsetY)
+{
+	Vector2 size = { Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y };
+	Vector2 pos = { 0, offsetY };
+	renderers_[rendererIndex]->MakeSkewVertex(size, pos, skewX);
 }

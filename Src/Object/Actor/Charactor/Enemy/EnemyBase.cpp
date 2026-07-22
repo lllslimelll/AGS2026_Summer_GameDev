@@ -21,7 +21,7 @@ EnemyBase::~EnemyBase(void)
 
 void EnemyBase::Draw(void)
 {
-	CharactorBase::Draw();
+	ActorBase::Draw();
 
 #ifdef _DEBUG
 

@@ -58,7 +58,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// 初期シーンの設定
-	DoChangeScene(SCENE_ID::TITLE);
+	DoChangeScene(SCENE_ID::GAME);
 
 }
 
@@ -115,10 +115,13 @@ void SceneManager::Update(void)
 	{
 		// スタック末尾のみ更新
 		scenes_.back()->Update();
-	}
 
-	// カメラ更新
-	camera_->Update();
+		// スタック末尾のシーンだけチェック
+		if (scenes_.back()->NeedsCamera())
+		{
+			camera_->Update();
+		}
+	}
 
 }
 
@@ -126,7 +129,7 @@ void SceneManager::Draw(void)
 {
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
-	SetDrawScreen(DX_SCREEN_BACK);
+	SetDrawScreen(mainScreen_);
 
 	// 画面を初期化
 	ClearDrawScreen();
@@ -151,6 +154,7 @@ void SceneManager::Draw(void)
 
 	// 背面スクリーンにメインスクリーンを描画
 	SetDrawScreen(DX_SCREEN_BACK);
+	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen_, true);
 }
 
@@ -233,7 +237,6 @@ void SceneManager::PushOverlay(SCENE_ID sceneId)
 	case SCENE_ID::PAUSE:
 		scenes_.push_back(std::make_unique<PauseScene>());
 		SoundManager::GetInstance().StopBGMGame();
-		SetMouseDispFlag(true);
 		break;
 	case SCENE_ID::DEAD:
 		scenes_.push_back(std::make_unique<DeadScene>());

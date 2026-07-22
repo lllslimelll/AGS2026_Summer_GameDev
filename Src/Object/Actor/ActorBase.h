@@ -83,6 +83,12 @@ protected:
 	// 初期化後の個別処理
 	virtual void InitPost(void) = 0;
 
+	// Curvatureシェーダー適用
+	void InitCurvatureShader(void);
+	void InitCurvatureShaderSkinned(void);
+
+	void UpdateCurvatureShader(void);
+
 	// 衝突相手の情報
 	std::vector<const ColliderBase*> hitColliders_;
 

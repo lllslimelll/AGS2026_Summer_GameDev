@@ -69,7 +69,7 @@ protected:
 	void InitPost(void) override {}
 
 	// XVŒn
-	virtual void UpdateProcessPost(void) override {};
+	virtual void UpdateProcessPost(void) override {}
 
 	// ˆÚ“®‰Â”\”ÍˆÍ”»’è
 	bool InMovableRange(void) const;

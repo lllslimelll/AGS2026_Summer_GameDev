@@ -14,15 +14,12 @@ void Planet::Update(void)
 {
     transform_.Update();
 
-    // カメラ座標をVSに送る
-    Camera& cam = SceneManager::GetInstance().GetCamera();
-    VECTOR camPos = cam.GetPos(); // 要確認: Camera側のgetter名
-    material_->SetConstBufVS(0, {camPos.x, camPos.y, camPos.z, 0.0f});
+    UpdateCurvatureShader();
 }
 
 void Planet::Draw(void)
 {
-    renderer_->Draw();
+    ActorBase::Draw();
 }
 
 void Planet::InitLoad(void)
@@ -66,17 +63,5 @@ void Planet::InitAnimation(void)
 
 void Planet::InitPost(void)
 {
-    // モデル描画用
-    // マテリアル
-    material_ = std::make_unique<ModelMaterial>(
-        "StageVS.vso", 1,
-        "StagePS.pso", 0);
-
-    Camera& cam = SceneManager::GetInstance().GetCamera();
-    VECTOR camPos = cam.GetPos();
-    material_->AddConstBufVS({ camPos.x, camPos.y, camPos.z, 0.0f });
-
-    // レンダラー
-    renderer_ = std::make_unique<ModelRenderer>(
-        *material_, transform_.modelId);
+    InitCurvatureShader();
 }

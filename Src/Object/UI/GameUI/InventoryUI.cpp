@@ -43,6 +43,13 @@ void InventoryUI::Draw(void)
     const int baseY = screenH - SLOT_SIZE - MARGIN_BOTTOM;
     const int selected = inventory_.GetSelectedIndex();
 
+    // かっこの長さ(px)
+    constexpr int BRACKET_LEN = 20;
+    constexpr int BRACKET_W = 3;   // 線の太さ
+    // 深めの青
+    const unsigned int COL_NORMAL = GetColor(30, 80, 160);
+    const unsigned int COL_SELECTED = GetColor(60, 160, 255);
+
     for (int i = 0; i < Inventory::SLOT_MAX; i++)
     {
         const int x = startX + i * SLOT_SPAN;
@@ -51,10 +58,22 @@ void InventoryUI::Draw(void)
         const int  drawX = x - expand / 2;
         const int  drawY = baseY - expand / 2;
         const int  drawSize = SLOT_SIZE + expand;
+        const unsigned int col = isSel ? COL_SELECTED : COL_NORMAL;
 
-        DrawBox(drawX, drawY, drawX + drawSize, drawY + drawSize,
-            GetColor(255, 255, 255), FALSE);
+        // 左上かっこ
+        DrawBox(drawX, drawY, drawX + BRACKET_W, drawY + BRACKET_LEN, col, TRUE);
+        DrawBox(drawX, drawY, drawX + BRACKET_LEN, drawY + BRACKET_W, col, TRUE);
+        // 右上かっこ
+        DrawBox(drawX + drawSize - BRACKET_W, drawY, drawX + drawSize, drawY + BRACKET_LEN, col, TRUE);
+        DrawBox(drawX + drawSize - BRACKET_LEN, drawY, drawX + drawSize, drawY + BRACKET_W, col, TRUE);
+        // 左下かっこ
+        DrawBox(drawX, drawY + drawSize - BRACKET_LEN, drawX + BRACKET_W, drawY + drawSize, col, TRUE);
+        DrawBox(drawX, drawY + drawSize - BRACKET_W, drawX + BRACKET_LEN, drawY + drawSize, col, TRUE);
+        // 右下かっこ
+        DrawBox(drawX + drawSize - BRACKET_W, drawY + drawSize - BRACKET_LEN, drawX + drawSize, drawY + drawSize, col, TRUE);
+        DrawBox(drawX + drawSize - BRACKET_LEN, drawY + drawSize - BRACKET_W, drawX + drawSize, drawY + drawSize, col, TRUE);
 
+        // アイテム画像・価格(変更なし)
         const Item* item = inventory_.Get(i);
         if (item == nullptr) { continue; }
 

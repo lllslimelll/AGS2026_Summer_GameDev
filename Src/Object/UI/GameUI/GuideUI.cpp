@@ -15,6 +15,7 @@ GuideUI::GuideUI(const Player& player)
     pEffectGuideUI_ = std::make_unique<PostEffectGuideUI>(); // 生成
     // 初期化と対象スクリーンの設定
     pEffectGuideUI_->Init(screen);
+    pEffectGuideUI_->SetEnabled(true);
 }
 
 void GuideUI::Update(void)
@@ -24,6 +25,13 @@ void GuideUI::Update(void)
 
 void GuideUI::Draw(void)
 {
+    int guideScreen = ScreenManager::GetInstance().GetGuideUIScreen();
+    int mainScreen = ScreenManager::GetInstance().GetMainScreen();
+
+    // ① guideScreenにテキスト描画
+    SetDrawScreen(guideScreen);
+    ClearDrawScreen();
+
     const auto info = player_.GetGuideInfo();
 
     int screenW, screenH;
@@ -47,7 +55,7 @@ void GuideUI::Draw(void)
 
     const char* goal = info.hasAnyItem ? "ロケットに納品する" : "アイテムを収集する";
     int goalW = GetDrawStringWidth(goal, (int)strlen(goal));
-    DrawString(screenW - goalW - MARGIN_RIGHT, y, goal, 0xffff80);
+    DrawString(screenW - goalW - MARGIN_RIGHT, y, goal, 0x00ff80);
     y += GOAL_FONT + 10;
 
     // ===== 現在の納品額 =====
@@ -135,4 +143,8 @@ void GuideUI::Draw(void)
 
     // ポストエフェクト
     pEffectGuideUI_->Draw();
+
+    // ③ mainScreenに歪み済みを合成
+    SetDrawScreen(mainScreen);
+    DrawGraph(0, 0, guideScreen, true);
 }

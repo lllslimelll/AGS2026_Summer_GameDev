@@ -47,4 +47,6 @@ private:
 
 	// シャドウマップ作成
 	int CreateShadowMap(void);
+
+	bool NeedsCamera(void) const override { return true; }
 };

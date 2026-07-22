@@ -69,6 +69,40 @@ void PixelRenderer::MakeVertexIndex(void)
 	indexes_[cnt++] = 3;
 }
 
+void PixelRenderer::MakeSkewVertex(Vector2 size, Vector2 pos, float skewX)
+{
+	// MakeSquareVertex と同じ初期化
+	for (int i = 0; i < 4; i++)
+	{
+		vertexs_[i].rhw = 1.0f;
+		vertexs_[i].dif = GetColorU8(255, 255, 255, 255);
+		vertexs_[i].spc = GetColorU8(0, 0, 0, 255);
+		vertexs_[i].su = 0.0f;
+		vertexs_[i].sv = 0.0f;
+	}
+
+	float sX = (float)pos.x;
+	float sY = (float)pos.y;
+	float eX = (float)(pos.x + size.x);
+	float eY = (float)(pos.y + size.y);
+
+	// 右辺を上にずらす(右上に角度)
+	// 左上
+	vertexs_[0].pos = VGet(sX, sY, 0.0f);
+	vertexs_[0].u = 0.0f; vertexs_[0].v = 0.0f;
+	// 右上 ← ここをskewX分だけ上に
+	vertexs_[1].pos = VGet(eX, sY - skewX, 0.0f);
+	vertexs_[1].u = 1.0f; vertexs_[1].v = 0.0f;
+	// 右下 ← ここもskewX分だけ上に
+	vertexs_[2].pos = VGet(eX, eY - skewX, 0.0f);
+	vertexs_[2].u = 1.0f; vertexs_[2].v = 1.0f;
+	// 左下
+	vertexs_[3].pos = VGet(sX, eY, 0.0f);
+	vertexs_[3].u = 0.0f; vertexs_[3].v = 1.0f;
+
+	MakeVertexIndex();
+}
+
 void PixelRenderer::Draw(void)
 {
 	// マテリアルの設定をGPUに反映

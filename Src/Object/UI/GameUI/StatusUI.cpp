@@ -18,7 +18,7 @@ void StatusUI::Draw(void)
     const int slotSpan = size + padding;
     const int totalWidth = 5 * slotSpan - padding;
     const int startX = (screenW - totalWidth) / 2 + 10;
-    const int marginBottom = 70;
+    const int marginBottom = 80;
     const int invTopY = screenH - size - marginBottom;
 
     constexpr int BAR_H = 28;

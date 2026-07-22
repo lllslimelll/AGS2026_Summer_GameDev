@@ -7,7 +7,7 @@ class Inventory
 {
 public:
 
-    static constexpr int SLOT_MAX = 5;
+    static constexpr int SLOT_MAX = 4;
 
     Inventory(void);
     ~Inventory(void) = default;

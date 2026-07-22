@@ -18,9 +18,9 @@ private:
     const Inventory& inventory_;
 
     static constexpr int SLOT_SIZE = 130;
-    static constexpr int SLOT_PADDING = 35;
+    static constexpr int SLOT_PADDING = 70;
     static constexpr int SLOT_SPAN = SLOT_SIZE + SLOT_PADDING;
-    static constexpr int MARGIN_BOTTOM = 70;
+    static constexpr int MARGIN_BOTTOM = 66;
     static constexpr int SELECTED_EXPAND = 30;
     static constexpr int PRICE_FONT = 30;
     static constexpr int IMG_MARGIN = 10;

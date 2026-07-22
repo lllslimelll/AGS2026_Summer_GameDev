@@ -365,6 +365,7 @@
     <None Include="Data\Shader\StagePS.pso" />
     <None Include="Data\Shader\StageVS.vso" />
     <None Include="Data\Shader\UIPS.pso" />
+    <None Include="Data\Shader\EnemyVS.vso" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\Csv\PointSave.txt" />
@@ -412,5 +413,6 @@
     <FxCompile Include="Src\Shader\StageVS.hlsl" />
     <FxCompile Include="Src\Shader\StagePS.hlsl" />
     <FxCompile Include="Src\Shader\PostEffect\UIPS.hlsl" />
+    <FxCompile Include="Src\Shader\EnemyVS.hlsl" />
   </ItemGroup>
 </Project>

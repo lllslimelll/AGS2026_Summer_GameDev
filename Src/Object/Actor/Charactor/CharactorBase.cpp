@@ -54,6 +54,8 @@ void CharactorBase::Update(void)
 
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
+
+	UpdateCurvatureShader();
 }
 
 void CharactorBase::Draw(void)
