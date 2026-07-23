@@ -152,6 +152,7 @@ void SceneManager::Draw(void)
 	// 暗転・明転
 	fader_->Draw();
 
+
 	// 背面スクリーンにメインスクリーンを描画
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClearDrawScreen();
