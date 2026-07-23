@@ -1,9 +1,9 @@
 // VS/PS 共通
 #include "Common/VertexToPixelHeader.hlsli"
 
-// IN : Mixamo（法線マップ情報あり・5?8フレームの影響を受ける頂点）
+// IN : Mixamo（法線マップ情報あり・1?4フレームの影響を受ける頂点）
 #include "Common/Vertex/VertexInputType.hlsli"
-#define VERTEX_INPUT DX_MV1_VERTEX_TYPE_NMAP_8FRAME
+#define VERTEX_INPUT DX_MV1_VERTEX_TYPE_NMAP_4FRAME
 
 // OUT
 #define VS_OUTPUT VertexToPixelLit
@@ -33,37 +33,17 @@ VS_OUTPUT main(VS_INPUT VSInput)
     //  あらかじめ「行番号 × 3」でパックされて渡ってくる。
     //  そのため +0 / +1 / +2 で同一ボーンの 行0・行1・行2 を参照できる。
     // ========================================================
-    int4 lBoneIdx;
+    int4   lBoneIdx;
     float4 lWeight;
     float4 lL_W_Mat[3]; // 合成後の変換行列（行0・行1・行2）
 
     // ---- ボーン 1?4 : blendIndices0 / blendWeight0 ----
     lBoneIdx = VSInput.blendIndices0;
-    lWeight = VSInput.blendWeight0;
+    lWeight  = VSInput.blendWeight0;
 
-    lL_W_Mat[0] = L_W_MAT[lBoneIdx.x + 0] * lWeight.xxxx;
-    lL_W_Mat[1] = L_W_MAT[lBoneIdx.x + 1] * lWeight.xxxx;
-    lL_W_Mat[2] = L_W_MAT[lBoneIdx.x + 2] * lWeight.xxxx;
-
-    lL_W_Mat[0] += L_W_MAT[lBoneIdx.y + 0] * lWeight.yyyy;
-    lL_W_Mat[1] += L_W_MAT[lBoneIdx.y + 1] * lWeight.yyyy;
-    lL_W_Mat[2] += L_W_MAT[lBoneIdx.y + 2] * lWeight.yyyy;
-
-    lL_W_Mat[0] += L_W_MAT[lBoneIdx.z + 0] * lWeight.zzzz;
-    lL_W_Mat[1] += L_W_MAT[lBoneIdx.z + 1] * lWeight.zzzz;
-    lL_W_Mat[2] += L_W_MAT[lBoneIdx.z + 2] * lWeight.zzzz;
-
-    lL_W_Mat[0] += L_W_MAT[lBoneIdx.w + 0] * lWeight.wwww;
-    lL_W_Mat[1] += L_W_MAT[lBoneIdx.w + 1] * lWeight.wwww;
-    lL_W_Mat[2] += L_W_MAT[lBoneIdx.w + 2] * lWeight.wwww;
-
-    // ---- ボーン 5?8 : blendIndices1 / blendWeight1 ----
-    lBoneIdx = VSInput.blendIndices1;
-    lWeight = VSInput.blendWeight1;
-
-    lL_W_Mat[0] += L_W_MAT[lBoneIdx.x + 0] * lWeight.xxxx;
-    lL_W_Mat[1] += L_W_MAT[lBoneIdx.x + 1] * lWeight.xxxx;
-    lL_W_Mat[2] += L_W_MAT[lBoneIdx.x + 2] * lWeight.xxxx;
+    lL_W_Mat[0]  = L_W_MAT[lBoneIdx.x + 0] * lWeight.xxxx;
+    lL_W_Mat[1]  = L_W_MAT[lBoneIdx.x + 1] * lWeight.xxxx;
+    lL_W_Mat[2]  = L_W_MAT[lBoneIdx.x + 2] * lWeight.xxxx;
 
     lL_W_Mat[0] += L_W_MAT[lBoneIdx.y + 0] * lWeight.yyyy;
     lL_W_Mat[1] += L_W_MAT[lBoneIdx.y + 1] * lWeight.yyyy;
@@ -81,7 +61,7 @@ VS_OUTPUT main(VS_INPUT VSInput)
     // ---- 頂点座標 : ローカル → ワールド（スキニング版） ----
     float4 lLocalPosition;
     lLocalPosition.xyz = VSInput.pos;
-    lLocalPosition.w = 1.0f;
+    lLocalPosition.w   = 1.0f;
 
     float4 lWorldPosition;
     lWorldPosition.w = 1.0f;
@@ -92,21 +72,21 @@ VS_OUTPUT main(VS_INPUT VSInput)
     // ---- ワールド湾曲（WorldBending）----
     // カメラ基準の XZ 距離に応じて Y を下げ、球面ワールドを演出する
     float2 offset = lWorldPosition.xz - g_pivotPos.xz;
-    float bend = (offset.x * offset.x + offset.y * offset.y) * CURVE_AMOUNT;
+    float  bend   = (offset.x * offset.x + offset.y * offset.y) * CURVE_AMOUNT;
     lWorldPosition.y -= bend;
 
     // ---- ワールド → ビュー ----
     float4 lViewPosition;
-    lViewPosition.w = 1.0f;
+    lViewPosition.w   = 1.0f;
     lViewPosition.xyz = mul(lWorldPosition, g_base.viewMatrix);
-    ret.vwPos.xyz = lViewPosition.xyz;
+    ret.vwPos.xyz     = lViewPosition.xyz;
 
     // ---- ビュー → スクリーン（射影変換） ----
     ret.svPos = mul(lViewPosition, g_base.projectionMatrix);
 
     // ---- ピクセルシェーダへの引き継ぎ ----
-    ret.uv.x = VSInput.uv0.x;
-    ret.uv.y = VSInput.uv0.y;
+    ret.uv.x     = VSInput.uv0.x;
+    ret.uv.y     = VSInput.uv0.y;
     ret.worldPos = lWorldPosition.xyz;
 
     // ---- 法線 : ローカル → ワールド（スキニング版） ----
@@ -117,8 +97,8 @@ VS_OUTPUT main(VS_INPUT VSInput)
     lWorldNormal.z = dot(VSInput.norm, lL_W_Mat[2].xyz);
     ret.normal = normalize(lWorldNormal);
 
-    ret.diffuse = VSInput.diffuse;
-    ret.lightDir = float3(0.3f, -0.7f, 0.8f);
+    ret.diffuse    = VSInput.diffuse;
+    ret.lightDir   = float3(0.3f, -0.7f, 0.8f);
     ret.lightAtPos = float3(0.0f, 0.0f, 0.0f);
 
     return ret;

@@ -319,11 +319,11 @@ void InputManager::SetUpBindings(void)
 	// デバッグ用
 	inputTable_[InputCommand::SET_POINT] =
 	{
-		{ PeripheralType::KEYBOARD, MOUSE_INPUT_LEFT }
+		{ PeripheralType::MOUSE, MOUSE_INPUT_LEFT }
 	};
 	inputTable_[InputCommand::DELETE_POINT] =
 	{
-		{ PeripheralType::KEYBOARD, MOUSE_INPUT_RIGHT }
+		{ PeripheralType::MOUSE, MOUSE_INPUT_RIGHT }
 	};
 	inputTable_[InputCommand::SAVE_POINT] =
 	{

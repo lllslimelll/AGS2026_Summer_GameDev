@@ -58,7 +58,7 @@ void SceneManager::Init(void)
 	Init3D();
 
 	// 初期シーンの設定
-	DoChangeScene(SCENE_ID::GAME);
+	DoChangeScene(SCENE_ID::TITLE);
 
 }
 
@@ -87,9 +87,9 @@ void SceneManager::Init3D(void)
 	//ChangeLightTypeDir({ 0.3f, -0.7f, 0.8f });
 
 	// フォグ設定
-	SetFogEnable(false);
-	SetFogColor(5, 5, 5);
-	SetFogStartEnd(10000.0f, 20000.0f);
+	//SetFogEnable(false);
+	//SetFogColor(5, 5, 5);
+	//SetFogStartEnd(10000.0f, 20000.0f);
 }
 
 void SceneManager::Update(void)
@@ -137,6 +137,9 @@ void SceneManager::Draw(void)
 	// カメラ設定
 	camera_->SetBeforeDraw();
 
+	// Effekseerにより再生中のエフェクトを描画する。
+	DrawEffekseer3D();
+
 	// スタック内のシーンを描画
 	for (auto& scene : scenes_)
 	{
@@ -145,9 +148,6 @@ void SceneManager::Draw(void)
 
 	// カメラ
 	camera_->Draw();
-
-	// Effekseerにより再生中のエフェクトを描画する。
-	DrawEffekseer3D();
 	
 	// 暗転・明転
 	fader_->Draw();
@@ -218,6 +218,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	// シーン末尾の初期化
 	scenes_.back()->Init();
+	camera_->SetBeforeDraw();
 
 	// デルタタイムリセット
 	ResetDeltaTime();

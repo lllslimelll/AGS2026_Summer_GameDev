@@ -414,5 +414,6 @@
     <FxCompile Include="Src\Shader\StagePS.hlsl" />
     <FxCompile Include="Src\Shader\PostEffect\UIPS.hlsl" />
     <FxCompile Include="Src\Shader\EnemyVS.hlsl" />
+    <FxCompile Include="Src\Shader\ItemPS.hlsl" />
   </ItemGroup>
 </Project>

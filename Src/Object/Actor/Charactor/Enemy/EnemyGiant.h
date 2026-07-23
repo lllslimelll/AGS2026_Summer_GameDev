@@ -12,12 +12,12 @@ public:
     enum class STATE
     {
         NONE,
-        THINK,
-        IDLE,
-        PATROL,
-        CHASE,
-        ATTACK,
-        RETURN,
+        THINK,      // 遷移判断用（互換保持）
+        IDLE,       // パトロールの角で待機（1秒）
+        PATROL,     // 次の角へ向かって移動
+        CHASE,      // プレイヤーを追跡（障害物回避あり）
+        ATTACK,     // 攻撃中（当たり判定はアニメ後半のみ）
+        RETURN,     // 初期位置へ帰還
         END,
     };
 
@@ -30,10 +30,7 @@ public:
         ATTACK = 3,
     };
 
-    // コンストラクタ
     EnemyGiant(const EnemyBase::EnemyData& data, Player& player);
-
-    // デストラクタ
     ~EnemyGiant(void) override;
 
 protected:
@@ -50,53 +47,84 @@ protected:
     void Draw(void) override;
 
 private:
-    int attackHandFrame_ = 0;
-    // スケール
-    static constexpr float SCALE = 1.0f;
 
-    // モデルローカル回転
+    // ==== 定数 ====
+
+    // モデルのスケールと回転
+    static constexpr float SCALE = 3.0f;
     static constexpr VECTOR DEFAULT_LOCAL_ROT =
     { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
-    // 地面衝突用線分
+    // 地面判定用の線分コライダ
     static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 120.0f,  0.0f };
     static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f,  0.0f };
 
-    // カプセルコライダ
-    static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 160.0f, 0.0f };
+    // 本体のカプセルコライダ
+    static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 300.0f, 0.0f };
     static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f,  50.0f, 0.0f };
-    static constexpr float  COL_CAPSULE_RADIUS = 40.0f;
+    static constexpr float  COL_CAPSULE_RADIUS = 100.0f;
 
-    // 視野コライダ（視野モデル）用
-    static constexpr VECTOR VIEW_RANGE_SCL = { 10.0f, 5.0f, 3.0f };
-    static constexpr float  VIEW_RANGE_ROT_X = 26.0f * DX_PI_F / 180.0f;
-    static constexpr float  VIEW_RANGE_LOCAL_ROT_X = 90.0f * DX_PI_F / 180.0f;
-    static constexpr int    VIEW_RANGE_SYNC_FRAME = 6;  // 頭部フレーム番号
+    // 攻撃用の球（左手フレームに追従）
+    static constexpr float ATTACK_SPHERE_RADIUS = 130.0f;
 
-    // 攻撃用球体コライダ（手フレームに追従）
-    static constexpr float ATTACK_SPHERE_RADIUS = 20.0f;
- 
+    // 攻撃球のフレーム位置からのローカルオフセット
+    // x: 敵の左右方向（負 = 左）
+    // y: ワールドY方向（負 = 下）
+    // z: 敵の前後方向（正 = 前）
+    static constexpr VECTOR ATTACK_SPHERE_OFFSET_LOCAL = { -100.0f, -150.0f, 30.0f };
 
-    // AI距離パラメータ
-    static constexpr float SPEED_PATROL = 1.0f;
-    static constexpr float SPEED_CHASE = 3.0f;
-    static constexpr float DIST_ATTACK = 100.0f;  // 攻撃距離
-    static constexpr float DIST_CHASE = 500.0f;  // チェイス解除距離
-    static constexpr int ATTACK_DAMAGE = 20;
-    VECTOR spawnPos_ = AsoUtility::VECTOR_ZERO;
-    // 状態
+    // ==== AI パラメータ ====
+
+    // 移動速度
+    static constexpr float SPEED_PATROL = 5.0f;
+    static constexpr float SPEED_CHASE = 10.0f;
+    static constexpr float SPEED_RETURN = 5.0f;
+
+    // 各種距離
+    static constexpr float DIST_ATTACK = 500.0f;   // 攻撃に入る距離
+    static constexpr float DIST_LOSE_CHASE = 2000.0f;   // 追跡を諦めて帰る距離
+    static constexpr float DIST_ARRIVE = 40.0f;   // 目的地到達とみなす距離
+
+    // ダメージ
+    static constexpr int   ATTACK_DAMAGE = 20;
+    // 攻撃当たり判定の有効区間（アニメ進捗 0.0 ? 1.0）
+    static constexpr float ATTACK_HIT_START = 0.5f;
+    static constexpr float ATTACK_HIT_END = 1.0f;
+
+    // パトロール
+    static constexpr float PATROL_SIDE = 1000.0f;              // 正方形の一辺
+    static constexpr float PATROL_HALF = PATROL_SIDE * 0.5f;   // 半辺
+    static constexpr float IDLE_AT_CORNER_TIME = 1.0f;         // 角での待機秒数
+
+    // 視野判定（ロジックベースの円錐視野）
+    static constexpr float VIEW_RANGE = 800.0f;
+    static constexpr float VIEW_HALF_FOV_RAD = 60.0f * DX_PI_F / 180.0f; // 合計120度
+    static constexpr float EYE_HEIGHT = 50.0f;   // 視線レイの高さオフセット
+
+    // 追跡時の障害物回避
+    static constexpr float AVOID_PROBE_DIST = 200.0f;
+    static constexpr float AVOID_ANGLE_RAD = 45.0f * DX_PI_F / 180.0f;
+    static constexpr float AVOID_ANGLE_WIDE_RAD = 90.0f * DX_PI_F / 180.0f;
+
+    // ==== 状態変数 ====
     STATE state_;
+    float step_;             // 各ステートで使う汎用タイマー
 
-    // 更新ステップ（タイマー）
-    float step_;
+    // パトロール用
+    int   patrolCornerIdx_;  // 0..3 の角インデックス（時計回り）
+    float idleTimer_;        // 角での待機タイマー
 
-    // 視野用トランスフォーム
-    Transform viewRangeTransform_;
+    // 攻撃用
+    bool  attackHit_;        // 現在の一振りで既にヒット済みか
 
-    // 攻撃ヒット済みフラグ（1回の攻撃で1回だけダメージ）
-    bool attackHit_;
+    // キャッシュ済みボーンフレーム
+    int   attackHandFrame_;
 
-    // 状態遷移
+#ifdef _DEBUG
+    bool  debugDrawView_ = true; // デバッグ視野表示のトグル
+#endif
+
+    // ==== 状態遷移 ====
     void ChangeState(STATE state);
     void ChangeStateNone(void);
     void ChangeStateThink(void);
@@ -107,7 +135,7 @@ private:
     void ChangeStateReturn(void);
     void ChangeStateEnd(void);
 
-    // 更新系
+    // ==== 各ステート更新 ====
     void UpdateNone(void);
     void UpdateThink(void);
     void UpdateIdle(void);
@@ -117,15 +145,34 @@ private:
     void UpdateReturn(void);
     void UpdateEnd(void);
 
-    // 巡回方向設定
+    // ==== ヘルパー ====
+
+    // faceDir_ / moveDir_ をターゲット方向に向ける（XZ平面）
     void SetMoveDirToTarget(const VECTOR& target);
 
-    // 索敵（視野モデル）
-    bool InSearchConeModel(void);
-
-    // プレイヤーとの距離
+    // プレイヤーとの距離（3D）
     float DistToPlayer(void) const;
 
-    // 押し戻し処理（敵とプレイヤーのカプセル同士）
+    // プレイヤーとの距離（XZ平面のみ）
+    float DistToPlayerXZ(void) const;
+
+    // 視野判定：距離チェック＋FOV円錐＋LOSレイキャスト
+    bool IsPlayerInSight(void);
+
+    // パトロールの角
+    VECTOR GetPatrolCornerPos(int index) const; // インデックス (0..3) のワールド座標
+    VECTOR GetCurrentPatrolTarget(void) const;  // 現在の目標コーナー
+    void   AdvancePatrolCorner(void);           // 時計回りで次の角へ
+
+    // 障害物回避を含めた追跡方向を計算
+    VECTOR ComputeChaseDir(void);
+
+    // プレイヤーカプセルとの押し戻し
     void PushBackFromPlayer(void);
+
+    // 攻撃球の中心位置を取得（オフセット適用済み）
+    VECTOR GetAttackSpherePos(void) const;
+
+    // デバッグ描画
+    void DrawDebugAI(void);
 };

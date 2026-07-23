@@ -4,7 +4,6 @@
 #include <DxLib.h>
 #include "SceneBase.h"
 
-class Camera;
 class StageManager;
 
 class DebugScene : public SceneBase
@@ -25,13 +24,13 @@ public:
 
 private:
 
-	std::unique_ptr<Camera> camera_;
-
 	// ステージ
 	StageManager* stageMng_;
 
 	// デバッグポイント群
 	std::vector<VECTOR> points_;
+
+	bool NeedsCamera(void) const override { return true; }
 
 	// デバッグポイントの配置
 	void PlaceDebugPoint(void);

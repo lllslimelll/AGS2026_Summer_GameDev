@@ -15,7 +15,7 @@ public:
 
 	// 音量（０～２５５）
 	static constexpr int BGM_TITLE_VOLUME = 200; // タイトルBGM
-	static constexpr int BGM_GAME_VOLUME = 200; // タイトルBGM
+	static constexpr int BGM_GAME_VOLUME = 255; // タイトルBGM
 	static constexpr int WALK_VOLUME = 200;		 // 歩き
 	static constexpr int PICKUP_VOLUME = 255;	 // 取得
 	static constexpr int BOOST_VOLUME = 200;	 // ブースト

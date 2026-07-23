@@ -395,6 +395,9 @@ void Player::Draw(void)
 	int screenW, screenH;
 	GetScreenState(&screenW, &screenH, nullptr);
 
+	//DrawFormatString(0,0,0xffffff,"Player pos : (%.1f, %.1f, %.1f)\n",
+		//transform_.pos.x, transform_.pos.y, transform_.pos.z);
+
 	// è∆èÄ
 	int cx = screenW / 2;
 	int cy = screenH / 2;
@@ -522,7 +525,7 @@ bool Player::IsAimingRoket(void) const
 {
 	const VECTOR camPos = cameraTransform_->pos;
 	const VECTOR rayEnd = VAdd(camPos,
-		VScale(cameraForward_, Item::RANGE_PICKUP));
+		VScale(cameraForward_, Item::RANGE_PICKUP_ROCKET));
 
 	const ColliderModel* colModel = dynamic_cast<const ColliderModel*>(
 		stageMng_.GetRocket().GetOwnCollider(
@@ -585,12 +588,12 @@ void Player::InitTransform(void)
 	// ëÂÇ´Ç≥
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	
-	transform_.quaRot = Quaternion::Identity();
+
 	// Yé≤Ç180ìx
-	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(0), AsoUtility::AXIS_Y);
+	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180), AsoUtility::AXIS_Y);
 
 	// ç¿ïW
-	transform_.pos = { 0, 0, -500.0f };
+	transform_.pos = { -1100, -13, -8000.0f };
 
 	transform_.Update();
 

@@ -174,6 +174,8 @@ void ItemManager::LoadCsvData(void)
 			stof(strSplit[idx++]), // Y
 			stof(strSplit[idx++])  // Z
 		};
+		// サイズ
+		data.scale = stof(strSplit[idx++]);
 
 		// アイテム生成
 		Create(data);

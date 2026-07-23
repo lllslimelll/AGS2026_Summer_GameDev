@@ -59,7 +59,7 @@ void TitleScene::Init(void)
 
 	// ‹…‘Ì˜f¯
 	spherePlanet_.SetModel(resMng_.Load(			// 1ŒÂ = Load()  •¡” = Depulicate()
-		ResourceManager::SRC::MAIN_STAGE).handleId_);
+		ResourceManager::SRC::STAGE).handleId_);
 	spherePlanet_.scl = { 0.7f, 0.7f, 0.7f };
 	spherePlanet_.quaRot = Quaternion::Identity();
 

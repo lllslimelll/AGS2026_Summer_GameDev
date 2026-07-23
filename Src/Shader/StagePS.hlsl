@@ -32,11 +32,11 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
     color.rgb *= lightPow;
     
     // エミッシブを加算
-    float3 emissive = float3(0.0f, 0.0f, 0.0f);
+    float emissive = 0.0f;
     color.rgb += emissive;
     
     // アンビエントを加算
-    float3 ambient = float3(0.0f, 0.0f, 0.0f);
+    float ambient = 0.0f;
     color.rgb += ambient;
     
     return color;

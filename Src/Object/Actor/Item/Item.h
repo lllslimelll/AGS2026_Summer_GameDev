@@ -36,6 +36,7 @@ public:
 		Item::GRADE grade; // グレード
 		int value;		   // 価値
 		VECTOR defaultPos;    // 初期座標
+		float scale;
 	};
 
 	// 状態
@@ -49,6 +50,8 @@ public:
 
 	// 拾える距離
 	static constexpr float RANGE_PICKUP = 180.0f;
+
+	static constexpr float RANGE_PICKUP_ROCKET = 500.0f;
 
 	// 投擲時の初速
 	static constexpr float THROW_SPEED = 40.0f;
@@ -121,6 +124,7 @@ private:
 	GRADE grade_;
 	// 初期位置
 	const VECTOR defaultPos_;
+	const float  scale_;
 	// 価値
 	int value_;
 

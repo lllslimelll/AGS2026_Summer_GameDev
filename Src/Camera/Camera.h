@@ -117,7 +117,7 @@ protected:
 	void InitPost(void) override;
 
 private:
-	bool isFirstMouseFrame_ = true;
+
 	// Õ“Ë‚Ì‰Ÿ‚µ–ß‚µs‰ñ”
 	static constexpr int CNT_TRY_COLLISION_CAMERA = 30;
 

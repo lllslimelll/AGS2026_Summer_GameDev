@@ -33,26 +33,22 @@ void DebugScene::Init(void)
 	stageMng_->Init();
 
 	// カメラ
-	camera_ = std::make_unique<Camera>();
-	camera_->ChangeMode(Camera::MODE::FREE);
+	SceneManager::GetInstance().GetCamera().ChangeMode(Camera::MODE::FREE);
 }
 
 void DebugScene::Update(void)
 {
 	// ステージ更新
 	stageMng_->Update();
-
-	// カメラ更新
-	camera_->Update();
-
-	// デバッグポイントの配置
-	PlaceDebugPoint();
 }
 
 void DebugScene::Draw(void)
 {
 	// ステージ描画
 	stageMng_->Draw();
+
+	// デバッグポイントの配置
+	PlaceDebugPoint();
 
 	// デバッグポイント群を球体描画
 	int y = 20;
@@ -103,10 +99,13 @@ void DebugScene::PlaceDebugPoint(void)
 		const ColliderModel* colliderModel =
 			dynamic_cast<const ColliderModel*>(collder);
 
+		// カメラ情報を取得
+		const auto& camera = SceneManager::GetInstance().GetCamera();
+		
 		// カメラの位置からカメラ最奥のワールド座標へ向けてレイを飛ばす
 		auto hit = MV1CollCheck_Line(
 			colliderModel->GetFollow()->modelId, -1,
-			camera_->GetPos(),
+			camera.GetPos(),
 			worldPos);
 
 		if (hit.HitFlag)
@@ -114,6 +113,8 @@ void DebugScene::PlaceDebugPoint(void)
 			//衝突地点をデバッグポイント群に追加
 			points_.push_back(hit.HitPosition);
 		}
+		printfDx("worldPos: %.1f, %.1f, %.1f\n", worldPos.x, worldPos.y, worldPos.z);
+		printfDx("camPos:   %.1f, %.1f, %.1f\n", camera.GetPos().x, camera.GetPos().y, camera.GetPos().z);
 	}
 
 	// 右クリックで最後のデバッグポイントを削除
@@ -130,6 +131,7 @@ void DebugScene::PlaceDebugPoint(void)
 	{
 		SavePoints();
 	}
+
 }
 
 void DebugScene::SavePoints(void)

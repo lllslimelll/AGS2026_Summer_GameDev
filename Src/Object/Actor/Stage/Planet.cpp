@@ -63,5 +63,5 @@ void Planet::InitAnimation(void)
 
 void Planet::InitPost(void)
 {
-    InitCurvatureShader();
+    InitCurvatureStageShader();
 }

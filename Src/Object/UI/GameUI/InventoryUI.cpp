@@ -16,9 +16,9 @@ InventoryUI::~InventoryUI(void)
 
 void InventoryUI::Load(void)
 {
-    itemImgs_[0] = LoadGraph("Data/Image/item2.png");
+    itemImgs_[0] = LoadGraph("Data/Image/item3.png ");
     itemImgs_[1] = LoadGraph("Data/Image/item1.png");
-    itemImgs_[2] = LoadGraph("Data/Image/item3.png");
+    itemImgs_[2] = LoadGraph("Data/Image/item2.png");
 }
 
 void InventoryUI::Release(void)

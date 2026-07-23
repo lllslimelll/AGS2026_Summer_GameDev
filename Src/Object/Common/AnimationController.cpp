@@ -35,7 +35,7 @@ void AnimationController::AddInFbx(int type, float speed, int animIndex)
     Add(type, speed, animation);
 }
 
-void AnimationController::Play(int type, bool isLoop)
+void AnimationController::Play(int type, float speedScale, bool isLoop)
 {
     if (playType_ == type) { return; }
 
@@ -61,6 +61,9 @@ void AnimationController::Play(int type, bool isLoop)
     playAnim_ = animations_[type];
     playAnim_.step = 0.0f;
     isLoop_ = isLoop;
+
+    // ìoò^çœÇ›ÉXÉsÅ[Éh Å~ î{ó¶
+    playAnim_.speed = animations_[type].speed * speedScale;
 
     Attach(playAnim_);
     playAnim_.totalTime = MV1GetAttachAnimTotalTime(modelId_, playAnim_.attachNo);

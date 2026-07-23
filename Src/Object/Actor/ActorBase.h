@@ -84,7 +84,8 @@ protected:
 	virtual void InitPost(void) = 0;
 
 	// Curvatureシェーダー適用
-	void InitCurvatureShader(void);
+	void InitCurvatureStageShader(void);
+	void InitCurvatureItemShader(void);
 	void InitCurvatureShaderSkinned(void);
 
 	void UpdateCurvatureShader(void);

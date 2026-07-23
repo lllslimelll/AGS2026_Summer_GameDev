@@ -137,18 +137,6 @@ void Camera::ChangeMode(MODE mode)
 	case Camera::MODE::FREE:
 		break;
 	case Camera::MODE::FOLLOW:
-		angles_ = AsoUtility::VECTOR_ZERO;
-
-		{
-			int sw, sh;
-			GetDrawScreenSize(&sw, &sh);
-			SetMousePoint(sw / 2, sh / 2);
-		}
-		// 追従対象が設定済みなら、初回描画前に正しい位置・向きへ同期する
-		if (followTransform_ != nullptr)
-		{
-			SyncFollow();
-		}
 		break;
 	}
 
@@ -335,14 +323,7 @@ void Camera::RotMouse(bool isLimit)
 	GetDrawScreenSize(&screenW, &screenH);
 	const int centerX = screenW / 2;
 	const int centerY = screenH / 2;
-	// 初回は基準が無いので回転を加えず、カーソルを中心へ置くだけ
-	if (isFirstMouseFrame_)
-	{
-		SetMousePoint(centerX, centerY);
-		isFirstMouseFrame_ = false;
-		return;   // ← ここでreturnするのでdeltaYが angles_.x に入らない
-	}
-
+	
 	// マウスの感度（この数値をいじってカメラの回転速度を調整します）
 	const float SENSITIVITY = 0.00040f;
 

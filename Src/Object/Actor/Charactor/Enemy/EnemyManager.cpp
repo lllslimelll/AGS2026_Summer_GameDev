@@ -74,6 +74,9 @@ void EnemyManager::LoadCsvData(void)
 			continue;
 		}
 
+		// 空行スキップ
+		if (line.empty() || line.find_first_not_of(",\r\n ") == std::string::npos) continue;
+
 		// １行をカンマ区切りで分割
 		strSplit = AsoUtility::Split(line, ',');
 
@@ -125,13 +128,6 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 	}
 
 	return enemy;
-
-	//// 敵の生成
-	//EnemyRat* enemyRat = new EnemyRat();
-	//// 敵リストに追加
-	//enemies_.emplace_back(enemyRat);
-	//// 敵の初期化
-	//enemyRat->Init();
 }
 
 // 衝突対象となるコライダを登録

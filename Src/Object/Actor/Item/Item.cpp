@@ -19,6 +19,7 @@ Item::Item(const ItemData& data)
     type_(data.type),
     grade_(data.grade),
     defaultPos_(data.defaultPos),
+    scale_(data.scale),
     value_(data.value),
     valueBillImg_{ -1, -1, -1 },
     isAimed_(false),
@@ -74,6 +75,7 @@ void Item::Draw(void)
 
     // 状態別描画
     stateDraw_();
+
 
 #ifdef _DEBUG
 
@@ -142,7 +144,7 @@ bool Item::IsAimed(const VECTOR& rayOrigin, const VECTOR& rayEnd) const
 
         // 一旦AsoUtilityで確認
     bool hit = AsoUtility::IsHitSphereCapsule(
-        transform_.pos, 30.0f,
+        transform_.pos, 120.0f,
         rayOrigin, rayEnd, 0.0f);
 
     return hit;
@@ -195,7 +197,7 @@ void Item::InitLoad(void)
     switch (type_)
     {
     case TYPE::type1:
-        transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal1.mv1"));
+        transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal3.mv1"));
         break;
     case TYPE::type2:
         transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal2.mv1"));
@@ -211,13 +213,14 @@ void Item::InitTransform(void)
     // モデルの基本設定
 
     // 大きさ
-    transform_.scl = { 50.0f,50.0f ,50.0f };
+    transform_.scl = VScale(AsoUtility::VECTOR_ONE, scale_);
 
     // モデル本来の向き
-    transform_.quaRot = Quaternion::Euler({ 0.0f, 0.0f, 0.0f });
+    transform_.quaRot = Quaternion::Euler({ 0.0f, 180.0f, 0.0f });
 
     // 座標
     transform_.pos = defaultPos_;
+    transform_.pos.y += 20.0f;
 
     VECTOR upVec = AsoUtility::DIR_U;
     transform_.pos = VAdd(transform_.pos, VScale(upVec, 60));
@@ -230,7 +233,7 @@ void Item::InitCollider(void)
     // カプセルコライダ
     ColliderBase* colSphere = new ColliderSphere(
         ColliderBase::TAG::ITEM, &transform_,
-        AsoUtility::VECTOR_ZERO, 50.0f);
+        AsoUtility::VECTOR_ZERO, 120.0f);
 
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::SPHERE), colSphere);
 }
@@ -254,7 +257,7 @@ void Item::InitPost(void)
     // 初期状態
     ChangeState(STATE::DROPPED);
 
-    InitCurvatureShader();
+    InitCurvatureItemShader();
 
 }
 

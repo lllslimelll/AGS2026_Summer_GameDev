@@ -47,9 +47,10 @@ void Rocket::InitLoad(void)
 
 void Rocket::InitTransform(void)
 {
-    transform_.pos = { 300, 30, 430 };
+    transform_.scl = { 4,4,4 };
+    transform_.pos = { -1100, -100, -8700.0f };
 
-    transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.0f), AsoUtility::AXIS_Y);
+    transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180.0f), AsoUtility::AXIS_Y);
 
     transform_.Update();
 }
@@ -72,5 +73,5 @@ void Rocket::InitPost(void)
 {
     transform_.Update();
 
-    InitCurvatureShader();
+    InitCurvatureItemShader();
 }

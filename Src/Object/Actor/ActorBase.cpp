@@ -1,4 +1,5 @@
 #include "../../Manager/ResourceManager.h"
+#include "../../Manager/InputManager.h"
 #include "../../Scene/SceneManager.h"
 #include "../Collider/ColliderBase.h"
 #include "../../Camera/Camera.h" 
@@ -42,6 +43,8 @@ void ActorBase::Draw(void)
 	{
 		renderer_->Draw();
 	}
+
+	//MV1DrawModel(transform_.modelId);
 
 #ifdef _DEBUG
 
@@ -112,11 +115,24 @@ bool ActorBase::IsOccludedByColliders(const VECTOR& from, const VECTOR& to) cons
 	return false;
 }
 
-void ActorBase::InitCurvatureShader(void)
+void ActorBase::InitCurvatureStageShader(void)
 {
 	material_ = std::make_unique<ModelMaterial>(
 		"StageVS.vso", 1,
 		"StagePS.pso", 0);
+
+	Camera& cam = SceneManager::GetInstance().GetCamera();
+	VECTOR camPos = cam.GetPos();
+	material_->AddConstBufVS({ camPos.x, camPos.y, camPos.z, 0.0f });
+
+	renderer_ = std::make_unique<ModelRenderer>(*material_, transform_.modelId);
+}
+
+void ActorBase::InitCurvatureItemShader(void)
+{
+	material_ = std::make_unique<ModelMaterial>(
+		"StageVS.vso", 1,
+		"ItemPS.pso", 0);
 
 	Camera& cam = SceneManager::GetInstance().GetCamera();
 	VECTOR camPos = cam.GetPos();
