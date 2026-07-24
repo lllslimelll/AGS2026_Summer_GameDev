@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "Manager/InputManager.h"
+#include "Manager/SettingsManager.h"
 #include "Manager/ResourceManager.h"
 #include "Scene/SceneManager.h"
 #include "Manager/SoundManager.h"
@@ -77,6 +78,9 @@ void Application::Init(void)
 
 	// サウンド管理初期化
 	SoundManager::CreateInstance();
+
+	// 管理初期化
+	SettingsManager::CreateInstance();
 
 	// シーン管理初期化
 	SceneManager::CreateInstance();

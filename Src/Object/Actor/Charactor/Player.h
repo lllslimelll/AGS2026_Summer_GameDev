@@ -43,7 +43,7 @@ public:
 	// 最大HP
 	static constexpr int   MAX_HP = 100;
 	// 最大酸素量
-	static constexpr float MAX_OXYGEN = 200.0f;
+	static constexpr float MAX_OXYGEN = 04.0f;
 
 	Player(ItemManager* itemMng, StageManager& stage_);
 
@@ -69,6 +69,7 @@ public:
 
 	// 被ダメージ
 	void OnDamaged(int amount);
+	void OnDamagedByEnemy(int damage);
 
 
 protected:
@@ -154,6 +155,8 @@ private:
 	// 照準の現在半径（補間用）
 	float crosshairRadius_;
 
+	bool isAlertPlaying_ = false;
+
 	// 状態遷移
 	void ChangeState(STATE state);
 	void ChangeStateIdle(void);
@@ -212,7 +215,7 @@ private:
 	int   hp_;
 	float oxygen_;
 	float suffocateTimer_;  // 酸素切れ後の経過時間
-
+	bool wasBoostMoving_ = false;  // 前フレームにブースト移動していたか
 	// 更新
 	void UpdateOxygenAndHp(void);
 };

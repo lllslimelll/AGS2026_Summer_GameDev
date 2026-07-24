@@ -1,4 +1,5 @@
 #include "../../../Manager/ResourceManager.h"
+#include "../../../Manager/SoundManager.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../Collider/ColliderModel.h"
 #include "Rocket.h"
@@ -22,6 +23,7 @@ void Rocket::Draw(void)
 void Rocket::AddDelivery(int value)
 {
     totalDelivered_ += value;
+    SoundManager::GetInstance().PlayPickUp();
 }
 
 int Rocket::GetTotalDelivered(void) const

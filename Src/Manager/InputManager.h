@@ -43,6 +43,8 @@ public:
 		UI_DOWN,  // 下移動
 		UI_LEFT,  // 左移動
 		UI_RIGHT, // 右移動
+		UI_TAB_LEFT,   // タブ左
+		UI_TAB_RIGHT,  // タブ右
 		UI_DECIDE,// 決定
 		UI_CANCEL,// キャンセル
 

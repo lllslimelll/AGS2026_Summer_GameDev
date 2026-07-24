@@ -21,6 +21,7 @@ public:
 		FAST_RUN,
 		ATTACK,
 		JUMP_RISING,
+		DEAD,
 		MAIN_STAGE,
 		STAGE,
 		ROKET,

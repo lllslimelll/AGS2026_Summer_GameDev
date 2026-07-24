@@ -1,6 +1,7 @@
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../../Scene/SceneManager.h"
+#include "../../../../Manager/SoundManager.h"
 #include "../../../Common/AnimationController.h"
 #include "../../../Collider/ColliderLine.h"
 #include "../../../Collider/ColliderCapsule.h"
@@ -342,7 +343,9 @@ void EnemyGiant::UpdateAttack(void)
                 spherePos, ATTACK_SPHERE_RADIUS,
                 capTop, capDown, capR))
             {
-                player_.OnDamaged(ATTACK_DAMAGE);
+                player_.OnDamagedByEnemy(ATTACK_DAMAGE);
+                SoundManager::GetInstance().PlayDamaged();
+       
                 attackHit_ = true;
                 break;
             }

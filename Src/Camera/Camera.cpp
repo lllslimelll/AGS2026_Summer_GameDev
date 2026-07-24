@@ -2,6 +2,7 @@
 #include <EffekseerForDXLib.h>
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/SettingsManager.h"
 #include "../Object/Common/Transform.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/ColliderModel.h"
@@ -38,6 +39,9 @@ void Camera::Update(void)
 	case Camera::MODE::FOLLOW:
 		UpdateFollow();
 		break;
+	case Camera::MODE::DEAD:
+		UpdateDead();
+		break;
 	}
 }
 
@@ -69,6 +73,12 @@ void Camera::Release(void)
 void Camera::SetFollow(const Transform* follow)
 {
 	followTransform_ = follow;
+}
+
+void Camera::SetDeadCameraPos(const VECTOR& pos)
+{
+	transform_.pos = pos;
+	targetPos_ = VAdd(pos, transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS));
 }
 
 void Camera::InitCollider(void)
@@ -261,6 +271,11 @@ void Camera::UpdateFollow(void)
 		AsoUtility::Lerp(prePos_, transform_.pos, 0.25f);*/
 }
 
+void Camera::UpdateDead(void)
+{
+	// 何もしない：SetDeadCameraPos で外から位置を毎フレーム上書きする
+}
+
 void Camera::Collision(void)
 {
 	// プレイヤーのルートフレーム
@@ -324,11 +339,13 @@ void Camera::RotMouse(bool isLimit)
 	const int centerX = screenW / 2;
 	const int centerY = screenH / 2;
 	
-	// マウスの感度（この数値をいじってカメラの回転速度を調整します）
-	const float SENSITIVITY = 0.00040f;
-
-	// 画面のサイズを取得して、中心の座標を計算
-	GetDrawScreenSize(&screenW, &screenH);
+	// 感度をSettingsManagerから取得（最小0.0002、最大0.0006）
+	const float SENS_MIN = 0.0002f;
+	const float SENS_MAX = 0.0006f;
+	float rate = SettingsManager::StepToRate(
+		SettingsManager::GetInstance().mouseSensStep,
+		SettingsManager::SENS_STEPS);
+	const float SENSITIVITY = SENS_MIN + (SENS_MAX - SENS_MIN) * rate;
 
 	// 現在のマウス座標を取得
 	int mouseX, mouseY;
@@ -361,11 +378,20 @@ void Camera::RotGamePad(bool isLimit)
 	// 右スティックの傾き
 	VECTOR dir = ins.GetInstance().GetRightStickDirection();
 
+
+	// 感度をSettingsManagerから取得（最小0.5度、最大3.0度）
+	const float DEG_MIN = 0.3f;
+	const float DEG_MAX = 5.5f;
+	float rate = SettingsManager::StepToRate(
+		SettingsManager::GetInstance().padSensStep,
+		SettingsManager::SENS_STEPS);
+	float rotPowRad = (DEG_MIN + (DEG_MAX - DEG_MIN) * rate) * DX_PI_F / 180.0f;
+
 	// 右スティック左右の傾き
-	angles_.y += dir.x * ROT_POW_RAD;
+	angles_.y += dir.x * rotPowRad;
 
 	// 右スティック上下の傾き
-	angles_.x -= dir.z * ROT_POW_RAD;
+	angles_.x -= dir.z * rotPowRad;
 	
 	// 角度制限
 	if (isLimit && angles_.x < -LIMIT_X_DW_RAD)

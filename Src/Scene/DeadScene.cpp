@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include "SceneManager.h"
 #include "DeadScene.h"
 
@@ -33,6 +34,8 @@ void DeadScene::UpdateDeadMenu(void)
 {
     auto& ins = InputManager::GetInstance();
 
+    int prevIndex = menuIndex_;
+
     bool up = ins.IsTriggered(InputManager::InputCommand::UI_UP);
     bool down = ins.IsTriggered(InputManager::InputCommand::UI_DOWN);
 
@@ -52,8 +55,8 @@ void DeadScene::UpdateDeadMenu(void)
     {
         const char* labels[MENU_MAX] = { "リトライ", "タイトルへ" };
 
-        constexpr int ITEM_SPAN = 80;   // ← 110から変更
-        constexpr int MENU_FONT = 50;   // ← 70から変更
+        constexpr int ITEM_SPAN = 80;
+        constexpr int MENU_FONT = 50;
 
         int prevSize = GetFontSize();
         SetFontSize(MENU_FONT);
@@ -82,9 +85,11 @@ void DeadScene::UpdateDeadMenu(void)
     prevMouseX_ = mouseX;
     prevMouseY_ = mouseY;
 
+    // 決定
     bool decide = ins.IsTriggered(InputManager::InputCommand::UI_DECIDE);
     if (!decide || menuIndex_ < 0) return;
 
+    SoundManager::GetInstance().PlaySelect();
     switch (static_cast<MENU>(menuIndex_))
     {
     case MENU::RETRY:

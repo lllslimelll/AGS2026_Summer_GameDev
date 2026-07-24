@@ -51,6 +51,7 @@ public:
 		FIXED_POINT,
 		FREE,
 		FOLLOW,
+		DEAD,
 	};
 
 	// Õ“Ë”»’èí•Ê
@@ -98,6 +99,7 @@ public:
 
 	// ’Ç]‘ÎÛ‚Ìİ’è
 	void SetFollow(const Transform* follow);
+	void SetDeadCameraPos(const VECTOR& pos);
 
 protected:
 
@@ -155,6 +157,7 @@ private:
 	void UpdateFixedPoint(void);
 	void UpdateFree(void);
 	void UpdateFollow(void);
+	void UpdateDead(void);
 
 	// ƒJƒƒ‰‚ğ‰ŠúˆÊ’u‚É–ß‚·
 	void SetDefault(void);

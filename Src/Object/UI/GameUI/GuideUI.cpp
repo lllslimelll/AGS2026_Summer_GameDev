@@ -53,7 +53,20 @@ void GuideUI::Draw(void)
     // ===== 目的表示 =====
     SetFontSize(GOAL_FONT);
 
-    const char* goal = info.hasAnyItem ? "ロケットに納品する" : "アイテムを収集する";
+    const char* goal;
+    if (info.totalDelivered >= info.quota)
+    {
+        goal = "ロケットに帰還する";
+    }
+    else if (info.hasAnyItem)
+    {
+        goal = "ロケットに納品する";
+    }
+    else
+    {
+        goal = "アイテムを収集する";
+    }
+
     int goalW = GetDrawStringWidth(goal, (int)strlen(goal));
     DrawString(screenW - goalW - MARGIN_RIGHT, y, goal, 0x00ff80);
     y += GOAL_FONT + 10;

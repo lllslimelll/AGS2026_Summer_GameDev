@@ -48,16 +48,21 @@ void Player::ChangeStateDead(void)
 	stateUpdate_ = std::bind(&Player::UpdateDead, this);
 
 	animCtrl_->Play(static_cast<int>(ANIM_TYPE::DEAD), false);
-	stateUpdate_ = []() {};
+	SoundManager::GetInstance().StopWalk();
+	SoundManager::GetInstance().StopAlert();
 
-	// 死亡シーンのオーバーレイを追加
-	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
+	// カメラをDEADモードに切り替え（マウス操作・SyncFollowを止める）
+	SceneManager::GetInstance().GetCamera().ChangeMode(Camera::MODE::DEAD);
 
+	//SoundManager::GetInstance().StopBoost();
 	SoundManager::GetInstance().StopWalk();
 }
 void Player::ChangeStateEnd(void)
 {
-	// 
+	stateUpdate_ = []() {};
+
+	// DeadSceneをオーバーレイで表示
+	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
 	
 }
 
@@ -75,10 +80,19 @@ void Player::UpdateIdle(void)
 }
 void Player::UpdateDead(void)
 {
-	// 死亡アニメーションが終わったらEND状態へ
+	// Deadアニメーションが終わったらEND状態へ
 	if (animCtrl_->IsEnd())
 	{
 		ChangeState(STATE::END);
+		return;
+	}
+
+	// mixamorig:Headフレームにカメラを追従させる
+	int headFrame = MV1SearchFrame(transform_.modelId, "mixamorig:Head");
+	if (headFrame >= 0)
+	{
+		VECTOR headPos = MV1GetFramePosition(transform_.modelId, headFrame);
+		SceneManager::GetInstance().GetCamera().SetDeadCameraPos(headPos);
 	}
 }
 
@@ -139,11 +153,18 @@ void Player::ProcessMove(void)
 			moveSpeed_ = SPEED_DASH;
 			animCtrl_->Play(static_cast<int>(ANIM_TYPE::FAST_RUN), true);
 			SoundManager::GetInstance().StopWalk();
-			SoundManager::GetInstance().PlayBoost();
+
+			// ブースト移動開始の瞬間だけ鳴らす
+			if (!wasBoostMoving_)
+			{
+				SoundManager::GetInstance().PlayBoost();
+				wasBoostMoving_ = true;  // 追加
+			}
 		}
 		else {
 			moveSpeed_ = SPEED_MOVE;
 			animCtrl_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
+			wasBoostMoving_ = false;
 		}
 
 		movePow_ = VScale(moveDir_, moveSpeed_);
@@ -151,7 +172,7 @@ void Player::ProcessMove(void)
 	else
 	{
 		SoundManager::GetInstance().StopWalk();
-		SoundManager::GetInstance().StopBoost();
+		wasBoostMoving_ = false;
 
 		// 入力なしでもカメラ方向に体を合わせる
 		faceDir_ = planeForward;
@@ -403,7 +424,9 @@ void Player::Draw(void)
 	int cy = screenH / 2;
 	int radius = static_cast<int>(crosshairRadius_);
 	bool isFilled = (crosshairRadius_ <= 7.0f);
-	
+	// デバッグ
+	DrawFormatString(0, 40, 0xffffff, "dt = %.6f", scnMng_.GetDeltaTime());
+	DrawFormatString(0, 60, 0xffffff, "oxygen = %.2f", oxygen_);
 	DrawCircle(cx, cy, radius, GetColor(255, 255, 255), isFilled ? TRUE : FALSE);
 }
 
@@ -544,7 +567,7 @@ void Player::UpdateOxygenAndHp(void)
 
 	// 酸素を減らす
 	// 酸素消費倍率（ブースト中は2倍）
-	float consumeRate = isBoost_ ? OXYGEN_DASH_RATE : 1.0f;
+	float consumeRate = isBoost_ ? OXYGEN_DASH_RATE : 1.5f;
 	oxygen_ -= dt * consumeRate;
 	if (oxygen_ < 0.0f) oxygen_ = 0.0f;
 
@@ -552,7 +575,16 @@ void Player::UpdateOxygenAndHp(void)
 	if (oxygen_ > 0.0f)
 	{
 		suffocateTimer_ = 0.0f;
+
+		isAlertPlaying_ = false;
 		return;
+	}
+
+	// 酸素切れ：初回だけAlertを鳴らす
+	if (!isAlertPlaying_)
+	{
+		SoundManager::GetInstance().PlayAlert();
+		isAlertPlaying_ = true;
 	}
 
 	// 酸素切れ：タイマー加算
@@ -567,7 +599,19 @@ void Player::UpdateOxygenAndHp(void)
 void Player::OnDamaged(int damage)
 {
 	hp_ -= damage;
-	SoundManager::GetInstance().PlayDamaged();
+
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		ChangeState(STATE::DEAD);
+	}
+}
+
+void Player::OnDamagedByEnemy(int damage)
+{
+	hp_ -= damage;
+
+	SoundManager::GetInstance().PlayDamaged2();
 
 	if (hp_ <= 0)
 	{
@@ -627,6 +671,8 @@ void Player::InitAnimation(void)
 	animCtrl_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN), 20.0f, resMng_.Load(ResourceManager::SRC::FAST_RUN).path_);
 
 	animCtrl_->Add(static_cast<int>(ANIM_TYPE::JUMP), 20.0f, resMng_.Load(ResourceManager::SRC::JUMP_RISING).path_);
+
+	animCtrl_->Add(static_cast<int>(ANIM_TYPE::DEAD), 20.0f, resMng_.Load(ResourceManager::SRC::DEAD).path_);
 }
 
 void Player::InitPost(void)

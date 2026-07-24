@@ -32,8 +32,9 @@ void PauseScene::Draw()
 
 void PauseScene::UpdatePauseMenu(void)
 {
-
 	auto& ins = InputManager::GetInstance();
+
+	int prevIndex = menuIndex_;
 
 	bool up = ins.IsTriggered(InputManager::InputCommand::UI_UP);
 	bool down = ins.IsTriggered(InputManager::InputCommand::UI_DOWN);
@@ -56,7 +57,6 @@ void PauseScene::UpdatePauseMenu(void)
 	int mouseX, mouseY;
 	GetMousePoint(&mouseX, &mouseY);
 
-	// マウスが動いた時だけホバー判定を行う
 	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
 
 	if (mouseMoved)
@@ -88,7 +88,6 @@ void PauseScene::UpdatePauseMenu(void)
 		}
 
 		SetFontSize(prevSize);
-
 		menuIndex_ = mouseHoverIndex;
 	}
 
@@ -99,6 +98,7 @@ void PauseScene::UpdatePauseMenu(void)
 	bool decide = ins.IsTriggered(InputManager::InputCommand::UI_DECIDE);
 	if (!decide || menuIndex_ < 0) return;
 
+	SoundManager::GetInstance().PlaySelect();
 	switch (static_cast<MENU>(menuIndex_))
 	{
 	case MENU::RESUME:
@@ -106,6 +106,7 @@ void PauseScene::UpdatePauseMenu(void)
 		SoundManager::GetInstance().PlayBGMGame();
 		break;
 	case MENU::OPTION:
+		sceMng_.PushOverlay(SceneManager::SCENE_ID::OPTION);
 		break;
 	case MENU::TITLE:
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);

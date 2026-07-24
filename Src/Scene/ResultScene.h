@@ -23,6 +23,10 @@ private:
 	int   totalScore_ = 0;
 	float revealTimer_ = 0.0f;
 
+	bool playedScore_ = false;
+	bool playedStatus_ = false;
+	bool playedGrade_ = false;
+
 	static constexpr float TIME_SCORE = 0.6f;
 	static constexpr float TIME_STATUS = 1.2f;
 	static constexpr float TIME_GRADE = 1.8f;

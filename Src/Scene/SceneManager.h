@@ -28,6 +28,7 @@ public:
 		TITLE,
 		GAME,
 		PAUSE,
+		OPTION,
 		DEAD,
 		RESULT,
 		DEBUG,

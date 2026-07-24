@@ -15,7 +15,7 @@
 static const char* MENU_LABELS[] =
 {
 	"探査を開始",
-	"オプション",
+	"設定",
 	"終了"
 };
 
@@ -109,6 +109,8 @@ void TitleScene::UpdateInput(void)
 {
 	auto const& ins = InputManager::GetInstance();
 
+	int prevIndex = selectIndex_;
+
 	// メニュー選択
 	if (ins.IsTriggered(InputManager::InputCommand::UI_UP))
 	{
@@ -123,13 +125,12 @@ void TitleScene::UpdateInput(void)
 	int mouseX, mouseY;
 	GetMousePoint(&mouseX, &mouseY);
 
-	// マウスが動いた時だけホバー判定を行う
 	bool mouseMoved = (mouseX != prevMouseX_ || mouseY != prevMouseY_);
 
 	if (mouseMoved)
 	{
 		int mouseHoverIndex = -1;
-		const int halfW = LINE_WIDTH / 2;   // 判定幅は点線幅に合わせる（好みで調整）
+		const int halfW = LINE_WIDTH / 2;
 		for (int i = 0; i < MENU_COUNT; ++i)
 		{
 			int itemY = MENU_Y_START + i * MENU_LINE_HEIGHT;
@@ -151,11 +152,15 @@ void TitleScene::UpdateInput(void)
 
 	if (decide && selectIndex_ != -1)
 	{
+		SoundManager::GetInstance().PlaySelect();
 		switch (static_cast<MENU>(selectIndex_))
 		{
 		case MENU::GAME_START:
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 			SoundManager::GetInstance().StopBGMTitle();
+			break;
+		case MENU::OPTION:
+			SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::OPTION);
 			break;
 		case MENU::QUIT_GAME:
 			PostQuitMessage(0);

@@ -9,6 +9,22 @@ SoundManager::SoundManager(void)
 {
 }
 
+void SoundManager::SetBgmVolume(int vol)
+{
+	ChangeVolumeSoundMem(vol, bgmTitleH_);
+	ChangeVolumeSoundMem(vol, bgmGameH_);
+}
+
+void SoundManager::SetSeVolume(int vol)
+{
+	ChangeVolumeSoundMem(vol, walkH_);
+	ChangeVolumeSoundMem(vol, pickUpH_);
+	ChangeVolumeSoundMem(vol, boostH_);
+	ChangeVolumeSoundMem(vol, damagedH_);
+	ChangeVolumeSoundMem(vol, selectH_);
+	ChangeVolumeSoundMem(vol, resultH_);
+}
+
 //インスタンスの生成
 void SoundManager::CreateInstance(void)
 {
@@ -31,8 +47,12 @@ void SoundManager::Init(void)
 	bgmGameH_ = LoadSoundMem(BGM_GAME_PATH);
 	walkH_ = LoadSoundMem(WALK_PATH);
 	pickUpH_ = LoadSoundMem(PICKUP_PATH);
-	//boostH_ = LoadSoundMem(BOOST_PATH);
+	boostH_ = LoadSoundMem(BOOST_PATH);
 	damagedH_ = LoadSoundMem(DAMAGED_PATH);
+	selectH_ = LoadSoundMem(SELECT_PATH);
+	resultH_ = LoadSoundMem(RESULT_PATH);
+	alertH_ = LoadSoundMem(ALERT_PATH);
+	damaged2H_ = LoadSoundMem(DAMAGED2_PATH);
 
 	// 音量調整
 	ChangeVolumeSoundMem(BGM_TITLE_VOLUME, bgmTitleH_);
@@ -41,6 +61,10 @@ void SoundManager::Init(void)
 	ChangeVolumeSoundMem(PICKUP_VOLUME, pickUpH_);
 	ChangeVolumeSoundMem(BOOST_VOLUME, boostH_);
 	ChangeVolumeSoundMem(DAMAGED_VOLUME, damagedH_);
+	ChangeVolumeSoundMem(SELECT_VOLUME, selectH_);
+	ChangeVolumeSoundMem(RESULT_VOLUME, resultH_);
+	ChangeVolumeSoundMem(ALERT_VOLUME, alertH_);
+	ChangeVolumeSoundMem(DAMAGED2_VOLUME, damaged2H_);
 
 }
 
@@ -56,6 +80,10 @@ void SoundManager::Destroy(void)
 	DeleteSoundMem(pickUpH_);
 	DeleteSoundMem(boostH_);
 	DeleteSoundMem(damagedH_);
+	DeleteSoundMem(selectH_);
+	DeleteSoundMem(resultH_);
+	DeleteSoundMem(alertH_);
+	DeleteSoundMem(damaged2H_);
 
 	// インスタンスのメモリ解放
 	delete instance_;
@@ -95,16 +123,38 @@ void SoundManager::PlayPickUp()
 
 void SoundManager::PlayBoost()
 {
-	// 再生
-	if (CheckSoundMem(boostH_) == 0)
-	{
-		PlaySoundMem(boostH_, DX_PLAYTYPE_LOOP, true);
-	}
+	PlaySoundMem(boostH_, DX_PLAYTYPE_BACK, true);
 }
 
 void SoundManager::PlayDamaged()
 {
 	PlaySoundMem(damagedH_, DX_PLAYTYPE_BACK, true);
+}
+
+void SoundManager::PlaySelect()
+{
+	PlaySoundMem(selectH_, DX_PLAYTYPE_BACK, true);
+}
+
+void SoundManager::PlayResult()
+{
+	PlaySoundMem(resultH_, DX_PLAYTYPE_BACK, true);
+}
+
+void SoundManager::PlayAlert()
+{
+	if (CheckSoundMem(alertH_) == 0)
+	{
+		PlaySoundMem(alertH_, DX_PLAYTYPE_LOOP, true);
+	}
+}
+
+void SoundManager::PlayDamaged2()
+{
+	if (CheckSoundMem(damaged2H_) == 0)
+	{
+		PlaySoundMem(damaged2H_, DX_PLAYTYPE_BACK, true);
+	}
 }
 
 void SoundManager::StopBGMTitle()
@@ -122,14 +172,14 @@ void SoundManager::StopWalk()
 	StopSoundMem(walkH_);
 }
 
+void SoundManager::StopAlert()
+{
+	StopSoundMem(alertH_);
+}
+
 void SoundManager::StopPickUp()
 {
 	StopSoundMem(pickUpH_);
-}
-
-void SoundManager::StopBoost()
-{
-	StopSoundMem(boostH_);
 }
 
 void SoundManager::StopDamaged()

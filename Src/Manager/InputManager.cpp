@@ -314,6 +314,15 @@ void InputManager::SetUpBindings(void)
 	inputTable_[InputCommand::UI_CANCEL] =
 	{
 		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::RIGHT) },
+		{ PeripheralType::KEYBOARD, KEY_INPUT_ESCAPE},
+	};
+	inputTable_[InputCommand::UI_TAB_LEFT] =
+	{
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::L_SHOULDER) },
+	};
+	inputTable_[InputCommand::UI_TAB_RIGHT] =
+	{
+		{ PeripheralType::PAD, static_cast<int>(PAD_BUTTON::R_SHOULDER) },
 	};
 
 	// デバッグ用

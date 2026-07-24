@@ -1,6 +1,7 @@
 #include "ResultScene.h"
 #include "SceneManager.h"
 #include "../Manager/InputManager.h"
+#include "../Manager/SoundManager.h"
 #include <DxLib.h>
 
 ResultScene::ResultScene()
@@ -27,6 +28,11 @@ void ResultScene::Update(void)
     bool isPad = (GetJoypadNum() != 0);
 
     revealTimer_ += SceneManager::GetInstance().GetDeltaTime();
+
+    // 各項目が出た瞬間に1回だけ鳴らす
+    if (!playedScore_ && revealTimer_ >= TIME_SCORE) { SoundManager::GetInstance().PlayResult(); playedScore_ = true; }
+    if (!playedStatus_ && revealTimer_ >= TIME_STATUS) { SoundManager::GetInstance().PlayResult(); playedStatus_ = true; }
+    if (!playedGrade_ && revealTimer_ >= TIME_GRADE) { SoundManager::GetInstance().PlayResult(); playedGrade_ = true; }
 
     // 全部表示されるまで操作不可
     if (revealTimer_ < TIME_GRADE) return;

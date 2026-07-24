@@ -131,7 +131,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\OptionScene.cpp" />
     <ClCompile Include="Src\Manager\ScreenManager.cpp" />
+    <ClCompile Include="Src\Manager\SettingsManager.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\RocketLocatorUI.cpp" />
     <ClCompile Include="Src\Object\UI\GameUI\GuideUI.cpp" />
@@ -188,7 +190,9 @@
     <ClCompile Include="Src\PostEffect\PostEffectGuideUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\OptionScene.h" />
     <ClInclude Include="Src\Manager\ScreenManager.h" />
+    <ClInclude Include="Src\Manager\SettingsManager.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyGiant.h" />
     <ClInclude Include="Src\Object\UI\GameUI\RocketLocatorUI.h" />
     <ClInclude Include="Src\Object\UI\GameUI\GuideUI.h" />
