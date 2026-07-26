@@ -323,11 +323,11 @@ void Item::DrawDropped(void)
         if (screenPos.z <= 1.0f)
         {
             int prevSize = GetFontSize();
-            SetFontSize(32);
+            SetFontSize(48);
             DrawFormatString(
                 (int)screenPos.x,
                 (int)screenPos.y,
-                GetColor(255, 255, 255),
+                GetColor(0, 255, 0),
                 "$%d", value_);
             SetFontSize(prevSize);
         }

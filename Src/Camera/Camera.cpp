@@ -273,7 +273,6 @@ void Camera::UpdateFollow(void)
 
 void Camera::UpdateDead(void)
 {
-	// 何もしない：SetDeadCameraPos で外から位置を毎フレーム上書きする
 }
 
 void Camera::Collision(void)

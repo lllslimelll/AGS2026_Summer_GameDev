@@ -51,18 +51,13 @@ void Player::ChangeStateDead(void)
 	SoundManager::GetInstance().StopWalk();
 	SoundManager::GetInstance().StopAlert();
 
-	// カメラをDEADモードに切り替え（マウス操作・SyncFollowを止める）
-	SceneManager::GetInstance().GetCamera().ChangeMode(Camera::MODE::DEAD);
-
-	//SoundManager::GetInstance().StopBoost();
-	SoundManager::GetInstance().StopWalk();
-}
-void Player::ChangeStateEnd(void)
-{
 	stateUpdate_ = []() {};
 
 	// DeadSceneをオーバーレイで表示
 	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
+}
+void Player::ChangeStateEnd(void)
+{
 	
 }
 
@@ -424,9 +419,7 @@ void Player::Draw(void)
 	int cy = screenH / 2;
 	int radius = static_cast<int>(crosshairRadius_);
 	bool isFilled = (crosshairRadius_ <= 7.0f);
-	// デバッグ
-	DrawFormatString(0, 40, 0xffffff, "dt = %.6f", scnMng_.GetDeltaTime());
-	DrawFormatString(0, 60, 0xffffff, "oxygen = %.2f", oxygen_);
+
 	DrawCircle(cx, cy, radius, GetColor(255, 255, 255), isFilled ? TRUE : FALSE);
 }
 
@@ -567,7 +560,7 @@ void Player::UpdateOxygenAndHp(void)
 
 	// 酸素を減らす
 	// 酸素消費倍率（ブースト中は2倍）
-	float consumeRate = isBoost_ ? OXYGEN_DASH_RATE : 1.5f;
+	float consumeRate = isBoost_ ? OXYGEN_DASH_RATE : 1.8f;
 	oxygen_ -= dt * consumeRate;
 	if (oxygen_ < 0.0f) oxygen_ = 0.0f;
 

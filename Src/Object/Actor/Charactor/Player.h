@@ -43,7 +43,7 @@ public:
 	// 最大HP
 	static constexpr int   MAX_HP = 100;
 	// 最大酸素量
-	static constexpr float MAX_OXYGEN = 04.0f;
+	static constexpr float MAX_OXYGEN = 200.0f;
 
 	Player(ItemManager* itemMng, StageManager& stage_);
 
@@ -92,7 +92,7 @@ protected:
 private:
 
 	// 移動速度（通常）
-	static constexpr float SPEED_MOVE = 7.0f;
+	static constexpr float SPEED_MOVE = 9.0f;
 
 	// 移動速度（ダッシュ）
 	static constexpr float SPEED_DASH = 20.0f;
@@ -208,7 +208,7 @@ private:
 	bool IsAimingRoket(void) const;
 
 	// ===== HP・酸素 =====
-	static constexpr float OXYGEN_DASH_RATE = 3.0f; 	// 酸素消費倍率（ブースト中）
+	static constexpr float OXYGEN_DASH_RATE = 3.3f; 	// 酸素消費倍率（ブースト中）
 	static constexpr float SUFFOCATE_INTERVAL = 0.5f;   // ダメージ周期
 	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
 
