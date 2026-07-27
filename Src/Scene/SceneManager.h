@@ -100,9 +100,6 @@ private:
 	// カメラ
 	std::unique_ptr<Camera> camera_;
 
-	// メインスクリーン　
-	int mainScreen_;
-
 	// シーン遷移中判定
 	bool isSceneChanging_;
 

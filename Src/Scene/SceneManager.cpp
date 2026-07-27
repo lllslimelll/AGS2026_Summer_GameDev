@@ -52,9 +52,6 @@ void SceneManager::Init(void)
 	// デルタタイム
 	preTime_ = std::chrono::system_clock::now();
 
-	// メインスクリーンの取得
-	mainScreen_ = ScreenManager::GetInstance().GetMainScreen();
-
 	// 3D用の設定
 	Init3D();
 
@@ -104,9 +101,6 @@ void SceneManager::Update(void)
 	// フェードの更新
 	fader_->Update();
 
-	// Effekseerにより再生中のエフェクトを更新
-	UpdateEffekseer3D();
-
 	if (isSceneChanging_)
 	{
 		// フェード状態の切替処理
@@ -116,21 +110,23 @@ void SceneManager::Update(void)
 	{
 		// スタック末尾のみ更新
 		scenes_.back()->Update();
+	}
 
-		// スタック末尾のシーンだけチェック
-		if (scenes_.back()->NeedsCamera())
-		{
-			camera_->Update();
-		}
+	// スタック末尾のシーンだけチェック
+	if (scenes_.back()->NeedsCamera())
+	{
+		camera_->Update();
 	}
 
 }
 
 void SceneManager::Draw(void)
 {
+	// メインスクリーンの取得
+	int mainScreen = ScreenManager::GetInstance().GetMainScreen();
 	// 描画先グラフィック領域の指定
 	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
-	SetDrawScreen(mainScreen_);
+	SetDrawScreen(mainScreen);
 
 	// 画面を初期化
 	ClearDrawScreen();
@@ -138,8 +134,8 @@ void SceneManager::Draw(void)
 	// カメラ設定
 	camera_->SetBeforeDraw();
 
-	// Effekseerにより再生中のエフェクトを描画する。
-	DrawEffekseer3D();
+	// Effekseerにより再生中のエフェクトを更新
+	UpdateEffekseer3D();
 
 	// スタック内のシーンを描画
 	for (auto& scene : scenes_)
@@ -147,8 +143,8 @@ void SceneManager::Draw(void)
 		scene->Draw();
 	}
 
-	// カメラ
-	camera_->Draw();
+	// Effekseerにより再生中のエフェクトを描画する。
+	DrawEffekseer3D();
 	
 	// 暗転・明転
 	fader_->Draw();
@@ -157,7 +153,7 @@ void SceneManager::Draw(void)
 	// 背面スクリーンにメインスクリーンを描画
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClearDrawScreen();
-	DrawGraph(0, 0, mainScreen_, true);
+	DrawGraph(0, 0, mainScreen, true);
 }
 
 void SceneManager::Destroy(void)
@@ -165,7 +161,6 @@ void SceneManager::Destroy(void)
 	// シーンリストの破棄
 	scenes_.clear();
 
-	DeleteGraph(mainScreen_);
 	// インスタンスのメモリ解放
 	delete instance_;
 }
@@ -223,7 +218,6 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	// シーン末尾の初期化
 	scenes_.back()->Init();
-	camera_->SetBeforeDraw();
 
 	// デルタタイムリセット
 	ResetDeltaTime();
