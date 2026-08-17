@@ -6,6 +6,15 @@ StatusUI::StatusUI(const Player& player)
     :
     player_(player)
 {
+    // フォントハンドル生成（デフォルトフォント、アンチエイリアス指定なし）
+    fontLabel_ = CreateFontToHandle(nullptr, FONT_LABEL_SIZE, -1);
+    fontSub_ = CreateFontToHandle(nullptr, FONT_SUB_SIZE, -1);
+}
+
+StatusUI::~StatusUI(void)
+{
+    if (fontLabel_ != -1) DeleteFontToHandle(fontLabel_);
+    if (fontSub_ != -1) DeleteFontToHandle(fontSub_);
 }
 
 void StatusUI::Draw(void)
@@ -24,8 +33,6 @@ void StatusUI::Draw(void)
     constexpr int BAR_H = 28;
     constexpr int GAP = 16;
     constexpr int MID_GAP = 20;
-    constexpr int FONT_LABEL = 24;
-    constexpr int FONT_SUB = 16;
 
     const int barY = invTopY - GAP - BAR_H;
     const int halfW = (totalWidth - MID_GAP) / 2;
@@ -50,23 +57,21 @@ void StatusUI::Draw(void)
     DrawBox(oxL, barY, oxR, barY + BAR_H, 0xffffff, FALSE);
 
     // ラベル
-    int prevSize = GetFontSize();
-    SetFontSize(FONT_LABEL);
-    const int labelY = barY - FONT_LABEL - 2;
+    const int labelY = barY - FONT_LABEL_SIZE - 2;
 
-    DrawFormatString(hpL, labelY, 0xffffff, "HP  %d%%",
+    // HPラベル
+    DrawFormatStringToHandle(hpL, labelY, 0xffffff, fontLabel_, "HP  %d%%",
         static_cast<int>(static_cast<float>(hp) / Player::MAX_HP * 100));
 
-    DrawString(oxL, labelY, "O", 0xffffff);
-    const int oW = GetDrawStringWidth("O", 1);
+    // O2ラベル："O" (大) + "2" (小) + " %%" (大)
+    DrawStringToHandle(oxL, labelY, "O", 0xffffff, fontLabel_);
+    const int oW = GetDrawStringWidthToHandle("O", 1, fontLabel_);
 
-    SetFontSize(FONT_SUB);
-    DrawString(oxL + oW, labelY + (FONT_LABEL - FONT_SUB) + 4, "2", 0xffffff);
-    const int twoW = GetDrawStringWidth("2", 1);
+    // "2" は小フォントでベースラインを下げて描画
+    DrawStringToHandle(oxL + oW, labelY + (FONT_LABEL_SIZE - FONT_SUB_SIZE) + 4,
+        "2", 0xffffff, fontSub_);
+    const int twoW = GetDrawStringWidthToHandle("2", 1, fontSub_);
 
-    SetFontSize(FONT_LABEL);
-    DrawFormatString(oxL + oW + twoW + 4, labelY, 0xffffff, " %d%%",
-        static_cast<int>(oxygen / Player::MAX_OXYGEN * 100));
-
-    SetFontSize(prevSize);
+    DrawFormatStringToHandle(oxL + oW + twoW + 4, labelY, 0xffffff, fontLabel_,
+        " %d%%", static_cast<int>(oxygen / Player::MAX_OXYGEN * 100));
 }

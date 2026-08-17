@@ -1,21 +1,35 @@
 // GuideUI.cpp
 #include <DxLib.h>
+#include <cstring>
 #include "../../Actor/Charactor/Player.h"
 #include "../../../Manager/ScreenManager.h"
 #include "../../../PostEffect/PostEffectGuideUI.h"
 #include "GuideUI.h"
 
 GuideUI::GuideUI(const Player& player)
-    : 
+    :
     GameUI(),
     player_(player)
 {
     // ガイドUI用ポストエフェクト
-    int screen = ScreenManager::GetInstance().GetGuideUIScreen(); // メインスクリーン取得
-    pEffectGuideUI_ = std::make_unique<PostEffectGuideUI>(); // 生成
-    // 初期化と対象スクリーンの設定
+    int screen = ScreenManager::GetInstance().GetGuideUIScreen();
+    pEffectGuideUI_ = std::make_unique<PostEffectGuideUI>();
     pEffectGuideUI_->Init(screen);
     pEffectGuideUI_->SetEnabled(true);
+
+    // フォントハンドル生成
+    fontGoal_ = CreateFontToHandle(nullptr, FONT_GOAL_SIZE, -1);
+    fontScore_ = CreateFontToHandle(nullptr, FONT_SCORE_SIZE, -1);
+    fontNorma_ = CreateFontToHandle(nullptr, FONT_NORMA_SIZE, -1);
+    fontLine_ = CreateFontToHandle(nullptr, FONT_LINE_SIZE, -1);
+}
+
+GuideUI::~GuideUI(void)
+{
+    if (fontGoal_ != -1) DeleteFontToHandle(fontGoal_);
+    if (fontScore_ != -1) DeleteFontToHandle(fontScore_);
+    if (fontNorma_ != -1) DeleteFontToHandle(fontNorma_);
+    if (fontLine_ != -1) DeleteFontToHandle(fontLine_);
 }
 
 void GuideUI::Update(void)
@@ -28,7 +42,7 @@ void GuideUI::Draw(void)
     int guideScreen = ScreenManager::GetInstance().GetGuideUIScreen();
     int mainScreen = ScreenManager::GetInstance().GetMainScreen();
 
-    // ① guideScreenにテキスト描画
+    // ① guideScreen にテキスト描画
     SetDrawScreen(guideScreen);
     ClearDrawScreen();
 
@@ -37,48 +51,34 @@ void GuideUI::Draw(void)
     int screenW, screenH;
     GetScreenState(&screenW, &screenH, nullptr);
 
-    int prevSize = GetFontSize();
-
-    constexpr int MARGIN_RIGHT = 60;
-    constexpr int MARGIN_TOP = 60;
-    constexpr int GOAL_FONT = 42;
-
-    constexpr int SCORE_FONT = 50;
-    constexpr int NORMA_FONT = 32;
-    constexpr int LINE_FONT = 36;
-    constexpr int LINE_SPAN = 50;
-
     int y = MARGIN_TOP;
 
     // ===== 目的表示 =====
-    SetFontSize(GOAL_FONT);
-
     const char* goal;
     if (info.totalDelivered >= info.quota)
     {
-        goal = "ロケットに帰還する";
+        goal = "ロケットに帰還せよ";
     }
     else if (info.hasAnyItem)
     {
-        goal = "ロケットに納品する";
+        goal = "ロケットに納品せよ";
     }
     else
     {
-        goal = "アイテムを収集する";
+        goal = "アイテムを収集せよ";
     }
 
-    int goalW = GetDrawStringWidth(goal, (int)strlen(goal));
-    DrawString(screenW - goalW - MARGIN_RIGHT, y, goal, 0x00ff80);
-    y += GOAL_FONT + 10;
+    const int goalW = GetDrawStringWidthToHandle(
+        goal, static_cast<int>(strlen(goal)), fontGoal_);
+    DrawStringToHandle(screenW - goalW - MARGIN_RIGHT, y, goal, 0x00ff80, fontGoal_);
+    y += FONT_GOAL_SIZE + 10;
 
     // ===== 現在の納品額 =====
-    SetFontSize(SCORE_FONT);
-
     auto withComma = [](int value, char* out)
         {
             char tmp[32];
             sprintf_s(tmp, 32, "%d", value);
-            int len = (int)strlen(tmp);
+            int len = static_cast<int>(strlen(tmp));
             int o = 0;
             int firstLen = len % 3;
             if (firstLen == 0) firstLen = 3;
@@ -98,25 +98,28 @@ void GuideUI::Draw(void)
     char scoreBuf[48];
     sprintf_s(scoreBuf, "$%s", scoreStr);
 
-    int scoreW = GetDrawStringWidth(scoreBuf, (int)strlen(scoreBuf));
-    DrawString(screenW - scoreW - MARGIN_RIGHT, y, scoreBuf, 0xffffff);
-    y += SCORE_FONT + 4;
-    
-    // ===== ノルマ金額 =====
-    SetFontSize(NORMA_FONT);
+    const int scoreW = GetDrawStringWidthToHandle(
+        scoreBuf, static_cast<int>(strlen(scoreBuf)), fontScore_);
+    DrawStringToHandle(screenW - scoreW - MARGIN_RIGHT, y, scoreBuf, 0xffffff, fontScore_);
+    y += FONT_SCORE_SIZE + 4;
 
+    // ===== ノルマ額 =====
     char quotaStr[32];
     withComma(info.quota, quotaStr);
     char quotaBuf[48];
     sprintf_s(quotaBuf, "/ $%s", quotaStr);
 
-    int quotaW = GetDrawStringWidth(quotaBuf, (int)strlen(quotaBuf));
-    DrawString(screenW - quotaW - MARGIN_RIGHT, y, quotaBuf, 0x888888);
-    y += NORMA_FONT + 16;
+    const int quotaW = GetDrawStringWidthToHandle(
+        quotaBuf, static_cast<int>(strlen(quotaBuf)), fontNorma_);
+    DrawStringToHandle(screenW - quotaW - MARGIN_RIGHT, y, quotaBuf, 0x888888, fontNorma_);
+    y += FONT_NORMA_SIZE + 16;
 
-    // ===== 横線 =====
+    // ===== 区切り線 =====
     const int lineR = screenW - MARGIN_RIGHT;
-    const int lineL = lineR - max(max(goalW, scoreW), quotaW) - 20;
+    int maxW = goalW;
+    if (scoreW > maxW) maxW = scoreW;
+    if (quotaW > maxW) maxW = quotaW;
+    const int lineL = lineR - maxW - 20;
     DrawLine(lineL, y, lineR, y, 0x888888);
     y += 20;
 
@@ -143,21 +146,19 @@ void GuideUI::Draw(void)
         labels[count++] = info.isPad ? "置く : [Y]" : "置く : [G]";
     }
 
-    SetFontSize(LINE_FONT);
-
     for (int i = 0; i < count; i++)
     {
         const char* buf = labels[i];
-        int textW = GetDrawStringWidth(buf, (int)strlen(buf));
-        DrawString(screenW - textW - MARGIN_RIGHT, y + i * LINE_SPAN, buf, 0xdddddd);
+        const int textW = GetDrawStringWidthToHandle(
+            buf, static_cast<int>(strlen(buf)), fontLine_);
+        DrawStringToHandle(screenW - textW - MARGIN_RIGHT,
+            y + i * LINE_SPAN, buf, 0xdddddd, fontLine_);
     }
 
-    SetFontSize(prevSize);
-
-    // ポストエフェクト
+    // ポストエフェクト（Skew処理）
     pEffectGuideUI_->Draw();
 
-    // ③ mainScreenに歪み済みを合成
+    // ② mainScreen に合成
     SetDrawScreen(mainScreen);
     DrawGraph(0, 0, guideScreen, true);
 }

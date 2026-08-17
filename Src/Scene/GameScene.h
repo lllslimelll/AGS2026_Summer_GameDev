@@ -45,6 +45,8 @@ private:
 	// ゲームUI
 	std::vector<std::unique_ptr<GameUI>> gameUIs_;
 
+	int shadowMapHandle_ = -1;
+
 	// シャドウマップ作成
 	int CreateShadowMap(void);
 

@@ -9,7 +9,7 @@ public:
     explicit InventoryUI(const Inventory& inventory);
     ~InventoryUI(void) override;
 
-    void Load(void);
+    void Load(void) override;
     void Draw(void) override;
     void Release(void);
 
@@ -27,4 +27,7 @@ private:
     static constexpr int IMG_COUNT = 3;
 
     int itemImgs_[IMG_COUNT];
+
+    // 値札フォント（ループ内で SetFontSize を呼ばないためハンドル化）
+    int fontPrice_ = -1;
 };

@@ -12,6 +12,8 @@ InventoryUI::InventoryUI(const Inventory& inventory)
 
 InventoryUI::~InventoryUI(void)
 {
+    // Release で解放漏れがあった場合の保険
+    Release();
 }
 
 void InventoryUI::Load(void)
@@ -19,6 +21,9 @@ void InventoryUI::Load(void)
     itemImgs_[0] = LoadGraph("Data/Image/item3.png ");
     itemImgs_[1] = LoadGraph("Data/Image/item1.png");
     itemImgs_[2] = LoadGraph("Data/Image/item2.png");
+
+    // 値札フォント生成
+    fontPrice_ = CreateFontToHandle(nullptr, PRICE_FONT, -1);
 }
 
 void InventoryUI::Release(void)
@@ -30,6 +35,12 @@ void InventoryUI::Release(void)
             DeleteGraph(itemImgs_[i]);
             itemImgs_[i] = -1;
         }
+    }
+
+    if (fontPrice_ != -1)
+    {
+        DeleteFontToHandle(fontPrice_);
+        fontPrice_ = -1;
     }
 }
 
@@ -43,10 +54,10 @@ void InventoryUI::Draw(void)
     const int baseY = screenH - SLOT_SIZE - MARGIN_BOTTOM;
     const int selected = inventory_.GetSelectedIndex();
 
-    // かっこの長さ(px)
+    // 鍵括弧の長さ(px)
     constexpr int BRACKET_LEN = 20;
-    constexpr int BRACKET_W = 3;   // 線の太さ
-    // 深めの青
+    constexpr int BRACKET_W = 3;
+    // 枠色
     const unsigned int COL_NORMAL = GetColor(30, 80, 160);
     const unsigned int COL_SELECTED = GetColor(60, 160, 255);
 
@@ -60,20 +71,20 @@ void InventoryUI::Draw(void)
         const int  drawSize = SLOT_SIZE + expand;
         const unsigned int col = isSel ? COL_SELECTED : COL_NORMAL;
 
-        // 左上かっこ
+        // 左上鍵括弧
         DrawBox(drawX, drawY, drawX + BRACKET_W, drawY + BRACKET_LEN, col, TRUE);
         DrawBox(drawX, drawY, drawX + BRACKET_LEN, drawY + BRACKET_W, col, TRUE);
-        // 右上かっこ
+        // 右上鍵括弧
         DrawBox(drawX + drawSize - BRACKET_W, drawY, drawX + drawSize, drawY + BRACKET_LEN, col, TRUE);
         DrawBox(drawX + drawSize - BRACKET_LEN, drawY, drawX + drawSize, drawY + BRACKET_W, col, TRUE);
-        // 左下かっこ
+        // 左下鍵括弧
         DrawBox(drawX, drawY + drawSize - BRACKET_LEN, drawX + BRACKET_W, drawY + drawSize, col, TRUE);
         DrawBox(drawX, drawY + drawSize - BRACKET_W, drawX + BRACKET_LEN, drawY + drawSize, col, TRUE);
-        // 右下かっこ
+        // 右下鍵括弧
         DrawBox(drawX + drawSize - BRACKET_W, drawY + drawSize - BRACKET_LEN, drawX + drawSize, drawY + drawSize, col, TRUE);
         DrawBox(drawX + drawSize - BRACKET_LEN, drawY + drawSize - BRACKET_W, drawX + drawSize, drawY + drawSize, col, TRUE);
 
-        // アイテム画像・価格(変更なし)
+        // アイテム画像・値札
         const Item* item = inventory_.Get(i);
         if (item == nullptr) { continue; }
 
@@ -88,15 +99,14 @@ void InventoryUI::Draw(void)
                 itemImgs_[typeIdx], TRUE);
         }
 
-        const int prevSize = GetFontSize();
-        SetFontSize(PRICE_FONT);
+        // 値札：SetFontSize を呼ばずハンドル指定で描画
         const int price = item->GetValue();
-        const int textW = GetDrawFormatStringWidth("$%d", price);
-        DrawFormatString(
+        const int textW = GetDrawFormatStringWidthToHandle(fontPrice_, "$%d", price);
+        DrawFormatStringToHandle(
             drawX + (drawSize - textW) / 2,
             drawY + drawSize + 6,
             GetColor(255, 255, 255),
+            fontPrice_,
             "$%d", price);
-        SetFontSize(prevSize);
     }
 }

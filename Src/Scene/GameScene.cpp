@@ -102,6 +102,9 @@ void GameScene::Init(void)
 	SceneManager::GetInstance().GetCamera().AddHitCollider(rocketCollider);
 
 	player_->SetCameraTransform(&SceneManager::GetInstance().GetCamera().GetTransform()); // カメラのTransformをプレイヤーに渡す
+
+	//shadowMapHandle_ = MakeShadowMap(1024, 1024);
+	//SetShadowMapLightDirection(shadowMapHandle_, { 0.3f, -0.7f, 0.8f });
 }
 
 void GameScene::Update(void)
@@ -131,19 +134,19 @@ void GameScene::Draw(void)
 	skyDome_->Draw();
 
 	// シャドウマップのハンドル
-	int shadowMapHandle = CreateShadowMap();
+	//int shadowMapHandle = CreateShadowMap();
 	// 描画に使用するシャドウマップを設定
-	SetUseShadowMap(0, shadowMapHandle);
+	//SetUseShadowMap(0, shadowMapHandle);
 	
 	stageMng_->Draw();
 	itemMng_->Draw();
 	enemyManager_->Draw();
 	player_->Draw();
 
-	// 描画に使用するシャドウマップの設定を解除
-	SetUseShadowMap(0, -1);
+	// 描画に使用するシャドウマップの設定を解除  
+	//SetUseShadowMap(0, -1);
 	// シャドウマップの削除
-	DeleteShadowMap(shadowMapHandle);
+	//DeleteShadowMap(shadowMapHandle);
 
 	for (auto& ui : gameUIs_)
 	{
@@ -154,17 +157,13 @@ void GameScene::Draw(void)
 // シャドウマップ作成
 int GameScene::CreateShadowMap(void)
 {
-	// シャドウマップハンドルの作成
-	int shadowMapHandle = MakeShadowMap(1024, 1024);
-	// シャドウマップが想定するライトの方向もセット
-	SetShadowMapLightDirection(shadowMapHandle, { 0.3f, -0.7f, 0.8f });
 	// シャドウマップに描画する範囲を設定
-	SetShadowMapDrawArea(shadowMapHandle,
+	SetShadowMapDrawArea(shadowMapHandle_,
 		VGet(player_->GetTransform().pos.x - 1000.0f, player_->GetTransform().pos.y - 1.0f, player_->GetTransform().pos.z -1000.0f), 
 		VGet(player_->GetTransform().pos.x + 1000.0f, player_->GetTransform().pos.y + 1000.0f, player_->GetTransform().pos.z + 1000.0f));
 
 	// シャドウマップへの描画の準備
-	ShadowMap_DrawSetup(shadowMapHandle);
+	ShadowMap_DrawSetup(shadowMapHandle_);
 
 	// シャドウマップへステージモデルの描画
 	MV1DrawModel(stageMng_->GetTransform().modelId);
@@ -174,5 +173,5 @@ int GameScene::CreateShadowMap(void)
 	// シャドウマップへの描画を終了
 	ShadowMap_DrawEnd();
 
-	return shadowMapHandle;
+	return shadowMapHandle_;
 }
