@@ -94,7 +94,7 @@ void CharactorBase::Rotate(void)
 	Quaternion goalRot = Quaternion::LookRotation(faceDir_, AsoUtility::AXIS_Y);
 	// ‰ñ“]‚Ì•âŠÔ
 	transform_.quaRot =
-		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
+		Quaternion::Slerp(transform_.quaRot, goalRot, 0.05f);
 }
 
 void CharactorBase::CalcGravityPow(void)

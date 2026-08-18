@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Object\\Actor\\Charactor\\CharactorBase.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -21,10 +25,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Shader\\EnemyVS.hlsl||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Shader\\EnemyVS.hlsl||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|solutionrelative:Src\\Object\\Actor\\Charactor\\CharactorBase.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{63E4ADA1-4403-4EC5-978E-2CE4B968F00F}|AGS2026_Summer_GameDev.vcxproj|C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\CharactorBase.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -512,8 +512,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-07-02T19:26:41.734Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -522,45 +521,58 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "SoundManager.cpp",
-              "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\SoundManager.cpp",
-              "RelativeDocumentMoniker": "Src\\Manager\\SoundManager.cpp",
-              "ToolTip": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\SoundManager.cpp",
-              "RelativeToolTip": "Src\\Manager\\SoundManager.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-02T19:26:41.613Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "EnemyGiant.cpp",
-              "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
-              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
-              "ToolTip": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
-              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
-              "ViewState": "AgIAAH8DAAAAAAAAAAAiwIgDAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-10T05:27:00.85Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "EnemyGiant.h",
               "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
               "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
               "ToolTip": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
               "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.h",
-              "ViewState": "AgIAAMEAAAAAAAAAAAAAANwAAAACAAAAAAAAAA==",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAAHkAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-07-10T05:26:44.013Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CharactorBase.cpp",
+              "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
+              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
+              "ToolTip": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp*",
+              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\CharactorBase.cpp*",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAIwGAAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-02T19:26:41.519Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EnemyGiant.cpp",
+              "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
+              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
+              "ToolTip": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
+              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\Enemy\\EnemyGiant.cpp",
+              "ViewState": "AgIAAFUBAAAAAAAAAAAAAGIBAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-10T05:27:00.85Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "SoundManager.cpp",
+              "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\SoundManager.cpp",
+              "RelativeDocumentMoniker": "Src\\Manager\\SoundManager.cpp",
+              "ToolTip": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\SoundManager.cpp",
+              "RelativeToolTip": "Src\\Manager\\SoundManager.cpp",
+              "ViewState": "AgIAAK0AAAAAAAAAAAAAAMgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-07-02T19:26:41.613Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "SoundManager.h",
               "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Manager\\SoundManager.h",
               "RelativeDocumentMoniker": "Src\\Manager\\SoundManager.h",
@@ -568,12 +580,11 @@
               "RelativeToolTip": "Src\\Manager\\SoundManager.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-02T19:26:41.471Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-02T19:26:41.471Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "EnemyVS.hlsl",
               "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Shader\\EnemyVS.hlsl",
               "RelativeDocumentMoniker": "Src\\Shader\\EnemyVS.hlsl",
@@ -581,21 +592,7 @@
               "RelativeToolTip": "Src\\Shader\\EnemyVS.hlsl",
               "ViewState": "AgIAAAoAAAAAAAAAAAAAABgAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-07-22T21:50:02.008Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CharactorBase.cpp",
-              "DocumentMoniker": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
-              "RelativeDocumentMoniker": "Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
-              "ToolTip": "C:\\Users\\\u512A\u6210\\Desktop\\GitHub\\AGS2026_Summer_GameDev\\Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
-              "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\CharactorBase.cpp",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAIwE8AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-02T19:26:41.519Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-22T21:50:02.008Z"
             },
             {
               "$type": "Document",
@@ -607,8 +604,7 @@
               "RelativeToolTip": "Src\\Object\\Actor\\Stage\\Planet.cpp",
               "ViewState": "AgIAAAgAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-09T05:44:32.551Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-09T05:44:32.551Z"
             },
             {
               "$type": "Document",
@@ -620,8 +616,7 @@
               "RelativeToolTip": "Src\\Object\\UI\\GameUI\\RocketLocatorUI.h",
               "ViewState": "AgIAABEAAAAAAAAAAAAcwBwAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-09T22:19:09.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-09T22:19:09.899Z"
             },
             {
               "$type": "Document",
@@ -633,8 +628,7 @@
               "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\Player.cpp",
               "ViewState": "AgIAAGMAAAAAAAAAAAAAAHMBAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-02T19:26:41.469Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-02T19:26:41.469Z"
             },
             {
               "$type": "Document",
@@ -646,8 +640,7 @@
               "RelativeToolTip": "Src\\Object\\UI\\GameUI\\RocketLocatorUI.cpp",
               "ViewState": "AgIAAIQAAAAAAAAAAAAAAJIAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-09T22:23:27.789Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-09T22:23:27.789Z"
             },
             {
               "$type": "Document",
@@ -659,8 +652,7 @@
               "RelativeToolTip": "Src\\Scene\\TitleScene.cpp",
               "ViewState": "AgIAAEMAAAAAAAAAAAAAAFQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-02T19:26:41.466Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-02T19:26:41.466Z"
             },
             {
               "$type": "Document",
@@ -672,8 +664,7 @@
               "RelativeToolTip": "Src\\Object\\Actor\\Charactor\\CharactorBase.h",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABoAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-07-02T19:26:41.524Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-02T19:26:41.524Z"
             },
             {
               "$type": "Document",
@@ -685,8 +676,7 @@
               "RelativeToolTip": "Src\\Shader\\StageVS.hlsl",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABIAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-07-21T23:05:06.976Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-21T23:05:06.976Z"
             },
             {
               "$type": "Document",
@@ -698,8 +688,7 @@
               "RelativeToolTip": "Src\\Scene\\PrologueScene.h",
               "ViewState": "AgIAADQAAAAAAAAAAAAAAEcAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-08-18T04:00:31.743Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-18T04:00:31.743Z"
             },
             {
               "$type": "Document",
@@ -747,8 +736,7 @@
               "RelativeToolTip": "Src\\Object\\UI\\GameUI\\GuideUI.cpp",
               "ViewState": "AgIAACgAAAAAAAAAAAAAACcAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-09T08:17:59.287Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-09T08:17:59.287Z"
             },
             {
               "$type": "Document",
