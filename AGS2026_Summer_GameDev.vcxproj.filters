@@ -186,6 +186,9 @@
     <ClCompile Include="Src\Scene\OptionScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scene\PrologueScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\Fader.h">
@@ -362,6 +365,9 @@
     <ClInclude Include="Src\Scene\OptionScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Scene\PrologueScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -395,7 +401,7 @@
     <Image Include="Data\Image\PushSpace.png">
       <Filter>リソース ファイル</Filter>
     </Image>
-    <Image Include="Data\Image\roket.png">
+    <Image Include="Data\Image\rocket.png">
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="Data\Image\Shadow.png">

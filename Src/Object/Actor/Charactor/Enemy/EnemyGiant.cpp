@@ -1,3 +1,5 @@
+#include <cmath>
+#include <random>
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../../Scene/SceneManager.h"
@@ -14,11 +16,22 @@ EnemyGiant::EnemyGiant(const EnemyBase::EnemyData& data, Player& player)
     :
     EnemyBase(data, player),
     state_(STATE::NONE),
-    step_(0.0f),
-    patrolCornerIdx_(0),
     idleTimer_(0.0f),
     attackHit_(false),
-    attackHandFrame_(-1)
+    attackHandFrame_(-1),
+    wanderCenter_(data.defaultPos),
+    wanderTarget_(data.defaultPos),
+    lastWanderTheta_(0.0f),
+    // this のアドレスを XOR してシードに使う。
+    // 複数体が同フレームに生成されても同一シードにならない。
+    rng_(std::random_device{}() ^ static_cast<unsigned>(
+        reinterpret_cast<uintptr_t>(this))),
+    wallNormalXZ_(AsoUtility::VECTOR_ZERO),
+    prevMoveDir_(AsoUtility::DIR_F),
+    lastAvoidChoice_(0),
+    avoidCommitTimer_(0.0f),
+    stuckTimer_(0.0f),
+    stuckLastPos_(AsoUtility::VECTOR_ZERO)
 {
 }
 
@@ -31,7 +44,6 @@ void EnemyGiant::InitLoad(void)
 {
     transform_.SetModel(
         resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_GIANT));
-    // 視野モデルはロジックFOVに移行したのでロード不要
 }
 
 void EnemyGiant::InitTransform(void)
@@ -45,20 +57,16 @@ void EnemyGiant::InitTransform(void)
 
 void EnemyGiant::InitCollider(void)
 {
-    // 地面判定用の線分
     ColliderLine* colLine = new ColliderLine(
         ColliderBase::TAG::ENEMY, &transform_,
         COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::GROUND_LINE), colLine);
 
-    // 本体カプセル
     ColliderCapsule* colCapsule = new ColliderCapsule(
         ColliderBase::TAG::ENEMY, &transform_,
         COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
         COL_CAPSULE_RADIUS);
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
-    // 視野判定はロジックベースに変更したので、視野モデルコライダは作成しない
 }
 
 void EnemyGiant::InitAnimation(void)
@@ -75,33 +83,30 @@ void EnemyGiant::InitAnimation(void)
     animCtrl_->Add(static_cast<int>(ANIM_TYPE::ATTACK), 200.0f,
         resMng_.Load(ResourceManager::SRC::ATTACK).path_);
 
-    animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), 1.2f, true);
+    animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyGiant::InitPost(void)
 {
     stateChanges_.emplace(static_cast<int>(STATE::NONE),
         std::bind(&EnemyGiant::ChangeStateNone, this));
-    stateChanges_.emplace(static_cast<int>(STATE::THINK),
-        std::bind(&EnemyGiant::ChangeStateThink, this));
     stateChanges_.emplace(static_cast<int>(STATE::IDLE),
         std::bind(&EnemyGiant::ChangeStateIdle, this));
-    stateChanges_.emplace(static_cast<int>(STATE::PATROL),
-        std::bind(&EnemyGiant::ChangeStatePatrol, this));
+    stateChanges_.emplace(static_cast<int>(STATE::WANDER),
+        std::bind(&EnemyGiant::ChangeStateWander, this));
     stateChanges_.emplace(static_cast<int>(STATE::CHASE),
         std::bind(&EnemyGiant::ChangeStateChase, this));
     stateChanges_.emplace(static_cast<int>(STATE::ATTACK),
         std::bind(&EnemyGiant::ChangeStateAttack, this));
-    stateChanges_.emplace(static_cast<int>(STATE::RETURN),
-        std::bind(&EnemyGiant::ChangeStateReturn, this));
     stateChanges_.emplace(static_cast<int>(STATE::END),
         std::bind(&EnemyGiant::ChangeStateEnd, this));
 
     attackHandFrame_ = MV1SearchFrame(transform_.modelId, "mixamorig:LeftHand");
 
-    // 最初の角からパトロール開始
-    patrolCornerIdx_ = 0;
-    ChangeState(STATE::PATROL);
+    wanderCenter_ = defaultPos_;
+    PickNextWanderTarget();
+
+    ChangeState(STATE::WANDER);
 
     InitCurvatureShaderSkinned();
 }
@@ -118,17 +123,10 @@ void EnemyGiant::UpdateProcessPost(void)
 {
     EnemyBase::UpdateProcessPost();
 
-    // パトロール中に移動可能範囲を外れたら、その角を諦めて次の角へ
-    // （CHASE / RETURN 中は範囲外への移動を許可する）
-    if (state_ == STATE::PATROL && !InMovableRange())
-    {
-        transform_.pos = prevPos_;
-        transform_.Update();
-        AdvancePatrolCorner();
-        ChangeState(STATE::PATROL);
-    }
+    // 押し戻し後の位置から壁法線を推定して保存。
+    // 次フレームの ApplyWallSlide が読む。
+    UpdateWallNormal();
 
-    // 敵とプレイヤーの押し戻し
     PushBackFromPlayer();
 }
 
@@ -137,14 +135,11 @@ void EnemyGiant::Draw(void)
     EnemyBase::Draw();
 
 #ifdef _DEBUG
-    // 攻撃球のデバッグ描画
     if (attackHandFrame_ >= 0)
     {
-        VECTOR spherePos = GetAttackSpherePos();
-        DrawSphere3D(spherePos, ATTACK_SPHERE_RADIUS, 16, 0xff0000, 0xff0000, false);
+        DrawSphere3D(GetAttackSpherePos(), ATTACK_SPHERE_RADIUS,
+            16, 0xff0000, 0xff0000, false);
     }
-
-    // AI デバッグ描画（視野・パトロール経路など）
     if (debugDrawView_) DrawDebugAI();
 #endif
 }
@@ -163,38 +158,35 @@ void EnemyGiant::ChangeStateNone(void)
     stateUpdate_ = std::bind(&EnemyGiant::UpdateNone, this);
 }
 
-void EnemyGiant::ChangeStateThink(void)
-{
-    // 互換のため残しているが、新しいフローでは経由しない
-    stateUpdate_ = std::bind(&EnemyGiant::UpdateThink, this);
-    ChangeState(STATE::PATROL);
-}
-
 void EnemyGiant::ChangeStateIdle(void)
 {
     stateUpdate_ = std::bind(&EnemyGiant::UpdateIdle, this);
-    idleTimer_ = IDLE_AT_CORNER_TIME;
+
+    idleTimer_ = RandFloat(IDLE_TIME_MIN, IDLE_TIME_MAX);
+
     movePow_ = AsoUtility::VECTOR_ZERO;
-    animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), 1.4f,  true);
+    animCtrl_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+    ResetSteering();
 }
 
-void EnemyGiant::ChangeStatePatrol(void)
+void EnemyGiant::ChangeStateWander(void)
 {
-    stateUpdate_ = std::bind(&EnemyGiant::UpdatePatrol, this);
+    stateUpdate_ = std::bind(&EnemyGiant::UpdateWander, this);
 
-    // 現在の角へ向ける
-    VECTOR target = GetCurrentPatrolTarget();
-    SetMoveDirToTarget(target);
+    SetMoveDirToTarget(wanderTarget_);
 
-    moveSpeed_ = SPEED_PATROL;
-    animCtrl_->Play(static_cast<int>(ANIM_TYPE::WALK), 1.5f, true);
+    moveSpeed_ = SPEED_WANDER;
+    animCtrl_->Play(static_cast<int>(ANIM_TYPE::WALK), true);
+    ResetSteering();
 }
 
 void EnemyGiant::ChangeStateChase(void)
 {
     stateUpdate_ = std::bind(&EnemyGiant::UpdateChase, this);
+
     moveSpeed_ = SPEED_CHASE;
-    animCtrl_->Play(static_cast<int>(ANIM_TYPE::RUN), 1.4f, true);
+    animCtrl_->Play(static_cast<int>(ANIM_TYPE::RUN), true);
+    ResetSteering();
 }
 
 void EnemyGiant::ChangeStateAttack(void)
@@ -203,25 +195,12 @@ void EnemyGiant::ChangeStateAttack(void)
     movePow_ = AsoUtility::VECTOR_ZERO;
     attackHit_ = false;
 
-    // 攻撃開始時にプレイヤーの方を向く
     SetMoveDirToTarget(player_.GetTransform().pos);
 
-    // 既に ATTACK 再生中だと Play() が効かないので、Replay で最初に戻す
     if (animCtrl_->GetPlayType() == static_cast<int>(ANIM_TYPE::ATTACK))
-    {
         animCtrl_->Replay();
-    }
     else
-    {
-        animCtrl_->Play(static_cast<int>(ANIM_TYPE::ATTACK), 1.1f, false);
-    }
-}
-
-void EnemyGiant::ChangeStateReturn(void)
-{
-    stateUpdate_ = std::bind(&EnemyGiant::UpdateReturn, this);
-    moveSpeed_ = SPEED_RETURN;
-    animCtrl_->Play(static_cast<int>(ANIM_TYPE::WALK), 1.5f, true);
+        animCtrl_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 }
 
 void EnemyGiant::ChangeStateEnd(void)
@@ -233,14 +212,12 @@ void EnemyGiant::ChangeStateEnd(void)
 // 各ステート更新
 // ===============================================================
 void EnemyGiant::UpdateNone(void) {}
-void EnemyGiant::UpdateThink(void) {}
 void EnemyGiant::UpdateEnd(void) {}
 
 void EnemyGiant::UpdateIdle(void)
 {
     movePow_ = AsoUtility::VECTOR_ZERO;
 
-    // 待機中でもプレイヤーを見つけたら追跡へ
     if (IsPlayerInSight())
     {
         ChangeState(STATE::CHASE);
@@ -250,40 +227,43 @@ void EnemyGiant::UpdateIdle(void)
     idleTimer_ -= scnMng_.GetDeltaTime();
     if (idleTimer_ <= 0.0f)
     {
-        AdvancePatrolCorner();
-        ChangeState(STATE::PATROL);
+        PickNextWanderTarget();
+        ChangeState(STATE::WANDER);
     }
 }
 
-void EnemyGiant::UpdatePatrol(void)
+void EnemyGiant::UpdateWander(void)
 {
-    // プレイヤー検知が最優先
     if (IsPlayerInSight())
     {
         ChangeState(STATE::CHASE);
         return;
     }
 
-    // 現在の角へ移動
-    VECTOR target = GetCurrentPatrolTarget();
-
-    VECTOR delta = VSub(target, transform_.pos);
+    VECTOR delta = VSub(wanderTarget_, transform_.pos);
     delta.y = 0.0f;
-    float distXZ = VSize(delta);
 
-    if (distXZ <= DIST_ARRIVE)
+    if (VSize(delta) <= DIST_ARRIVE)
     {
-        // ドリフト防止に XZ をコーナーへスナップしてから IDLE へ
-        transform_.pos.x = target.x;
-        transform_.pos.z = target.z;
-        transform_.Update();
-
         ChangeState(STATE::IDLE);
         return;
     }
 
-    // 移動
-    SetMoveDirToTarget(target);
+    if (IsStuck())
+    {
+        PickNextWanderTarget();
+        ChangeState(STATE::WANDER);
+        return;
+    }
+
+    // 毎フレームレイキャストで前方を確認しながら目標へ向かう。
+    // 以前の SetMoveDirToTarget（直線代入）と異なり、障害物を手前で検知して曲がる。
+    VECTOR dir = ComputeWanderDir();
+    moveDir_ = dir;
+    faceDir_ = dir;
+
+    ApplyWallSlide();
+    LimitTurnRate();
     movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
@@ -293,7 +273,10 @@ void EnemyGiant::UpdateChase(void)
 
     if (dist > DIST_LOSE_CHASE)
     {
-        ChangeState(STATE::RETURN);
+        // 見失った：現在位置を新しい徘徊中心にして WANDER へ
+        SetWanderCenter(transform_.pos);
+        PickNextWanderTarget();
+        ChangeState(STATE::WANDER);
         return;
     }
 
@@ -303,20 +286,20 @@ void EnemyGiant::UpdateChase(void)
         return;
     }
 
-    // 障害物回避を含めた追跡方向
     VECTOR dir = ComputeChaseDir();
     moveDir_ = dir;
     faceDir_ = dir;
+
+    ApplyWallSlide();
+    LimitTurnRate();
     movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
 void EnemyGiant::UpdateAttack(void)
 {
-    // 現在のアニメーション進捗（0.0 ? 1.0）
     const auto& anim = animCtrl_->GetPlayAnim();
     float progress = (anim.totalTime > 0.0f) ? (anim.step / anim.totalTime) : 0.0f;
 
-    // 当たり判定は指定区間（アニメ後半）のみ有効
     bool hitboxActive =
         !attackHit_ &&
         progress >= ATTACK_HIT_START &&
@@ -324,7 +307,6 @@ void EnemyGiant::UpdateAttack(void)
 
     if (hitboxActive)
     {
-        // オフセット適用済みの攻撃球中心
         VECTOR spherePos = GetAttackSpherePos();
 
         for (const auto& hitCol : hitColliders_)
@@ -335,62 +317,146 @@ void EnemyGiant::UpdateAttack(void)
                 dynamic_cast<const ColliderCapsule*>(hitCol);
             if (playerCapsule == nullptr) continue;
 
-            VECTOR capTop = playerCapsule->GetPosTop();
-            VECTOR capDown = playerCapsule->GetPosDown();
-            float  capR = playerCapsule->GetRadius();
-
             if (AsoUtility::IsHitSphereCapsule(
                 spherePos, ATTACK_SPHERE_RADIUS,
-                capTop, capDown, capR))
+                playerCapsule->GetPosTop(),
+                playerCapsule->GetPosDown(),
+                playerCapsule->GetRadius()))
             {
                 player_.OnDamagedByEnemy(ATTACK_DAMAGE);
                 SoundManager::GetInstance().PlayDamaged();
-       
                 attackHit_ = true;
                 break;
             }
         }
     }
 
-    // アニメ終了時に次の状態を決める
     if (animCtrl_->IsEnd())
     {
         float dist = DistToPlayer();
-        if (dist > DIST_LOSE_CHASE)   ChangeState(STATE::RETURN);
-        else if (dist <= DIST_ATTACK) ChangeState(STATE::ATTACK); // 連続攻撃
+        if (dist > DIST_LOSE_CHASE)
+        {
+            SetWanderCenter(transform_.pos);
+            PickNextWanderTarget();
+            ChangeState(STATE::WANDER);
+        }
+        else if (dist <= DIST_ATTACK) ChangeState(STATE::ATTACK);
         else                          ChangeState(STATE::CHASE);
     }
 }
 
-void EnemyGiant::UpdateReturn(void)
+// ===============================================================
+// ヘルパー：徘徊
+// ===============================================================
+
+// wanderCenter_ 周辺からランダムな目標を抽選する。
+//
+// 選出戦略：
+//   1. 最大 WANDER_MAX_TRIES 回ランダム抽選し、3本レイが全部通れば即採用。
+//   2. 全滅したら「前回角度 +π」の逆方向を試す（囲われた空間でも反対側は開けやすい）。
+//   3. それでも駄目なら wanderCenter_ 自体を目標にしてスタック検知に任せる。
+void EnemyGiant::PickNextWanderTarget(void)
 {
-    // 帰還中でも視界に入ったら再交戦
-    if (IsPlayerInSight())
+    // ---- 通常試行 ----
+    for (int i = 0; i < WANDER_MAX_TRIES; ++i)
     {
-        ChangeState(STATE::CHASE);
-        return;
+        float  theta = RandAngle();
+        float  r = RandFloat(WANDER_MIN_DIST, WANDER_RADIUS);
+
+        VECTOR cand = wanderCenter_;
+        cand.x += r * cosf(theta);
+        cand.z += r * sinf(theta);
+
+        if (IsReachable(cand))
+        {
+            wanderTarget_ = cand;
+            lastWanderTheta_ = theta;
+            return;
+        }
     }
 
-    // 初期位置到達判定
-    VECTOR delta = VSub(defaultPos_, transform_.pos);
-    delta.y = 0.0f;
-    if (VSize(delta) <= DIST_ARRIVE)
+    // ---- フォールバック：逆方向 ----
     {
-        transform_.pos.x = defaultPos_.x;
-        transform_.pos.z = defaultPos_.z;
-        transform_.Update();
+        float  theta = lastWanderTheta_ + DX_PI_F;
+        float  r = RandFloat(WANDER_MIN_DIST, WANDER_RADIUS * 0.5f);
 
-        patrolCornerIdx_ = 0;
-        ChangeState(STATE::PATROL);
-        return;
+        VECTOR cand = wanderCenter_;
+        cand.x += r * cosf(theta);
+        cand.z += r * sinf(theta);
+
+        if (IsReachable(cand))
+        {
+            wanderTarget_ = cand;
+            lastWanderTheta_ = theta;
+            return;
+        }
     }
 
-    SetMoveDirToTarget(defaultPos_);
-    movePow_ = VScale(moveDir_, moveSpeed_);
+    // ---- 最終手段：中心を目標にしてスタック検知に任せる ----
+    wanderTarget_ = wanderCenter_;
+    lastWanderTheta_ = lastWanderTheta_ + DX_PI_F; // 次回は逆側から始める
+}
+
+// カプセル幅を考慮した3本レイ到達可能チェック。
+//
+// 中心1本だけでは幅120のカプセルが通れない狭所を見逃す。
+// 目標方向に垂直なオフセット2本も飛ばし、3本全部通った時だけ true を返す。
+bool EnemyGiant::IsReachable(const VECTOR& cand) const
+{
+    VECTOR from = transform_.pos; from.y += EYE_HEIGHT;
+    VECTOR to = cand;          to.y += EYE_HEIGHT;
+
+    // 中心レイ
+    if (!IsPathClear(from, to)) return false;
+
+    // 目標方向の単位ベクトル（XZ）
+    VECTOR dir = VSub(to, from);
+    dir.y = 0.0f;
+    float len = VSize(dir);
+    if (len < 0.001f) return true; // ほぼ同一点なら通過扱い
+    dir = VScale(dir, 1.0f / len);
+
+    // 進行方向に垂直な XZ 法線：(dx, dz) を 90 度回転 → (-dz, dx)
+    VECTOR perp = { -dir.z, 0.0f, dir.x };
+    VECTOR offset = VScale(perp, COL_CAPSULE_RADIUS * 0.8f); // 少し内側で判定
+
+    if (!IsPathClear(VAdd(from, offset), VAdd(to, offset))) return false;
+    if (!IsPathClear(VSub(from, offset), VSub(to, offset))) return false;
+
+    return true;
+}
+
+bool EnemyGiant::IsPathClear(const VECTOR& from, const VECTOR& to) const
+{
+    // IsOccludedByColliders は非 const なので const_cast で回避
+    return !const_cast<EnemyGiant*>(this)->IsOccludedByColliders(from, to);
+}
+
+void EnemyGiant::SetWanderCenter(const VECTOR& center)
+{
+    wanderCenter_ = center;
+    wanderCenter_.y = defaultPos_.y; // 極端な高さを防ぐため Y は足元基準
 }
 
 // ===============================================================
-// ヘルパー
+// ヘルパー：乱数
+// ===============================================================
+
+// std::mt19937（メルセンヌ・ツイスタ）を使用。
+// インスタンス固有シードなのでどの個体も独立した乱数列を持つ。
+float EnemyGiant::RandFloat(float minVal, float maxVal)
+{
+    std::uniform_real_distribution<float> dist(minVal, maxVal);
+    return dist(rng_);
+}
+
+float EnemyGiant::RandAngle(void)
+{
+    return RandFloat(0.0f, 2.0f * DX_PI_F);
+}
+
+// ===============================================================
+// ヘルパー：移動と方向
 // ===============================================================
 void EnemyGiant::SetMoveDirToTarget(const VECTOR& target)
 {
@@ -414,32 +480,6 @@ float EnemyGiant::DistToPlayerXZ(void) const
     return VSize(d);
 }
 
-// ---- パトロールの角（+Y から見て時計回り） ----------------------
-// 0: (+X, +Z)  1: (+X, -Z)  2: (-X, -Z)  3: (-X, +Z)
-VECTOR EnemyGiant::GetPatrolCornerPos(int index) const
-{
-    VECTOR p = defaultPos_;
-    switch (((index % 4) + 4) % 4)
-    {
-    case 0: p.x += PATROL_HALF; p.z += PATROL_HALF; break;
-    case 1: p.x += PATROL_HALF; p.z -= PATROL_HALF; break;
-    case 2: p.x -= PATROL_HALF; p.z -= PATROL_HALF; break;
-    case 3: p.x -= PATROL_HALF; p.z += PATROL_HALF; break;
-    }
-    return p;
-}
-
-VECTOR EnemyGiant::GetCurrentPatrolTarget(void) const
-{
-    return GetPatrolCornerPos(patrolCornerIdx_);
-}
-
-void EnemyGiant::AdvancePatrolCorner(void)
-{
-    patrolCornerIdx_ = (patrolCornerIdx_ + 1) % 4;
-}
-
-// ---- ロジック視界判定（FOV円錐 + LOSレイキャスト） --------------
 bool EnemyGiant::IsPlayerInSight(void)
 {
     VECTOR myPos = transform_.pos;
@@ -449,13 +489,11 @@ bool EnemyGiant::IsPlayerInSight(void)
     toPl.y = 0.0f;
     float dist = VSize(toPl);
 
-    // 距離チェック
     if (dist > VIEW_RANGE) return false;
     if (dist < 0.0001f)    return true;
 
     VECTOR toPlDir = VScale(toPl, 1.0f / dist);
 
-    // FOV円錐チェック（前方ベクトルとの内積を半視野角の cos と比較）
     VECTOR fwd = faceDir_;
     fwd.y = 0.0f;
     if (VSize(fwd) < 0.0001f) return false;
@@ -465,7 +503,6 @@ bool EnemyGiant::IsPlayerInSight(void)
     float cosHalfFov = cosf(VIEW_HALF_FOV_RAD);
     if (cosAngle < cosHalfFov) return false;
 
-    // 遮蔽チェック（地形の Occluder で視線が遮られたら見えない扱い）
     VECTOR eye = myPos; eye.y += EYE_HEIGHT;
     VECTOR chest = plPos; chest.y += EYE_HEIGHT;
     if (IsOccludedByColliders(eye, chest)) return false;
@@ -473,13 +510,18 @@ bool EnemyGiant::IsPlayerInSight(void)
     return true;
 }
 
-// ---- 障害物回避を含めた追跡方向の決定 ---------------------------
+// ---------------------------------------------------------------
+// 追跡方向の決定（レイキャスト＋ヒステリシス）
+//
+// 前方が塞がれていたら ±45度 → ±90度 の順で候補を探す。
+// 一度選んだ方向は AVOID_COMMIT_SEC の間保持し、
+// フレーム毎に左右の判定が反転するのを防ぐ。
+// ---------------------------------------------------------------
 VECTOR EnemyGiant::ComputeChaseDir(void)
 {
     VECTOR myPos = transform_.pos;
     VECTOR plPos = player_.GetTransform().pos;
 
-    // プレイヤーへの基準方向
     VECTOR base = VSub(plPos, myPos);
     base.y = 0.0f;
     float baseLen = VSize(base);
@@ -488,47 +530,135 @@ VECTOR EnemyGiant::ComputeChaseDir(void)
 
     VECTOR probeFrom = myPos; probeFrom.y += EYE_HEIGHT;
 
-    // 指定方向にレイを飛ばして遮蔽されているか
     auto probe = [&](const VECTOR& dir) -> bool {
         VECTOR to = VAdd(probeFrom, VScale(dir, AVOID_PROBE_DIST));
         return IsOccludedByColliders(probeFrom, to);
         };
 
-    // 前方が空いてればそのまま進む
-    if (!probe(base)) return base;
-
-    // 左右 ±45度 を試行
     Quaternion rotL = Quaternion::AngleAxis(+AVOID_ANGLE_RAD, AsoUtility::AXIS_Y);
     Quaternion rotR = Quaternion::AngleAxis(-AVOID_ANGLE_RAD, AsoUtility::AXIS_Y);
     VECTOR dirL = rotL.PosAxis(base);
     VECTOR dirR = rotR.PosAxis(base);
+
+    bool blockedFwd = probe(base);
+
+    // ヒステリシス：前回の選択がまだ有効かつ通れるならそれを使う
+    if (avoidCommitTimer_ > 0.0f)
+    {
+        avoidCommitTimer_ -= scnMng_.GetDeltaTime();
+
+        if (lastAvoidChoice_ == 0 && !blockedFwd)  return base;
+        if (lastAvoidChoice_ == -1 && !probe(dirL)) return dirL;
+        if (lastAvoidChoice_ == +1 && !probe(dirR)) return dirR;
+        // 前回選択が塞がったら下の再判定へ
+    }
+
+    auto commit = [&](int choice, const VECTOR& dir) -> VECTOR {
+        lastAvoidChoice_ = choice;
+        avoidCommitTimer_ = AVOID_COMMIT_SEC;
+        return dir;
+        };
+
+    if (!blockedFwd) return commit(0, base);
 
     bool blockedL = probe(dirL);
     bool blockedR = probe(dirR);
 
     if (!blockedL && !blockedR)
     {
-        // 両方空いているならプレイヤーに近い側を選ぶ
+        // 両方空いていたらプレイヤーに近い方を選ぶ
         VECTOR endL = VAdd(myPos, VScale(dirL, AVOID_PROBE_DIST));
         VECTOR endR = VAdd(myPos, VScale(dirR, AVOID_PROBE_DIST));
-        float dL = VSize(VSub(plPos, endL));
-        float dR = VSize(VSub(plPos, endR));
-        return (dL <= dR) ? dirL : dirR;
+        float  dL = VSize(VSub(plPos, endL));
+        float  dR = VSize(VSub(plPos, endR));
+        return (dL <= dR) ? commit(-1, dirL) : commit(+1, dirR);
     }
-    if (!blockedL) return dirL;
-    if (!blockedR) return dirR;
+    if (!blockedL) return commit(-1, dirL);
+    if (!blockedR) return commit(+1, dirR);
 
-    // まだ詰まっているので ±90度 を試行
-    Quaternion rotWL = Quaternion::AngleAxis(+AVOID_ANGLE_WIDE_RAD, AsoUtility::AXIS_Y);
-    Quaternion rotWR = Quaternion::AngleAxis(-AVOID_ANGLE_WIDE_RAD, AsoUtility::AXIS_Y);
-    VECTOR dirWL = rotWL.PosAxis(base);
-    VECTOR dirWR = rotWR.PosAxis(base);
+    // ±90度フォールバック
+    VECTOR dirWL = Quaternion::AngleAxis(+AVOID_ANGLE_WIDE_RAD, AsoUtility::AXIS_Y).PosAxis(base);
+    VECTOR dirWR = Quaternion::AngleAxis(-AVOID_ANGLE_WIDE_RAD, AsoUtility::AXIS_Y).PosAxis(base);
 
-    if (!probe(dirWL)) return dirWL;
-    if (!probe(dirWR)) return dirWR;
+    if (!probe(dirWL)) return commit(-1, dirWL);
+    if (!probe(dirWR)) return commit(+1, dirWR);
 
-    // 完全に詰まっている場合は基準方向のまま押し込む（衝突で止まる）
-    return base;
+    // 完全に詰まっている場合は基準方向のまま。
+    // ApplyWallSlide が壁に沿わせてくれる。
+    return commit(0, base);
+}
+
+// ---------------------------------------------------------------
+// 徘徊目標方向の決定（ComputeChaseDir の徘徊版）
+//
+// ComputeChaseDir と全く同じロジックで、
+// 「プレイヤー方向」の代わりに「wanderTarget_ 方向」を基準にする。
+// WANDER 中も毎フレーム前方を確認して障害物を手前で避ける。
+// ---------------------------------------------------------------
+VECTOR EnemyGiant::ComputeWanderDir(void)
+{
+    VECTOR myPos = transform_.pos;
+    VECTOR target = wanderTarget_;
+
+    VECTOR base = VSub(target, myPos);
+    base.y = 0.0f;
+    float baseLen = VSize(base);
+    if (baseLen < 0.001f) return faceDir_;
+    base = VScale(base, 1.0f / baseLen);
+
+    VECTOR probeFrom = myPos; probeFrom.y += EYE_HEIGHT;
+
+    auto probe = [&](const VECTOR& dir) -> bool {
+        VECTOR to = VAdd(probeFrom, VScale(dir, AVOID_PROBE_DIST));
+        return IsOccludedByColliders(probeFrom, to);
+        };
+
+    Quaternion rotL = Quaternion::AngleAxis(+AVOID_ANGLE_RAD, AsoUtility::AXIS_Y);
+    Quaternion rotR = Quaternion::AngleAxis(-AVOID_ANGLE_RAD, AsoUtility::AXIS_Y);
+    VECTOR dirL = rotL.PosAxis(base);
+    VECTOR dirR = rotR.PosAxis(base);
+
+    bool blockedFwd = probe(base);
+
+    if (avoidCommitTimer_ > 0.0f)
+    {
+        avoidCommitTimer_ -= scnMng_.GetDeltaTime();
+
+        if (lastAvoidChoice_ == 0 && !blockedFwd)  return base;
+        if (lastAvoidChoice_ == -1 && !probe(dirL)) return dirL;
+        if (lastAvoidChoice_ == +1 && !probe(dirR)) return dirR;
+    }
+
+    auto commit = [&](int choice, const VECTOR& dir) -> VECTOR {
+        lastAvoidChoice_ = choice;
+        avoidCommitTimer_ = AVOID_COMMIT_SEC;
+        return dir;
+        };
+
+    if (!blockedFwd) return commit(0, base);
+
+    bool blockedL = probe(dirL);
+    bool blockedR = probe(dirR);
+
+    if (!blockedL && !blockedR)
+    {
+        // 両方空いていたら目標に近い方を選ぶ
+        VECTOR endL = VAdd(myPos, VScale(dirL, AVOID_PROBE_DIST));
+        VECTOR endR = VAdd(myPos, VScale(dirR, AVOID_PROBE_DIST));
+        float  dL = VSize(VSub(target, endL));
+        float  dR = VSize(VSub(target, endR));
+        return (dL <= dR) ? commit(-1, dirL) : commit(+1, dirR);
+    }
+    if (!blockedL) return commit(-1, dirL);
+    if (!blockedR) return commit(+1, dirR);
+
+    VECTOR dirWL = Quaternion::AngleAxis(+AVOID_ANGLE_WIDE_RAD, AsoUtility::AXIS_Y).PosAxis(base);
+    VECTOR dirWR = Quaternion::AngleAxis(-AVOID_ANGLE_WIDE_RAD, AsoUtility::AXIS_Y).PosAxis(base);
+
+    if (!probe(dirWL)) return commit(-1, dirWL);
+    if (!probe(dirWR)) return commit(+1, dirWR);
+
+    return commit(0, base);
 }
 
 void EnemyGiant::PushBackFromPlayer(void)
@@ -536,20 +666,21 @@ void EnemyGiant::PushBackFromPlayer(void)
     int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
     if (ownColliders_.count(capsuleType) == 0) return;
 
-    ColliderCapsule* myCapsule = dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
+    ColliderCapsule* myCapsule =
+        dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
     if (myCapsule == nullptr) return;
 
     for (const auto& hitCol : hitColliders_)
     {
         if (hitCol->GetTag() != ColliderBase::TAG::PLAYER) continue;
 
-        const ColliderCapsule* playerCapsule = dynamic_cast<const ColliderCapsule*>(hitCol);
+        const ColliderCapsule* playerCapsule =
+            dynamic_cast<const ColliderCapsule*>(hitCol);
         if (playerCapsule == nullptr) continue;
 
         VECTOR myC = myCapsule->GetCenter();
         VECTOR plC = playerCapsule->GetCenter();
 
-        // XZ 平面のみで押し戻し（Y は落下等に干渉させない）
         float dx = myC.x - plC.x;
         float dz = myC.z - plC.z;
         float distSq = dx * dx + dz * dz;
@@ -560,9 +691,7 @@ void EnemyGiant::PushBackFromPlayer(void)
         float dist = sqrtf(distSq);
         if (dist < 0.0001f) { dx = 1.0f; dz = 0.0f; dist = 1.0f; }
 
-        float overlap = minDist - dist;
-        float k = overlap * 0.5f / dist;
-
+        float k = (minDist - dist) * 0.5f / dist;
         transform_.pos.x += dx * k;
         transform_.pos.z += dz * k;
         transform_.Update();
@@ -570,16 +699,147 @@ void EnemyGiant::PushBackFromPlayer(void)
     }
 }
 
-// 攻撃球の中心位置を取得
-// フレーム位置に、敵の向きを反映したローカルオフセットを加算する
 VECTOR EnemyGiant::GetAttackSpherePos(void) const
 {
     VECTOR framePos = MV1GetFramePosition(transform_.modelId, attackHandFrame_);
-    // ローカルオフセットを敵の向きに合わせてワールド座標系へ変換
     VECTOR worldOffset = transform_.quaRot.PosAxis(ATTACK_SPHERE_OFFSET_LOCAL);
     return VAdd(framePos, worldOffset);
 }
 
+// ===============================================================
+// ステアリングフィルタ
+// ===============================================================
+
+// 「動かすつもりだった位置（prevPos_ + movePow_）」と
+// 「押し戻し後の実位置」の差分から壁の外向き法線を推定する。
+//
+// CollisionCapsule が三角形法線方向に押し戻しているので、
+//     push = 実位置 - expected ≒ 壁の外向き法線 × 押し戻し量
+// が成立する。
+void EnemyGiant::UpdateWallNormal(void)
+{
+    VECTOR expected = VAdd(prevPos_, movePow_);
+
+    float pdx = transform_.pos.x - expected.x;
+    float pdz = transform_.pos.z - expected.z;
+    float pushLen = sqrtf(pdx * pdx + pdz * pdz);
+
+    if (pushLen < WALL_PUSH_EPSILON)
+    {
+        wallNormalXZ_ = AsoUtility::VECTOR_ZERO;
+        return;
+    }
+
+    float inv = 1.0f / pushLen;
+    wallNormalXZ_.x = pdx * inv;
+    wallNormalXZ_.y = 0.0f;
+    wallNormalXZ_.z = pdz * inv;
+}
+
+// v_slide = v - (v・n)n
+// moveDir_ から壁法線方向の成分を引き、壁の接線成分だけを残す（平面射影）。
+void EnemyGiant::ApplyWallSlide(void)
+{
+    if (VSize(wallNormalXZ_) < 0.0001f) return;
+
+    float vn = VDot(moveDir_, wallNormalXZ_);
+    if (vn >= 0.0f) return; // 壁から離れる向きならスライド不要
+
+    moveDir_ = VSub(moveDir_, VScale(wallNormalXZ_, vn));
+
+    float len = VSize(moveDir_);
+    if (len > 0.0001f)
+    {
+        moveDir_ = VScale(moveDir_, 1.0f / len);
+    }
+    else
+    {
+        // 壁に真正面から突っ込んで方向が消えた場合。
+        // XZ 平面での法線 90 度回転 (nx, nz) → (-nz, nx) を接線として採用。
+        moveDir_.x = -wallNormalXZ_.z;
+        moveDir_.y = 0.0f;
+        moveDir_.z = wallNormalXZ_.x;
+    }
+
+    faceDir_ = moveDir_;
+}
+
+// moveDir_ の 1 フレームあたり回転量を MAX_TURN_RAD_PER_SEC で制限する。
+//
+// θ = arccos(a・b) で前フレーム方向 a と目標方向 b のなす角を求め、
+// 上限 maxAngle = ω × Δt を超えていたら (a × b).y の符号で回転方向を決めて
+// Y 軸周りに maxAngle だけ a を回した結果を新しい moveDir_ にする。
+void EnemyGiant::LimitTurnRate(void)
+{
+    if (VSize(prevMoveDir_) < 0.0001f || VSize(moveDir_) < 0.0001f)
+    {
+        prevMoveDir_ = moveDir_;
+        return;
+    }
+
+    VECTOR a = prevMoveDir_; a.y = 0.0f;
+    VECTOR b = moveDir_;     b.y = 0.0f;
+    float la = VSize(a), lb = VSize(b);
+    if (la < 0.0001f || lb < 0.0001f) { prevMoveDir_ = moveDir_; return; }
+    a = VScale(a, 1.0f / la);
+    b = VScale(b, 1.0f / lb);
+
+    float cosA = VDot(a, b);
+    if (cosA > 1.0f) cosA = 1.0f;
+    if (cosA < -1.0f) cosA = -1.0f;
+    float angle = acosf(cosA);
+    float maxAngle = MAX_TURN_RAD_PER_SEC * scnMng_.GetDeltaTime();
+
+    if (angle <= maxAngle)
+    {
+        prevMoveDir_ = moveDir_;
+        faceDir_ = moveDir_;
+        return;
+    }
+
+    VECTOR cross = VCross(a, b);
+    float  sign = (cross.y >= 0.0f) ? +1.0f : -1.0f;
+
+    Quaternion rot = Quaternion::AngleAxis(sign * maxAngle, AsoUtility::AXIS_Y);
+    moveDir_ = rot.PosAxis(a);
+    faceDir_ = moveDir_;
+    prevMoveDir_ = moveDir_;
+}
+
+// ===============================================================
+// スタック検知
+// ===============================================================
+
+// 1フレームの実移動が STUCK_MOVE_MIN 未満なら stuckTimer_ を加算。
+// STUCK_TIMEOUT_SEC を超えたら true を返す。
+bool EnemyGiant::IsStuck(void)
+{
+    float dx = transform_.pos.x - stuckLastPos_.x;
+    float dz = transform_.pos.z - stuckLastPos_.z;
+
+    if (dx * dx + dz * dz < STUCK_MOVE_MIN * STUCK_MOVE_MIN)
+        stuckTimer_ += scnMng_.GetDeltaTime();
+    else
+        stuckTimer_ = 0.0f;
+
+    stuckLastPos_ = transform_.pos;
+
+    return stuckTimer_ >= STUCK_TIMEOUT_SEC;
+}
+
+// ステート遷移時にステアリング系の状態をまとめてリセット
+void EnemyGiant::ResetSteering(void)
+{
+    stuckTimer_ = 0.0f;
+    stuckLastPos_ = transform_.pos;
+    lastAvoidChoice_ = 0;
+    avoidCommitTimer_ = 0.0f;
+    prevMoveDir_ = moveDir_;
+}
+
+// ===============================================================
+// デバッグ描画
+// ===============================================================
 #ifdef _DEBUG
 void EnemyGiant::DrawDebugAI(void)
 {
@@ -591,52 +851,71 @@ void EnemyGiant::DrawDebugAI(void)
     if (VSize(fwd) < 0.0001f) fwd = AsoUtility::DIR_F;
     fwd = VNorm(fwd);
 
-    // プレイヤー検知中は赤、非検知は緑
-    unsigned int color = IsPlayerInSight() ? GetColor(255, 40, 40) : GetColor(40, 255, 40);
+    // 視野円錐（検知中：赤、非検知：緑）
+    unsigned int viewCol = IsPlayerInSight()
+        ? GetColor(255, 40, 40)
+        : GetColor(40, 255, 40);
 
-    // 視野円錐の左右エッジ線
     Quaternion rotL = Quaternion::AngleAxis(+VIEW_HALF_FOV_RAD, AsoUtility::AXIS_Y);
     Quaternion rotR = Quaternion::AngleAxis(-VIEW_HALF_FOV_RAD, AsoUtility::AXIS_Y);
     VECTOR dirL = rotL.PosAxis(fwd);
     VECTOR dirR = rotR.PosAxis(fwd);
 
-    VECTOR endF = VAdd(pos, VScale(fwd, VIEW_RANGE));
-    VECTOR endL = VAdd(pos, VScale(dirL, VIEW_RANGE));
-    VECTOR endR = VAdd(pos, VScale(dirR, VIEW_RANGE));
+    DrawLine3D(pos, VAdd(pos, VScale(fwd, VIEW_RANGE)), viewCol);
+    DrawLine3D(pos, VAdd(pos, VScale(dirL, VIEW_RANGE)), viewCol);
+    DrawLine3D(pos, VAdd(pos, VScale(dirR, VIEW_RANGE)), viewCol);
 
-    DrawLine3D(pos, endF, color);
-    DrawLine3D(pos, endL, color);
-    DrawLine3D(pos, endR, color);
-
-    // 視野円錐の前面弧
     const int SEG = 24;
-    VECTOR prev = endL;
+    VECTOR prev = VAdd(pos, VScale(dirL, VIEW_RANGE));
     for (int i = 1; i <= SEG; ++i)
     {
         float t = static_cast<float>(i) / SEG;
         float ang = -VIEW_HALF_FOV_RAD + 2.0f * VIEW_HALF_FOV_RAD * t;
-        Quaternion rot = Quaternion::AngleAxis(ang, AsoUtility::AXIS_Y);
-        VECTOR d = rot.PosAxis(fwd);
-        VECTOR e = VAdd(pos, VScale(d, VIEW_RANGE));
-        DrawLine3D(prev, e, color);
+        VECTOR e = VAdd(pos, VScale(
+            Quaternion::AngleAxis(ang, AsoUtility::AXIS_Y).PosAxis(fwd), VIEW_RANGE));
+        DrawLine3D(prev, e, viewCol);
         prev = e;
     }
 
-    // パトロール経路（青い正方形）
-    unsigned int patrolCol = GetColor(80, 160, 255);
-    VECTOR c0 = GetPatrolCornerPos(0);
-    VECTOR c1 = GetPatrolCornerPos(1);
-    VECTOR c2 = GetPatrolCornerPos(2);
-    VECTOR c3 = GetPatrolCornerPos(3);
-    // 線が地面に埋まらないように少し持ち上げる
-    c0.y += 5.0f; c1.y += 5.0f; c2.y += 5.0f; c3.y += 5.0f;
-    DrawLine3D(c0, c1, patrolCol);
-    DrawLine3D(c1, c2, patrolCol);
-    DrawLine3D(c2, c3, patrolCol);
-    DrawLine3D(c3, c0, patrolCol);
+    // 徘徊範囲（水色の円 + 中心球）
+    {
+        unsigned int col = GetColor(80, 200, 255);
+        VECTOR c = wanderCenter_; c.y += 5.0f;
+        VECTOR prevP = {};
+        for (int i = 0; i <= 32; ++i)
+        {
+            float a = static_cast<float>(i) / 32 * (2.0f * DX_PI_F);
+            VECTOR p = { c.x + WANDER_RADIUS * cosf(a), c.y, c.z + WANDER_RADIUS * sinf(a) };
+            if (i > 0) DrawLine3D(prevP, p, col);
+            prevP = p;
+        }
+        DrawSphere3D(c, 30.0f, 12, col, col, false);
+    }
 
-    // 現在の目標コーナーをハイライト
-    VECTOR cur = GetCurrentPatrolTarget();
-    DrawSphere3D(cur, 60.0f, 16, patrolCol, patrolCol, false);
+    // 現在の徘徊目標（黄色の球 + 自機→目標の線）
+    {
+        unsigned int col = GetColor(255, 220, 40);
+        VECTOR t = wanderTarget_; t.y += 5.0f;
+        DrawSphere3D(t, 50.0f, 16, col, col, false);
+        VECTOR from = transform_.pos; from.y += EYE_HEIGHT;
+        VECTOR to = wanderTarget_;  to.y += EYE_HEIGHT;
+        DrawLine3D(from, to, col);
+    }
+
+    // 壁法線（オレンジ）：壁に接触したフレームだけ表示
+    if (VSize(wallNormalXZ_) > 0.0001f)
+    {
+        VECTOR from = transform_.pos; from.y += EYE_HEIGHT;
+        DrawLine3D(from, VAdd(from, VScale(wallNormalXZ_, 150.0f)),
+            GetColor(255, 128, 0));
+    }
+
+    // 実際の進行方向（水色）：壁スライド後の方向なので壁沿いに向いていれば正常
+    if (VSize(moveDir_) > 0.0001f)
+    {
+        VECTOR from = transform_.pos; from.y += EYE_HEIGHT + 20.0f;
+        DrawLine3D(from, VAdd(from, VScale(moveDir_, 200.0f)),
+            GetColor(0, 255, 255));
+    }
 }
 #endif

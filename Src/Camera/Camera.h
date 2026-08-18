@@ -13,11 +13,12 @@ class Camera : public ActorBase
 public:
 
 	// カメラの初期座標
-	static constexpr VECTOR DERFAULT_POS = { 0.0f, 200.0f, -500.0f };
+	//static constexpr VECTOR DERFAULT_POS = { 0.0f, 200.0f, -500.0f };
+	static constexpr VECTOR DERFAULT_POS = { -1100.0f, 7.2f, -7622.0f };
 	
 	// カメラの初期角度
 	static constexpr VECTOR DERFAULT_ANGLES = { 
-		0.0f, 0.0f * DX_PI_F / 180.0f, 0.0f
+		-10.0f * DX_PI_F / 180.0f, 180.0f * DX_PI_F / 180.0f, 0.0f
 	};
 
 	// カメラの回転量

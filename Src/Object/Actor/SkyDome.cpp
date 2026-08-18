@@ -64,7 +64,7 @@ void SkyDome::InitTransform(void)
 	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(200.0f), AsoUtility::AXIS_Z);
 
 	// ç¿ïW
-	transform_.pos = AsoUtility::VECTOR_ZERO;
+	transform_.pos = { 0.0f, 0.0f, -3000.0f };
 }
 
 void SkyDome::InitCollider(void)

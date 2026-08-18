@@ -108,7 +108,7 @@ void Application::Run(void)
 		fpsController_->Draw();
 
 #endif // _DEBUG
-		fpsController_->Draw();
+
 		ScreenFlip();
 
 		// —‘zFPSŒo‰ß‘Ò‚¿

@@ -12,6 +12,8 @@
 #define ALERT_PATH  "Data/Sound/Alert.mp3"
 #define DAMAGED2_PATH "Data/Sound/Damaged2.wav"
 
+#define FOUND_PATH "Data/Sound/voice.wav"
+
 
 class SoundManager
 {
@@ -28,6 +30,7 @@ public:
 	static constexpr int RESULT_VOLUME = 255;  // リザルトSE
 	static constexpr int ALERT_VOLUME = 255;
 	static constexpr int DAMAGED2_VOLUME = 255;
+	static constexpr int FOUND_VOLUME = 255;
 
 
 	// インスタンスの生成
@@ -51,7 +54,7 @@ public:
 	void PlayResult();
 	void PlayAlert();
 	void PlayDamaged2();
-
+	void PlayFound();
 
 
 	//音源停止	
@@ -92,4 +95,5 @@ private:
 	int resultH_;
 	int alertH_;
 	int damaged2H_;
+	int foundH_;
 };

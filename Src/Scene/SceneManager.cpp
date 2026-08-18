@@ -3,6 +3,7 @@
 #include <EffekseerForDXLib.h>
 #include "SceneBase.h"
 #include "TitleScene.h"
+#include "PrologueScene.h" 
 #include "GameScene.h"
 #include "PauseScene.h"
 #include "OptionScene.h"
@@ -198,11 +199,15 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		SoundManager::GetInstance().StopBGMGame();
 		SoundManager::GetInstance().StopWalk();
 		break;
+	case SCENE_ID::PROLOGUE:
+		scenes_.push_back(std::make_unique<PrologueScene>());
+		SetMouseDispFlag(false);
+		SoundManager::GetInstance().PlayBGMGame();
+		SoundManager::GetInstance().StopBGMTitle();
+		break;
 	case SCENE_ID::GAME:
 		// ’Ç‰Á
 		scenes_.push_back(std::make_unique<GameScene>());
-		SoundManager::GetInstance().PlayBGMGame();
-		SoundManager::GetInstance().StopBGMTitle();
 		SoundManager::GetInstance().StopWalk();
 		SetMouseDispFlag(false);
 		break;

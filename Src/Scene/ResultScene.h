@@ -27,8 +27,8 @@ private:
 	bool playedStatus_ = false;
 	bool playedGrade_ = false;
 
-	static constexpr float TIME_SCORE = 0.6f;
-	static constexpr float TIME_STATUS = 1.2f;
-	static constexpr float TIME_GRADE = 1.8f;
+	static constexpr float TIME_SCORE = 1.0f;
+	static constexpr float TIME_STATUS = 2.0f;
+	static constexpr float TIME_GRADE = 3.0f;
 };
 

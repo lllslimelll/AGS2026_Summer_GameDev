@@ -179,51 +179,6 @@ void Player::ProcessMove(void)
 	if (kDir.z < 0.0f || dDir.z < 0.0f) { isBoost_ = false; }
 }
 
-void Player::ProcessJump(void)
-{
-	auto& ins = InputManager::GetInstance();
-
-	// プレイヤーの上方向を計算（地面の法線方向）
-	const VECTOR upDir = AsoUtility::AXIS_Y;
-
-	// ジャンプキーが押されたか
-	bool isHitKey = ins.IsTriggered(InputManager::InputCommand::JUMP);
-	// ジャンプキーが押されているか
-	bool isHitKeyNew = ins.IsPressed(InputManager::InputCommand::JUMP);
-
-	// 初期ジャンプ処理
-	if (isHitKey && !isJump_)
-	{
-		// ジャンプ量の計算
-		float jumpSpeed = POW_JUMP_INIT * scnMng_.GetDeltaTime();
-		jumpPow_ = VScale(upDir, jumpSpeed);
-		stepJump_ = 0.0f;
-		isJump_ = true;
-
-		// アニメーション再生
-		animCtrl_->Play(
-			static_cast<int>(ANIM_TYPE::JUMP), false);
-	}
-
-	// 持続ジャンプ処理（長押し）
-	if (isHitKeyNew)
-	{
-		// ジャンプの入力受付時間を減少
-		stepJump_ += scnMng_.GetDeltaTime();
-		if(stepJump_ < TIME_JUMP_INPUT)
-		{
-			// ジャンプ量の計算
-			float jumpSpeed = POW_JUMP_KEEP * scnMng_.GetDeltaTime();
-			jumpPow_ = VAdd(jumpPow_, VScale(upDir, jumpSpeed));
-		}
-	}
-	else
-	{
-		// ボタンを離したらジャンプ力に加算しない
-		stepJump_ = TIME_JUMP_INPUT;
-	}
-}
-
 void Player::UpdateProcess(void)
 {
 	// 状態別更新
@@ -411,8 +366,11 @@ void Player::Draw(void)
 	int screenW, screenH;
 	GetScreenState(&screenW, &screenH, nullptr);
 
-	//DrawFormatString(0,0,0xffffff,"Player pos : (%.1f, %.1f, %.1f)\n",
-		//transform_.pos.x, transform_.pos.y, transform_.pos.z);
+#ifdef DEBUG
+	DrawFormatString(0,0,0xffffff,"Player pos : (%.1f, %.1f, %.1f)\n",
+		transform_.pos.x, transform_.pos.y, transform_.pos.z);
+#endif // DEBUG 
+
 
 	// 照準
 	int cx = screenW / 2;
@@ -559,8 +517,8 @@ void Player::UpdateOxygenAndHp(void)
 	const float dt = SceneManager::GetInstance().GetDeltaTime();
 
 	// 酸素を減らす
-	// 酸素消費倍率（ブースト中は2倍）
-	float consumeRate = isBoost_ ? OXYGEN_DASH_RATE : 1.8f;
+	// 酸素消費倍率
+	float consumeRate = isBoost_ ? OXYGEN_DASH_RATE : 1.0f;
 	oxygen_ -= dt * consumeRate;
 	if (oxygen_ < 0.0f) oxygen_ = 0.0f;
 
@@ -624,13 +582,12 @@ void Player::InitTransform(void)
 {
 	// 大きさ
 	transform_.scl = AsoUtility::VECTOR_ONE;
-	
 
 	// Y軸を180度
 	transform_.quaRotLocal = Quaternion::AngleAxis(AsoUtility::Deg2RadF(180), AsoUtility::AXIS_Y);
 
 	// 座標
-	transform_.pos = { -1100, -13, -8000.0f };
+	transform_.pos = { -1100, 7.2f, -7622.0f };
 
 	transform_.Update();
 

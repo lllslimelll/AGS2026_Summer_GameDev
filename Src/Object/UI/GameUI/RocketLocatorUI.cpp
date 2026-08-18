@@ -16,14 +16,16 @@ RocketLocatorUI::RocketLocatorUI(const Player& player, const Rocket& rocket)
     // サイズ別にハンドルを事前生成し DrawStringToHandle で描く
     fontLabel_ = CreateFontToHandle(nullptr, LABEL_FONT, -1);
     fontTick_ = CreateFontToHandle(nullptr, TICK_FONT, -1);
+
+	rocketIcon_ = LoadGraph("Data/Image/rocket.png");
 }
 
 RocketLocatorUI::~RocketLocatorUI(void)
 {
     if (fontLabel_ != -1) DeleteFontToHandle(fontLabel_);
     if (fontTick_ != -1) DeleteFontToHandle(fontTick_);
+    if (rocketIcon_ != -1) DeleteGraph(rocketIcon_);   // ← 追加
 }
-
 void RocketLocatorUI::Draw(void)
 {
     int screenW, screenH;
@@ -130,9 +132,24 @@ void RocketLocatorUI::Draw(void)
     const float relRocket = atan2f(sinA, cosA) * (180.0f / DX_PI_F);
 
     int markerX = cx + static_cast<int>(relRocket * DEG_PER_PX);
-    if (markerX < barL + MARKER_R) markerX = barL + MARKER_R;
-    if (markerX > barR - MARKER_R) markerX = barR - MARKER_R;
+    // 端クランプはアイコンの見た目半幅で行う（円のMARKER_Rから変更）
+    if (markerX < barL + ICON_HALF_W) markerX = barL + ICON_HALF_W;
+    if (markerX > barR - ICON_HALF_W) markerX = barR - ICON_HALF_W;
 
-    DrawCircle(markerX, barT - MARKER_R - 2, MARKER_R, 0xff2020, TRUE);
-    DrawCircle(markerX, barT - MARKER_R - 2, MARKER_R, 0xff6060, FALSE);
+    const int markerCY = barT - ICON_Y_OFFSET;
+
+    if (rocketIcon_ != -1)
+    {
+        // DrawRotaGraph は「中心(cx,cy)を起点に、スケール・回転を掛けて」描く。
+        // アイコンの画像サイズを呼び出し側で気にしなくてよいのが利点。
+        // 第4:スケール, 第5:回転角(rad), 第6:ハンドル, 第7:TRUE=透過色有効
+        DrawRotaGraph(markerX, markerCY,
+            ICON_SCALE, 0.0, rocketIcon_, TRUE);
+    }
+    else
+    {
+        // 画像読み込みに失敗した場合のフォールバック（旧・赤丸）
+        DrawCircle(markerX, markerCY, MARKER_R, 0xff2020, TRUE);
+        DrawCircle(markerX, markerCY, MARKER_R, 0xff6060, FALSE);
+    }
 }

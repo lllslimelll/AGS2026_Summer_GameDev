@@ -105,7 +105,7 @@ void InventoryUI::Draw(void)
         DrawFormatStringToHandle(
             drawX + (drawSize - textW) / 2,
             drawY + drawSize + 6,
-            GetColor(255, 255, 255),
+            GetColor(0, 255, 0),
             fontPrice_,
             "$%d", price);
     }

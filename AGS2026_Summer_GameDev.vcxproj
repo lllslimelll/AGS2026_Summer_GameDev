@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\PrologueScene.cpp" />
     <ClCompile Include="Src\Scene\OptionScene.cpp" />
     <ClCompile Include="Src\Manager\ScreenManager.cpp" />
     <ClCompile Include="Src\Manager\SettingsManager.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Src\PostEffect\PostEffectGuideUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\PrologueScene.h" />
     <ClInclude Include="Src\Scene\OptionScene.h" />
     <ClInclude Include="Src\Manager\ScreenManager.h" />
     <ClInclude Include="Src\Manager\SettingsManager.h" />
@@ -273,7 +275,7 @@
     <Image Include="Data\Image\100$.png" />
     <Image Include="Data\Image\Congratulations.png" />
     <Image Include="Data\Image\PushSpace.png" />
-    <Image Include="Data\Image\roket.png" />
+    <Image Include="Data\Image\rocket.png" />
     <Image Include="Data\Image\Shadow.png" />
     <Image Include="Data\Image\SpeechBalloon.png" />
     <Image Include="Data\Image\Title.png" />

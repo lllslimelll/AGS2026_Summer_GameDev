@@ -92,10 +92,10 @@ protected:
 private:
 
 	// 移動速度（通常）
-	static constexpr float SPEED_MOVE = 9.0f;
+	static constexpr float SPEED_MOVE = 6.0f;
 
 	// 移動速度（ダッシュ）
-	static constexpr float SPEED_DASH = 20.0f;
+	static constexpr float SPEED_DASH = 18.0f;
 
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
@@ -114,13 +114,6 @@ private:
 	// 衝突判定用カプセル下部球体（ジャンプ時）
 	static constexpr VECTOR COL_CAPSULE_DOWN_JUMP_LOCAL_POS =
 	{ 0.0f, 80.0f, 0.0f };
-
-	// ジャンプ力
-	static constexpr float POW_JUMP_INIT = 1200.0f;
-	// 持続ジャンプ力
-	static constexpr float POW_JUMP_KEEP = 90.0f;
-	// ジャンプ受付時間
-	static constexpr float TIME_JUMP_INPUT = 0.5f;
 
 	// 衝突判定用カプセル上部球体
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
@@ -192,7 +185,6 @@ private:
 
 	// 移動処理
 	void ProcessMove(void);
-	void ProcessJump(void);
 
 	// 更新系
 	virtual void UpdateProcess(void) override;
@@ -208,8 +200,8 @@ private:
 	bool IsAimingRoket(void) const;
 
 	// ===== HP・酸素 =====
-	static constexpr float OXYGEN_DASH_RATE = 3.3f; 	// 酸素消費倍率（ブースト中）
-	static constexpr float SUFFOCATE_INTERVAL = 0.5f;   // ダメージ周期
+	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	// 酸素消費倍率（ブースト中）
+	static constexpr float SUFFOCATE_INTERVAL = 1.0f;   // ダメージ周期
 	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
 
 	int   hp_;

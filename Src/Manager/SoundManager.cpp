@@ -53,6 +53,7 @@ void SoundManager::Init(void)
 	resultH_ = LoadSoundMem(RESULT_PATH);
 	alertH_ = LoadSoundMem(ALERT_PATH);
 	damaged2H_ = LoadSoundMem(DAMAGED2_PATH);
+	foundH_ = LoadSoundMem(FOUND_PATH);
 
 	// 音量調整
 	ChangeVolumeSoundMem(BGM_TITLE_VOLUME, bgmTitleH_);
@@ -65,6 +66,7 @@ void SoundManager::Init(void)
 	ChangeVolumeSoundMem(RESULT_VOLUME, resultH_);
 	ChangeVolumeSoundMem(ALERT_VOLUME, alertH_);
 	ChangeVolumeSoundMem(DAMAGED2_VOLUME, damaged2H_);
+	ChangeVolumeSoundMem(FOUND_VOLUME, foundH_);
 
 }
 
@@ -84,6 +86,7 @@ void SoundManager::Destroy(void)
 	DeleteSoundMem(resultH_);
 	DeleteSoundMem(alertH_);
 	DeleteSoundMem(damaged2H_);
+	DeleteSoundMem(foundH_);
 
 	// インスタンスのメモリ解放
 	delete instance_;
@@ -154,6 +157,15 @@ void SoundManager::PlayDamaged2()
 	if (CheckSoundMem(damaged2H_) == 0)
 	{
 		PlaySoundMem(damaged2H_, DX_PLAYTYPE_BACK, true);
+	}
+}
+
+void SoundManager::PlayFound()
+{
+	// 再生中なら重ねない（発見ボイスが多重に鳴らないように）
+	if (CheckSoundMem(foundH_) == 0)
+	{
+		PlaySoundMem(foundH_, DX_PLAYTYPE_BACK, true);
 	}
 }
 

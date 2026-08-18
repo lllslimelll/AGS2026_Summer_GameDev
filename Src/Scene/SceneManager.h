@@ -26,6 +26,7 @@ public:
 	{
 		NONE,
 		TITLE,
+		PROLOGUE,
 		GAME,
 		PAUSE,
 		OPTION,

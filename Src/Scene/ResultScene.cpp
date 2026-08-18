@@ -131,12 +131,12 @@ void ResultScene::Draw(void)
     const int cellY = row1T + (ROW_H - ROW_FONT) / 2;
 
     auto drawCell = [&](int l, int t, int r, int b)
-        {
+    {
             SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
             DrawBox(l, t, r, b, 0x000000, TRUE);
             SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
             DrawBox(l, t, r, b, 0x888888, FALSE);
-        };
+    };
 
     drawCell(cell1L, row1T, cell1R, row1B);
     drawCell(cell2L, row1T, cell2R, row1B);

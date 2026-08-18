@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include <random>
 #include "EnemyBase.h"
 
 class Player;
@@ -12,12 +13,10 @@ public:
     enum class STATE
     {
         NONE,
-        THINK,      // 遷移判断用（互換保持）
-        IDLE,       // パトロールの角で待機（1秒）
-        PATROL,     // 次の角へ向かって移動
-        CHASE,      // プレイヤーを追跡（障害物回避あり）
-        ATTACK,     // 攻撃中（当たり判定はアニメ後半のみ）
-        RETURN,     // 初期位置へ帰還
+        IDLE,       // ランダム点に到達した後の短い待機
+        WANDER,     // wanderCenter_ 周辺のランダム点へ徘徊
+        CHASE,      // プレイヤー追跡
+        ATTACK,     // 攻撃（当たり判定はアニメ後半のみ）
         END,
     };
 
@@ -48,130 +47,174 @@ protected:
 
 private:
 
-    // ==== 定数 ====
+    // ==== 定数：外観 ====
 
-    // モデルのスケールと回転
-    static constexpr float SCALE = 3.0f;
+    static constexpr float  SCALE = 3.0f;
     static constexpr VECTOR DEFAULT_LOCAL_ROT =
     { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
-    // 地面判定用の線分コライダ
     static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 120.0f,  0.0f };
     static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f,  0.0f };
 
-    // 本体のカプセルコライダ
     static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 300.0f, 0.0f };
     static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f,  50.0f, 0.0f };
     static constexpr float  COL_CAPSULE_RADIUS = 100.0f;
 
-    // 攻撃用の球（左手フレームに追従）
-    static constexpr float ATTACK_SPHERE_RADIUS = 130.0f;
-
-    // 攻撃球のフレーム位置からのローカルオフセット
-    // x: 敵の左右方向（負 = 左）
-    // y: ワールドY方向（負 = 下）
-    // z: 敵の前後方向（正 = 前）
+    static constexpr float  ATTACK_SPHERE_RADIUS = 130.0f;
     static constexpr VECTOR ATTACK_SPHERE_OFFSET_LOCAL = { -100.0f, -150.0f, 30.0f };
 
-    // ==== AI パラメータ ====
+    // ==== 定数：AI パラメータ ====
 
-    // 移動速度
-    static constexpr float SPEED_PATROL = 5.0f;
+    static constexpr float SPEED_WANDER = 5.0f;
     static constexpr float SPEED_CHASE = 10.0f;
-    static constexpr float SPEED_RETURN = 5.0f;
 
-    // 各種距離
-    static constexpr float DIST_ATTACK = 500.0f;   // 攻撃に入る距離
-    static constexpr float DIST_LOSE_CHASE = 2000.0f;   // 追跡を諦めて帰る距離
-    static constexpr float DIST_ARRIVE = 40.0f;   // 目的地到達とみなす距離
+    static constexpr float DIST_ATTACK = 500.0f;
+    static constexpr float DIST_LOSE_CHASE = 1500.0f;
+    static constexpr float DIST_ARRIVE = 80.0f;
 
-    // ダメージ
     static constexpr int   ATTACK_DAMAGE = 20;
-    // 攻撃当たり判定の有効区間（アニメ進捗 0.0 ? 1.0）
     static constexpr float ATTACK_HIT_START = 0.5f;
     static constexpr float ATTACK_HIT_END = 1.0f;
 
-    // パトロール
-    static constexpr float PATROL_SIDE = 1000.0f;              // 正方形の一辺
-    static constexpr float PATROL_HALF = PATROL_SIDE * 0.5f;   // 半辺
-    static constexpr float IDLE_AT_CORNER_TIME = 1.0f;         // 角での待機秒数
+    // ==== 定数：徘徊 ====
 
-    // 視野判定（ロジックベースの円錐視野）
-    static constexpr float VIEW_RANGE = 800.0f;
-    static constexpr float VIEW_HALF_FOV_RAD = 60.0f * DX_PI_F / 180.0f; // 合計120度
-    static constexpr float EYE_HEIGHT = 50.0f;   // 視線レイの高さオフセット
+    static constexpr float WANDER_RADIUS = 800.0f;  // wanderCenter_ からの徘徊半径
+    static constexpr float WANDER_MIN_DIST = 200.0f;  // 目標が近すぎるのを防ぐ下限
+    static constexpr int   WANDER_MAX_TRIES = 16;     // 到達可能な目標を探す試行回数
+    static constexpr float IDLE_TIME_MIN = 0.5f;
+    static constexpr float IDLE_TIME_MAX = 2.0f;
 
-    // 追跡時の障害物回避
+    // ==== 定数：視野判定 ====
+
+    static constexpr float VIEW_RANGE = 1200.0f;
+    static constexpr float VIEW_HALF_FOV_RAD = 60.0f * DX_PI_F / 180.0f;
+    static constexpr float EYE_HEIGHT = 50.0f;
+
+    // ==== 定数：障害物回避 ====
+
     static constexpr float AVOID_PROBE_DIST = 200.0f;
     static constexpr float AVOID_ANGLE_RAD = 45.0f * DX_PI_F / 180.0f;
     static constexpr float AVOID_ANGLE_WIDE_RAD = 90.0f * DX_PI_F / 180.0f;
 
-    // ==== 状態変数 ====
-    STATE state_;
-    float step_;             // 各ステートで使う汎用タイマー
+    // 一度選んだ回避方向を保持する秒数（フレーム間の振動防止）
+    static constexpr float AVOID_COMMIT_SEC = 0.4f;
 
-    // パトロール用
-    int   patrolCornerIdx_;  // 0..3 の角インデックス（時計回り）
-    float idleTimer_;        // 角での待機タイマー
+    // 押し戻し量がこの閾値以上のフレームだけ「壁に接触」と判定
+    static constexpr float WALL_PUSH_EPSILON = 0.5f;
+
+    // 1秒あたりに回れる最大角（震え防止のローパス）
+    static constexpr float MAX_TURN_RAD_PER_SEC = 6.0f;
+
+    // スタック検知
+    static constexpr float STUCK_MOVE_MIN = 1.0f;  // 1フレームの実移動下限
+    static constexpr float STUCK_TIMEOUT_SEC = 1.5f;  // これを超えたら次目標へ
+
+    // ==== 状態変数：ステート機械 ====
+
+    STATE state_;
+    float idleTimer_;
 
     // 攻撃用
-    bool  attackHit_;        // 現在の一振りで既にヒット済みか
-
-    // キャッシュ済みボーンフレーム
+    bool  attackHit_;
     int   attackHandFrame_;
 
+    // ==== 状態変数：徘徊 ====
+
+    // 徘徊の「中心」。起動時は defaultPos_、見失った時は見失った位置に更新される
+    VECTOR wanderCenter_;
+
+    // 現在の徘徊目標地点
+    VECTOR wanderTarget_;
+
+    // 前回選んだ徘徊角度（フォールバック時に逆方向を試すために保持）
+    float  lastWanderTheta_;
+
+    // インスタンス固有の乱数エンジン（複数体でシードが被らないようにする）
+    std::mt19937 rng_;
+
+    // ==== 状態変数：ステアリング ====
+
+    VECTOR wallNormalXZ_;     // 押し戻しから推定した壁の外向き法線（XZ平面）
+    VECTOR prevMoveDir_;      // 角速度制限用の前フレーム方向
+    int    lastAvoidChoice_;  // -1:左, 0:前, +1:右
+    float  avoidCommitTimer_; // ヒステリシスタイマー
+
+    float  stuckTimer_;
+    VECTOR stuckLastPos_;
+
 #ifdef _DEBUG
-    bool  debugDrawView_ = true; // デバッグ視野表示のトグル
+    bool debugDrawView_ = true;
 #endif
 
     // ==== 状態遷移 ====
+
     void ChangeState(STATE state);
     void ChangeStateNone(void);
-    void ChangeStateThink(void);
     void ChangeStateIdle(void);
-    void ChangeStatePatrol(void);
+    void ChangeStateWander(void);
     void ChangeStateChase(void);
     void ChangeStateAttack(void);
-    void ChangeStateReturn(void);
     void ChangeStateEnd(void);
 
     // ==== 各ステート更新 ====
+
     void UpdateNone(void);
-    void UpdateThink(void);
     void UpdateIdle(void);
-    void UpdatePatrol(void);
+    void UpdateWander(void);
     void UpdateChase(void);
     void UpdateAttack(void);
-    void UpdateReturn(void);
     void UpdateEnd(void);
 
-    // ==== ヘルパー ====
+    // ==== ヘルパー：徘徊 ====
 
-    // faceDir_ / moveDir_ をターゲット方向に向ける（XZ平面）
-    void SetMoveDirToTarget(const VECTOR& target);
+    // wanderCenter_ 周辺から到達可能なランダム目標を選び wanderTarget_ に格納
+    void PickNextWanderTarget(void);
 
-    // プレイヤーとの距離（3D）
-    float DistToPlayer(void) const;
+    // 3本のレイで通路幅を考慮した到達可能チェック
+    bool IsReachable(const VECTOR& cand) const;
 
-    // プレイヤーとの距離（XZ平面のみ）
-    float DistToPlayerXZ(void) const;
+    // 2点間が遮蔽なく直行できるか（1本レイ）
+    bool IsPathClear(const VECTOR& from, const VECTOR& to) const;
 
-    // 視野判定：距離チェック＋FOV円錐＋LOSレイキャスト
-    bool IsPlayerInSight(void);
+    // 徘徊中心を更新（見失った時に呼ぶ）
+    void SetWanderCenter(const VECTOR& center);
 
-    // パトロールの角
-    VECTOR GetPatrolCornerPos(int index) const; // インデックス (0..3) のワールド座標
-    VECTOR GetCurrentPatrolTarget(void) const;  // 現在の目標コーナー
-    void   AdvancePatrolCorner(void);           // 時計回りで次の角へ
+    // ==== ヘルパー：乱数 ====
 
-    // 障害物回避を含めた追跡方向を計算
+    float RandFloat(float minVal, float maxVal); // [minVal, maxVal] の一様乱数
+    float RandAngle(void);                       // [0, 2π) の角度
+
+    // ==== ヘルパー：移動と方向 ====
+
+    void   SetMoveDirToTarget(const VECTOR& target);
+    float  DistToPlayer(void) const;
+    float  DistToPlayerXZ(void) const;
+    bool   IsPlayerInSight(void);
+
+    // 追跡方向の計算（レイキャスト＋ヒステリシス）
     VECTOR ComputeChaseDir(void);
 
-    // プレイヤーカプセルとの押し戻し
-    void PushBackFromPlayer(void);
+    // 徘徊目標方向の計算（ComputeChaseDir の徘徊版）
+    VECTOR ComputeWanderDir(void);
 
-    // 攻撃球の中心位置を取得（オフセット適用済み）
+    void   PushBackFromPlayer(void);
     VECTOR GetAttackSpherePos(void) const;
+
+    // ==== ヘルパー：ステアリングフィルタ ====
+
+    // 押し戻し後の位置から壁法線を推定して wallNormalXZ_ に格納
+    void UpdateWallNormal(void);
+
+    // moveDir_ の壁食い込み成分を射影で除去：v_slide = v - (v・n)n
+    void ApplyWallSlide(void);
+
+    // moveDir_ の1フレーム回転量を MAX_TURN_RAD_PER_SEC で制限
+    void LimitTurnRate(void);
+
+    // ==== ヘルパー：スタック検知 ====
+
+    bool IsStuck(void);
+    void ResetSteering(void);
 
     // デバッグ描画
     void DrawDebugAI(void);

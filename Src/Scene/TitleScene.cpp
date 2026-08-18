@@ -63,7 +63,8 @@ void TitleScene::Init(void)
 	spherePlanet_.scl = { 0.7f, 0.7f, 0.7f };
 	spherePlanet_.quaRot = Quaternion::Identity();
 
-	spherePlanet_.pos = { 900, -600, 300 };
+	//spherePlanet_.pos = { 900, -600, 300 };
+	spherePlanet_.pos = { -250, -620.0f, -7100.0f };
 	spherePlanet_.quaRotLocal = Quaternion::Mult(
 		spherePlanet_.quaRotLocal,
 		Quaternion::AngleAxis(AsoUtility::Deg2RadF(50.0f), AsoUtility::AXIS_Y));
@@ -156,7 +157,7 @@ void TitleScene::UpdateInput(void)
 		switch (static_cast<MENU>(selectIndex_))
 		{
 		case MENU::GAME_START:
-			sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+			sceMng_.ChangeScene(SceneManager::SCENE_ID::PROLOGUE);
 			SoundManager::GetInstance().StopBGMTitle();
 			break;
 		case MENU::OPTION:

@@ -92,7 +92,9 @@ void CharactorBase::Rotate(void)
 	if (VSize(faceDir_) < 0.01f) return;
 
 	Quaternion goalRot = Quaternion::LookRotation(faceDir_, AsoUtility::AXIS_Y);
-	transform_.quaRot = goalRot;
+	// ‰ñ“]‚Ì•âŠÔ
+	transform_.quaRot =
+		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
 }
 
 void CharactorBase::CalcGravityPow(void)
