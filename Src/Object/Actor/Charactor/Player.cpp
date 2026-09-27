@@ -230,7 +230,7 @@ void Player::UpdateItem(void)
 		if (ins.IsTriggered(InputManager::InputCommand::RETURN))
 		{
 			SceneManager::GetInstance().SetResultScore(stageMng_.GetRocket().GetTotalDelivered());
-			SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::RESULT);
+			SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::RETURN_CONFIRM);
 		}
 	}
 }

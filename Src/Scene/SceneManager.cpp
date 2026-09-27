@@ -6,6 +6,7 @@
 #include "PrologueScene.h" 
 #include "GameScene.h"
 #include "PauseScene.h"
+#include "ReturnConfirmScene.h" 
 #include "OptionScene.h"
 #include "DeadScene.h" 
 #include "ResultScene.h"
@@ -246,6 +247,12 @@ void SceneManager::PushOverlay(SCENE_ID sceneId)
 		break;
 	case SCENE_ID::OPTION:
 		scenes_.push_back(std::make_unique<OptionScene>());
+		break;
+	case SCENE_ID::RETURN_CONFIRM:
+		scenes_.push_back(std::make_unique<ReturnConfirmScene>());
+		SoundManager::GetInstance().StopWalk();
+		// Alertは意図的に止めない：Player::isAlertPlaying_ が true のままなので、
+		// ここで止めると復帰時に再生されなくなる。
 		break;
 	case SCENE_ID::DEAD:
 		scenes_.push_back(std::make_unique<DeadScene>());

@@ -31,6 +31,7 @@ public:
 		PAUSE,
 		OPTION,
 		DEAD,
+		RETURN_CONFIRM,
 		RESULT,
 		DEBUG,
 	};

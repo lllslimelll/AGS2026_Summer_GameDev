@@ -200,7 +200,7 @@ private:
 	bool IsAimingRoket(void) const;
 
 	// ===== HP・酸素 =====
-	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	// 酸素消費倍率（ブースト中）
+	static constexpr float OXYGEN_DASH_RATE = 2.4f; 	// 酸素消費倍率（ブースト中）
 	static constexpr float SUFFOCATE_INTERVAL = 1.0f;   // ダメージ周期
 	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
 

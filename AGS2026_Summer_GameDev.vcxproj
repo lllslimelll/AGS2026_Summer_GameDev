@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\ReturnConfirmScene.cpp" />
     <ClCompile Include="Src\Scene\PrologueScene.cpp" />
     <ClCompile Include="Src\Scene\OptionScene.cpp" />
     <ClCompile Include="Src\Manager\ScreenManager.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Src\PostEffect\PostEffectGuideUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\ReturnConfirmScene.h" />
     <ClInclude Include="Src\Scene\PrologueScene.h" />
     <ClInclude Include="Src\Scene\OptionScene.h" />
     <ClInclude Include="Src\Manager\ScreenManager.h" />
