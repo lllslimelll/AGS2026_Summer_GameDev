@@ -220,7 +220,6 @@
     <ClInclude Include="Src\Common\FpsController.h" />
     <ClInclude Include="Src\Common\Quaternion.h" />
     <ClInclude Include="Src\Common\Vector2.h" />
-    <ClInclude Include="Src\main.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Manager\InputManager.h" />
     <ClInclude Include="Src\Manager\Resource.h" />

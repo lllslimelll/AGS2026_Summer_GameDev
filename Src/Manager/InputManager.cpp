@@ -226,11 +226,6 @@ void InputManager::SetUpBindings(void)
 	};
 
 	// ƒAƒNƒVƒ‡ƒ“
-	inputTable_[InputCommand::JUMP] =
-	{
-		{ PeripheralType::KEYBOARD, KEY_INPUT_SPACE },
-		{ PeripheralType::PAD,      static_cast<int>(PAD_BUTTON::BOTTOM) },
-	};
 	inputTable_[InputCommand::BOOST] =
 	{
 		{ PeripheralType::KEYBOARD, KEY_INPUT_LSHIFT },

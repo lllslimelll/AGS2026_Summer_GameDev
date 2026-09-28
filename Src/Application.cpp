@@ -11,21 +11,25 @@
 
 Application* Application::instance_ = nullptr;
 
+const std::string Application::PATH_CSV = "Data/Csv/";
+const std::string Application::PATH_EFFECT = "Data/Effect/";
 const std::string Application::PATH_IMAGE = "Data/Image/";
 const std::string Application::PATH_MODEL = "Data/Model/";
-const std::string Application::PATH_EFFECT = "Data/Effect/";
-const std::string Application::PATH_CSV = "Data/Csv/";
 const std::string Application::PATH_SHADER = "Data/Shader/";
+const std::string Application::PATH_SOUND = "Data/Sound/";
 
+// インスタンス生成
 void Application::CreateInstance(void)
 {
 	if (instance_ == nullptr)
 	{
 		instance_ = new Application();
 	}
+
 	instance_->Init();
 }
 
+// インスタンス取得
 Application& Application::GetInstance(void)
 {
 	return *instance_;
@@ -33,12 +37,12 @@ Application& Application::GetInstance(void)
 
 void Application::Init(void)
 {
-
 	// アプリケーションの初期設定
 	SetWindowText("惑星探査");
 
-	// ウィンドウサイズ
-	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
+	// ウィンドウサイズ・色深度設定
+	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, SCREEN_COLOR_DEPTH);
+	// ウィンドウモード
 	ChangeWindowMode(true);
 
 	// FPS制御初期化
@@ -79,27 +83,27 @@ void Application::Init(void)
 	// サウンド管理初期化
 	SoundManager::CreateInstance();
 
-	// 管理初期化
+	// 設定管理初期化
 	SettingsManager::CreateInstance();
 
 	// シーン管理初期化
 	SceneManager::CreateInstance();
-
 }
 
 void Application::Run(void)
 {
-
+	// インスタンス取得
 	InputManager& inputManager = InputManager::GetInstance();
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
 	// ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_0) == 0)
 	{
-
+		// 更新
 		inputManager.Update();
 		sceneManager.Update();
 
+		// 描画
 		sceneManager.Draw();
 
 #ifdef _DEBUG
@@ -109,42 +113,37 @@ void Application::Run(void)
 
 #endif // _DEBUG
 
+		// 裏画面と表画面の内容を交換する
 		ScreenFlip();
 
 		// 理想FPS経過待ち
 		fpsController_->Wait();
-
 	}
-
 }
 
 void Application::Destroy(void)
 {
-	// FPS制御メモリ解放
-	delete fpsController_;
-
+	// 各種マネージャークラスの解放
 	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();
-	
-	// シーン管理解放
 	SceneManager::GetInstance().Destroy();
-	// サウンド管理破棄
 	SoundManager::GetInstance().Destroy();
-
 	ScreenManager::GetInstance().Destroy();
 
-	// Effekseerを終了する。
+	// FPS制御クラスの解放
+	delete fpsController_;
+
+	// Effekseerを終了
 	Effkseer_End();
 
-	// DxLib終了
+	// DxLibを終了
 	if (DxLib_End() == -1)
 	{
 		isReleaseFail_ = true;
 	}
 
-	// インスタンスのメモリ解放
+	// インスタンスの解放
 	delete instance_;
-
 }
 
 bool Application::IsInitFail(void) const

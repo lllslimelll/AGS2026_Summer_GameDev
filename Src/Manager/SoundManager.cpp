@@ -90,6 +90,7 @@ void SoundManager::Destroy(void)
 
 	// インスタンスのメモリ解放
 	delete instance_;
+	instance_ = nullptr;
 }
 
 void SoundManager::PlayBgmTitle()

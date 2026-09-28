@@ -71,13 +71,8 @@ public:
 	// 更新
 	void Update(void) override;
 
-	// 描画
-	void Draw(void) override;
 	// 描画前処理の適用
 	void SetBeforeDraw(void);
-
-	// 解放
-	void Release(void) override;
 
 	// 座標の取得
 	const VECTOR& GetPos(void) const;
@@ -150,9 +145,6 @@ private:
 
 	// 注視点
 	VECTOR targetPos_;
-	
-	// 
-	std::vector<int> opacityFrames_;
 
 	// モード別更新
 	void UpdateFixedPoint(void);
@@ -178,7 +170,4 @@ private:
 
 	// 衝突判定
 	void Collision(void);
-
-	// 透明度を不透明に初期化
-	void ResetOpacityFrame(void);
 };

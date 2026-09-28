@@ -10,29 +10,21 @@ public:
 	// スクリーンサイズ
 	static constexpr int SCREEN_SIZE_X = 1920;
 	static constexpr int SCREEN_SIZE_Y = 1080;
+	// スクリーンの色深度
+	static constexpr int SCREEN_COLOR_DEPTH = 32;
 
 	// 固定FPS
 	static constexpr int FRAME_RATE = 60;
 
-	// 重力[cm/s?] (9.81 m/s?をcm換算)
-	static constexpr float GRAVITY = 9.81f * 100.0f;
-	static constexpr float GRAVITY_SCALE = 1.0f / 6.0f;
-
 	// データパス関連
 	//-------------------------------------------
-
+	static const std::string PATH_CSV;
 	static const std::string PATH_DATA;
 	static const std::string PATH_IMAGE;
 	static const std::string PATH_MODEL;
 	static const std::string PATH_EFFECT;
 	static const std::string PATH_SHADER;
-
-	static const std::string PATH_CSV;
-
-	static const std::string PATH_KEY_CONFIG;
-	static const std::string PATH_KEY_CONFIG_GAMEPAD;
-	static const std::string PATH_KEY_CONFIG_KEYBOARD;
-
+	static const std::string PATH_SOUND;
 	//-------------------------------------------
 
 	// インスタンスを明示的に生成
@@ -55,9 +47,6 @@ public:
 
 	// 解放成功／失敗の判定
 	bool IsReleaseFail(void) const;
-
-	// 重力の取得
-	float GetGravityPow(void) const { return GRAVITY * GRAVITY_SCALE; }
 
 private:
 

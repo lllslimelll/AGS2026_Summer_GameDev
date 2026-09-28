@@ -278,9 +278,6 @@
     <ClInclude Include="Src\Application.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\main.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Object\Actor\Item\Item.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

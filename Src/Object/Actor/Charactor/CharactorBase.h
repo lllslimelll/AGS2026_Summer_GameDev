@@ -17,6 +17,9 @@ public:
 		MAX,
 	};
 
+	// 重力（DxLibはcm単位のため、9.81 m/sをcm換算）
+	static constexpr float GRAVITY = 9.81f * 100.0f;
+
 	// コンストラクタ
 	CharactorBase(void);
 
@@ -64,8 +67,6 @@ protected:
 
 	// ジャンプ判定
 	bool isJump_;
-	// ジャンプの入力受付時間
-	float stepJump_;
 
 	// 丸影画像
 	int imgShadow_;

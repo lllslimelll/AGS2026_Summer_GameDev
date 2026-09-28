@@ -19,7 +19,6 @@ public:
 		MOVE_RIGHT,  // 右移動
 
 		// アクション用
-		JUMP,	  // ジャンプ
 		BOOST, 	  // ブースト
 		PICK_UP,  // 拾う
 		DROP,	  // 落とす
@@ -68,7 +67,7 @@ public:
 	void Update(void);
 
 	// リソースの破棄
-	void Destroy(void);
+	static void Destroy(void);
 
 	// 入力状態の取得
 	// 押されているか

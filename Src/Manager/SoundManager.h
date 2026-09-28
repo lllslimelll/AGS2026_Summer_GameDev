@@ -75,10 +75,8 @@ private:
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
 	SoundManager(void);
-
 	// コピーコンストラクタも同様
 	SoundManager(const SoundManager& instance) = default;
-
 	// デストラクタも同様
 	~SoundManager(void) = default;
 

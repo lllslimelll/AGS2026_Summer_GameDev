@@ -45,12 +45,6 @@ void Camera::Update(void)
 	}
 }
 
-void Camera::Draw(void)
-{
-	/*DrawFormatString(0, 200, GetColor(255, 255, 255),
-		"Camera Pos: (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);*/
-}
-
 void Camera::SetBeforeDraw(void)
 {
 	// クリップ距離を設定(SetDrawScreenでリセットされる)
@@ -64,10 +58,6 @@ void Camera::SetBeforeDraw(void)
 
 	// DXライブラリのカメラとEffekseerのカメラを同期
 	Effekseer_Sync3DSetting();
-}
-
-void Camera::Release(void)
-{
 }
 
 void Camera::SetFollow(const Transform* follow)
@@ -321,14 +311,6 @@ void Camera::Collision(void)
 
 #pragma endregion
 	}
-}
-
-void Camera::ResetOpacityFrame(void)
-{
-	/*for (const auto& opacy : opacityFrames_)
-	{
-		MV1SetOpacityRate(opacy.modelId, )
-	}*/
 }
 
 void Camera::RotMouse(bool isLimit)

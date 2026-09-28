@@ -15,7 +15,6 @@ CharactorBase::CharactorBase(void)
 	moveDir_(AsoUtility::VECTOR_ZERO),
 	moveSpeed_(),
 	movePow_(AsoUtility::VECTOR_ZERO),
-	isJump_(false),
 	stateBase_(-1),
 	stateUpdate_(nullptr),
 	animCtrl_()
@@ -62,9 +61,6 @@ void CharactorBase::Draw(void)
 {
 	// 基底クラス描画処理
 	ActorBase::Draw();
-	//DrawFormatString(0, 100, 0xffffff, "isjump:%d", isJump_);
-	// 丸影の描画
-	//DrawShadow();
 }
 
 void CharactorBase::Release()
@@ -103,11 +99,11 @@ void CharactorBase::CalcGravityPow(void)
 	const VECTOR dirGravity = AsoUtility::DIR_D;
 
 	// 重力の強さ
-	float gravityPow = Application::GetInstance().GetGravityPow() * scnMng_.GetDeltaTime();
+	float gravityPow = GRAVITY * scnMng_.GetDeltaTime();
 
 	// 重力
 	VECTOR gravity = VScale(dirGravity, gravityPow);
-	jumpPow_ = VAdd(jumpPow_, gravity);
+
 
 	// 落下速度クランプ（-Y方向成分を制限）
 	float fallSpeed = VDot(jumpPow_, dirGravity);
@@ -174,18 +170,6 @@ void CharactorBase::CollisionGravity(void)
 			true,	// ブラックリスト使用許可
 			false	// ホワイトリスト使用許可
 		);
-
-		// 当たっていたらジャンプフラグを折る
-		if (isHit) isJump_ = false;
-
-		if (!isJump_)
-		{
-			// ジャンプリセット
-			jumpPow_ = AsoUtility::VECTOR_ZERO;
-
-			// ジャンプの入力受付時間をリセット
-			stepJump_ = 0.0f;
-		} 
 	}
 }
 

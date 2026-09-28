@@ -39,10 +39,12 @@ void Player::ChangeState(STATE state)
 	state_ = state;
 	CharactorBase::ChangeState(static_cast<int>(state_));
 }
+
 void Player::ChangeStateIdle(void)
 {
 	stateUpdate_ = std::bind(&Player::UpdateIdle, this);
 }
+
 void Player::ChangeStateDead(void)
 {
 	stateUpdate_ = std::bind(&Player::UpdateDead, this);
@@ -56,6 +58,7 @@ void Player::ChangeStateDead(void)
 	// DeadSceneをオーバーレイで表示
 	SceneManager::GetInstance().PushOverlay(SceneManager::SCENE_ID::DEAD);
 }
+
 void Player::ChangeStateEnd(void)
 {
 	
@@ -65,7 +68,6 @@ void Player::UpdateIdle(void)
 {
 	// 移動・ジャンプ
 	ProcessMove();
-	//ProcessJump();
 
 	// 当たり判定調整
 	CollisionReserve();
@@ -108,7 +110,6 @@ void Player::ProcessMove(void)
 	dDir = ins.GetInstance().GetLeftStickDirection();
 
 	if (ins.IsTriggered(InputManager::InputCommand::BOOST)) { isBoost_ = true; }
-	if (isJump_) SoundManager::GetInstance().StopWalk();
 
 	// ---- ここが変更点 ----
 	// 上方向は +Y 固定
@@ -418,61 +419,6 @@ Player::GUIDE_INFO Player::GetGuideInfo(void) const
 	info.totalDelivered = stageMng_.GetRocket().GetTotalDelivered();
 	info.quota = Rocket::QUOTA;
 	return info;
-}
-
-// 衝突判定用の調整
-void Player::CollisionReserve(void)
-{
-	//// アニメーションごとの線分調整
-	//if (animCtrl_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
-	//{
-	//	// ジャンプ中は線分を伸ばす
-	//	if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)) != 0)
-	//	{
-	//		ColliderLine* colLine = dynamic_cast<ColliderLine*>(
-	//			ownColliders_.at(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)));
-	//		colLine->SetLocalPosStart(COL_LINE_JUMP_START_LOCAL_POS);
-	//		colLine->SetLocalPosEnd(COL_LINE_JUMP_END_LOCAL_POS);
-	//	}
-	//}
-	//else
-	{
-		// 通常時の線分に戻す
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)) != 0)
-		{
-			ColliderLine* colLine = dynamic_cast<ColliderLine*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::GROUND_LINE)));
-			colLine->SetLocalPosStart(COL_LINE_START_LOCAL_POS);
-			colLine->SetLocalPosEnd(COL_LINE_END_LOCAL_POS);
-		}
-	}
-	// inplaceアニメーションに変えたらここも削除！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-
-	// アニメーションごとのカプセル調整
-	if (animCtrl_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
-	{
-		// ジャンプ中はカプセルを伸ばす
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
-		{
-			ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
-
-			colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_JUMP_LOCAL_POS);
-			colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_JUMP_LOCAL_POS);
-		}
-	}
-	else
-	{
-		// 通常時のカプセルに戻す
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
-		{
-			ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
-
-			colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_LOCAL_POS);
-			colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_LOCAL_POS);
-		}
-	}
 }
 
 void Player::ProcessDelivery(void)

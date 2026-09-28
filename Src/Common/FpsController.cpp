@@ -11,12 +11,10 @@ FpsController::FpsController(int fixedFps)
 	timeList_(),
 	prevTime_()
 {
-
     prevTime_ = std::chrono::high_resolution_clock::now();
 
 	// DxLibの垂直同期待ちを無効化
     SetWaitVSyncFlag(false);
-
 }
 
 FpsController::~FpsController(void)
@@ -25,7 +23,6 @@ FpsController::~FpsController(void)
 
 void FpsController::Wait()
 {
-
     // 現在時間
     auto nowTime = std::chrono::high_resolution_clock::now();
 
@@ -80,12 +77,10 @@ void FpsController::Wait()
 
     // 平均FPS
     fps_ = static_cast<float>(timeList_.size() / total);
-
 }
 
 void FpsController::Draw()
 {
-
     // 描画する文字列の幅を取得(デフォルトフォントの場合)
     int textWidth = GetDrawFormatStringWidth(TEXT_FORMAT.c_str(), fps_);
 
@@ -95,5 +90,4 @@ void FpsController::Draw()
 
     // 右寄せ描画
     DrawFormatString(x, y, COLOR, TEXT_FORMAT.c_str(), fps_);
-
 }
