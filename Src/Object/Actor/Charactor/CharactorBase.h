@@ -17,7 +17,7 @@ public:
 		MAX,
 	};
 
-	// 重力（DxLibはcm単位のため、9.81 m/sをcm換算）
+	// 重力（DXLIBはcm単位のため、9.81 m/sをcm換算）
 	static constexpr float GRAVITY = 9.81f * 100.0f;
 
 	// コンストラクタ

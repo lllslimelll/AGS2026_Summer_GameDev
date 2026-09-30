@@ -183,15 +183,21 @@ private:
 	// ロケット照準判定
 	bool IsAimingRoket(void) const;
 
-	// ===== HP・酸素 =====
-	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	// 酸素消費倍率（ブースト中）
-	static constexpr float SUFFOCATE_INTERVAL = 1.0f;   // ダメージ周期
-	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100;  // 1
+	// 酸素消費倍率（ブースト中）
+	static constexpr float OXYGEN_DASH_RATE = 2.0f; 	
+	// ダメージ周期
+	static constexpr float SUFFOCATE_INTERVAL = 1.0f;   
+	static constexpr int   SUFFOCATE_DAMAGE = MAX_HP / 100; 
 
+	// HP
 	int   hp_;
+	// 酸素量
 	float oxygen_;
-	float suffocateTimer_;  // 酸素切れ後の経過時間
-	bool wasBoostMoving_ = false;  // 前フレームにブースト移動していたか
+	// 酸素切れ後の経過時間
+	float suffocateTimer_;  
+	// 前フレームにブースト移動していたか
+	bool wasBoostMoving_ = false; 
+
 	// 更新
 	void UpdateOxygenAndHp(void);
 };

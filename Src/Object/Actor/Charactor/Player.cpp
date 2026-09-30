@@ -220,9 +220,6 @@ void Player::UpdateItem(void)
 	crosshairRadius_ += 
 		(targetRadius - crosshairRadius_) * 15.0f * scnMng_.GetDeltaTime();
 
-	// 選択中アイテムの追従
-	//UpdateFollowItem();
-
 	// 帰還
 	if (IsAimingRoket())
 	{
@@ -371,7 +368,6 @@ void Player::Draw(void)
 	DrawFormatString(0,0,0xffffff,"Player pos : (%.1f, %.1f, %.1f)\n",
 		transform_.pos.x, transform_.pos.y, transform_.pos.z);
 #endif // DEBUG 
-
 
 	// 照準
 	int cx = screenW / 2;
@@ -565,8 +561,6 @@ void Player::InitAnimation(void)
 	animCtrl_->Add(static_cast<int>(ANIM_TYPE::RUN), 20.0f, resMng_.Load(ResourceManager::SRC::RUN).path_);
 
 	animCtrl_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN), 20.0f, resMng_.Load(ResourceManager::SRC::FAST_RUN).path_);
-
-	animCtrl_->Add(static_cast<int>(ANIM_TYPE::JUMP), 20.0f, resMng_.Load(ResourceManager::SRC::JUMP_RISING).path_);
 
 	animCtrl_->Add(static_cast<int>(ANIM_TYPE::DEAD), 20.0f, resMng_.Load(ResourceManager::SRC::DEAD).path_);
 }

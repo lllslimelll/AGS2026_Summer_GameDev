@@ -65,7 +65,6 @@ void PrologueScene::Update(void)
     const bool skip =
         ins.IsTriggered(InputManager::InputCommand::UI_DECIDE) ||
         ins.IsTriggered(InputManager::InputCommand::UI_CANCEL) ||
-        ins.IsTriggered(InputManager::InputCommand::JUMP) ||
         ins.IsTriggered(InputManager::InputCommand::PAUSE);
 
     if (elapsed_ >= PHASE_DURATION || skip)
