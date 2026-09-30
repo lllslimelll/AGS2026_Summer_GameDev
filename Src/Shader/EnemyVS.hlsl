@@ -16,11 +16,16 @@
 // 定数バッファ（b7スロット）
 cbuffer cbUser : register(b7)
 {
-    float4 g_pivotPos; // xyz: ワールド湾曲の基準座標（カメラ位置）
-};
+    // 基準座標(カメラ)
+    float4 g_cameraPos;
+}
 
-// 湾曲量
-static const float CURVE_AMOUNT = 0.00006f;
+// Y座標を下げる基準距離
+static const float CURVE_DIST = 5000.0f;
+// CURVE_DIST での落下量
+static const float CURVE_DROP = 1500.0f;
+// 曲がり具合の係数
+static const float CURVE_COEFF = CURVE_DROP / (CURVE_DIST * CURVE_DIST);
 
 VS_OUTPUT main(VS_INPUT VSInput)
 {
@@ -69,11 +74,10 @@ VS_OUTPUT main(VS_INPUT VSInput)
     lWorldPosition.y = dot(lLocalPosition, lL_W_Mat[1]);
     lWorldPosition.z = dot(lLocalPosition, lL_W_Mat[2]);
 
-    // ---- ワールド湾曲（WorldBending）----
-    // カメラ基準の XZ 距離に応じて Y を下げ、球面ワールドを演出する
-    float2 offset = lWorldPosition.xz - g_pivotPos.xz;
-    float  bend   = (offset.x * offset.x + offset.y * offset.y) * CURVE_AMOUNT;
-    lWorldPosition.y -= bend;
+    // 頂点からカメラの水平距離に比例して、Y座標を下げる
+    float2 dist = lWorldPosition.xz - g_cameraPos.xz; // 頂点からカメラの水平距離
+    float heightOffset = (dist.x * dist.x + dist.y * dist.y) * CURVE_COEFF;
+    lWorldPosition.y -= heightOffset;
 
     // ---- ワールド → ビュー ----
     float4 lViewPosition;
