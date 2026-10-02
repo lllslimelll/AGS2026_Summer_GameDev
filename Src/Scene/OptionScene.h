@@ -14,7 +14,7 @@ public:
 
 private:
 
-    // ===== タブ =====
+    // タブ
     enum class TAB
     {
         AUDIO = 0,   // オーディオ（音量）

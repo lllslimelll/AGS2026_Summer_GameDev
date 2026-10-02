@@ -193,7 +193,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	switch (sceneId_)
 	{
 	case SCENE_ID::TITLE:
-		// 追加
+  
 		scenes_.push_back(std::make_unique<TitleScene>());
 		SetMouseDispFlag(true);
 		SoundManager::GetInstance().StopBGMGame();
@@ -271,7 +271,6 @@ void SceneManager::PushOverlay(SCENE_ID sceneId)
 // オーバーレイの削除
 void SceneManager::PopOverlay()
 {
-	// スタックが空にならないようガードして削除
 	if (scenes_.size() > 1)
 	{
 		scenes_.pop_back();

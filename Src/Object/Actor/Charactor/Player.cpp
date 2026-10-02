@@ -99,7 +99,7 @@ void Player::ProcessMove(void)
 	VECTOR kDir = AsoUtility::VECTOR_ZERO;
 	VECTOR dDir = AsoUtility::VECTOR_ZERO;
 
-	// “ü—Íæ“¾iÈ—ªA‚»‚Ì‚Ü‚Üj
+	// “ü—Íæ“¾
 	if (ins.IsPressed(InputManager::InputCommand::MOVE_FORWARD)) { kDir = VAdd(kDir, AsoUtility::DIR_F); }
 	if (ins.IsPressed(InputManager::InputCommand::MOVE_BACK)) { kDir = VAdd(kDir, AsoUtility::DIR_B); }
 	if (ins.IsPressed(InputManager::InputCommand::MOVE_LEFT)) { kDir = VAdd(kDir, AsoUtility::DIR_L); }

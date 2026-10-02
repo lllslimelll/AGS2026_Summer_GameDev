@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <string>
 class FpsController;
 
@@ -10,30 +11,29 @@ public:
 	// スクリーンサイズ
 	static constexpr int SCREEN_SIZE_X = 1920;
 	static constexpr int SCREEN_SIZE_Y = 1080;
+	// スクリーンの色深度
+	static constexpr int SCREEN_COLOR_DEPTH = 32;
 
 	// 固定FPS
 	static constexpr int FRAME_RATE = 60;
 
-	// 重力[cm/s?] (9.81 m/s?をcm換算)
+	// 重力[cm/s] (9.81 m/sをcm換算)
 	static constexpr float GRAVITY = 9.81f * 100.0f;
 	static constexpr float GRAVITY_SCALE = 1.0f / 6.0f;
 
+	//-------------------------------------------
 	// データパス関連
 	//-------------------------------------------
-
 	static const std::string PATH_DATA;
 	static const std::string PATH_IMAGE;
 	static const std::string PATH_MODEL;
 	static const std::string PATH_EFFECT;
 	static const std::string PATH_SHADER;
-
 	static const std::string PATH_CSV;
 
 	static const std::string PATH_KEY_CONFIG;
 	static const std::string PATH_KEY_CONFIG_GAMEPAD;
 	static const std::string PATH_KEY_CONFIG_KEYBOARD;
-
-	//-------------------------------------------
 
 	// インスタンスを明示的に生成
 	static void CreateInstance(void);
@@ -57,7 +57,7 @@ public:
 	bool IsReleaseFail(void) const;
 
 	// 重力の取得
-	float GetGravityPow(void) const { return GRAVITY * GRAVITY_SCALE; }
+	float GetGravityPow(void) const;
 
 private:
 
@@ -65,7 +65,7 @@ private:
 	static Application* instance_;
 
 	// FPS制御
-	FpsController* fpsController_;
+	std::unique_ptr<FpsController> fpsController_;
 
 	// 初期化失敗
 	bool isInitFail_;

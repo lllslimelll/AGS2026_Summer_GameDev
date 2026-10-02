@@ -38,11 +38,11 @@ void Application::Init(void)
 	SetWindowText("惑星探査");
 
 	// ウィンドウサイズ
-	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
+	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, SCREEN_COLOR_DEPTH);
 	ChangeWindowMode(true);
 
 	// FPS制御初期化
-	fpsController_ = new FpsController(FRAME_RATE);
+	fpsController_ = std::make_unique<FpsController>(FRAME_RATE);
 
 	// DxLibの初期化
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
@@ -120,9 +120,6 @@ void Application::Run(void)
 
 void Application::Destroy(void)
 {
-	// FPS制御メモリ解放
-	delete fpsController_;
-
 	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();
 	
@@ -155,6 +152,11 @@ bool Application::IsInitFail(void) const
 bool Application::IsReleaseFail(void) const
 {
 	return isReleaseFail_;
+}
+
+float Application::GetGravityPow(void) const
+{
+	return GRAVITY * GRAVITY_SCALE; 
 }
 
 Application::Application(void)

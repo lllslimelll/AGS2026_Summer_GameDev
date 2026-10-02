@@ -93,16 +93,16 @@ private:
 	// 周辺機器種別
 	enum class PeripheralType
 	{
-		KEYBOARD, // キーボード
-		PAD,     // パッド
-		MOUSE    // マウス
+		KEYBOARD,	// キーボード
+		PAD,		// パッド
+		MOUSE		// マウス
 	};
 
 	// 入力状態
 	struct InputState
 	{
-		PeripheralType type; // 周辺機器種別
-		unsigned int id;     // 実入力の値
+		PeripheralType type;	// 周辺機器種別
+		unsigned int id;		// 実入力の値
 	};
 
 
@@ -166,7 +166,6 @@ private:
 		float rightY; // 右スティックY軸
 	};
 
-
 	// シングルトン用静的インスタンス
 	static InputManager* instance_;
 
@@ -178,8 +177,10 @@ private:
 	std::unordered_map<InputCommand, bool> currentInputInfo_;
 	std::unordered_map<InputCommand, bool> lastInputInfo_;
 
-	Vector2 mousePos_;	// 座標
-	int mouseWheelRot_; // ホイール回転量
+	// マウス座標
+	Vector2 mousePos_;	
+	// ホイール回転量
+	int mouseWheelRot_; 
 
 	// スティック状態
 	STICK_STATE stickState_;
