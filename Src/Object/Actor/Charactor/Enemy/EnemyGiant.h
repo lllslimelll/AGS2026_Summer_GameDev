@@ -29,7 +29,7 @@ public:
         ATTACK = 3,
     };
 
-    EnemyGiant(const EnemyBase::EnemyData& data, Player& player);
+    EnemyGiant(const EnemyBase::EnemyData& data, std::shared_ptr<Player> player);
     ~EnemyGiant(void) override;
 
 protected:

@@ -2,7 +2,7 @@
 #include "../../../Collider/ColliderCapsule.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, Player& player)
+EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, std::shared_ptr<Player> player)
 	:
 	CharactorBase(),
 	player_(player),

@@ -22,7 +22,7 @@ GameScene::GameScene(void)
 	stageMng_(nullptr),
 	itemMng_(nullptr),
 	player_(nullptr),
-	enemyManager_(nullptr),
+	enemyMng_(nullptr),
 	skyDome_(nullptr),
 	SceneBase()
 {
@@ -33,40 +33,37 @@ GameScene::~GameScene(void)
 	stageMng_->Release();
 
 	itemMng_->Release();
-	delete itemMng_;
 
 	player_->Release();
 
-	enemyManager_->Release();
-	delete enemyManager_;
+	enemyMng_->Release();
 
 	skyDome_->Release();
-	delete skyDome_;
 }
 
 void GameScene::Init(void)
 {
-	stageMng_ = std::make_unique<StageManager>();
+	stageMng_ = std::make_shared<StageManager>();
 	stageMng_->Init();
 
-	itemMng_ = new ItemManager();
+	itemMng_ = std::make_shared<ItemManager>();
 
-	player_ = std::make_unique<Player>(itemMng_, *stageMng_);
+	player_ = std::make_shared<Player>(itemMng_, stageMng_);
 	player_->Init();
 
 	// カメラ
 	SceneManager::GetInstance().GetCamera().SetFollow(&player_->GetTransform());
 	SceneManager::GetInstance().GetCamera().ChangeMode(Camera::MODE::FOLLOW);
 
-	enemyManager_ = new EnemyManager(*player_);
-	enemyManager_->Init();
+	enemyMng_ = std::make_unique<EnemyManager>(player_);
+	enemyMng_->Init();
 
-	skyDome_ = new SkyDome(player_->GetTransform());
+	skyDome_ = std::make_unique<SkyDome>(player_->GetTransform());
 
-	gameUIs_.emplace_back(std::make_unique<StatusUI>(*player_));
-	gameUIs_.emplace_back(std::make_unique<GuideUI>(*player_));
+	gameUIs_.emplace_back(std::make_unique<StatusUI>(player_));
+	gameUIs_.emplace_back(std::make_unique<GuideUI>(player_));
 	gameUIs_.emplace_back(std::make_unique<InventoryUI>(player_->GetInventory()));
-	gameUIs_.emplace_back(std::make_unique<RocketLocatorUI>(*player_, stageMng_->GetRocket()));
+	gameUIs_.emplace_back(std::make_unique<RocketLocatorUI>(player_, stageMng_->GetRocket()));
 	for (auto& ui : gameUIs_)
 	{
 		ui->Load();
@@ -78,13 +75,13 @@ void GameScene::Init(void)
 	const ColliderBase* rocketCollider =
 		stageMng_->GetRocket().GetOwnCollider(static_cast<int>(Rocket::COLLIDER_TYPE::MODEL));
 	const ColliderBase* playerCollider =
-		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));
+		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));       
 
 	// アイテム
 	itemMng_->Init();
 	itemMng_->AddHitCollider(planetCollider);
 
-	for (auto& e : enemyManager_->GetEnemies())
+	for (auto& e : enemyMng_->GetEnemies())
 	{
 		player_->AddHitCollider(
 			e->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
@@ -92,9 +89,9 @@ void GameScene::Init(void)
 	player_->AddHitCollider(planetCollider);
 	player_->AddHitCollider(rocketCollider);
 
-	enemyManager_->AddHitCollider(planetCollider); // ステージモデルのコライダー登録
-	enemyManager_->AddHitCollider(playerCollider);
-	enemyManager_->AddHitCollider(rocketCollider);
+	enemyMng_->AddHitCollider(planetCollider); // ステージモデルのコライダー登録
+	enemyMng_->AddHitCollider(playerCollider);
+	enemyMng_->AddHitCollider(rocketCollider);
 
 	skyDome_->Init();
 	
@@ -123,7 +120,7 @@ void GameScene::Update(void)
 	stageMng_->Update();
 	itemMng_->Update();
 	player_->Update();
-	enemyManager_->Update();
+	enemyMng_->Update();
 	skyDome_->Update();
 
 	player_->SetForward(SceneManager::GetInstance().GetCamera().GetForward()); // カメラの前方向をプレイヤーに渡す
@@ -140,7 +137,7 @@ void GameScene::Draw(void)
 	
 	stageMng_->Draw();
 	itemMng_->Draw();
-	enemyManager_->Draw();
+	enemyMng_->Draw();
 	player_->Draw();
 
 	// 描画に使用するシャドウマップの設定を解除  

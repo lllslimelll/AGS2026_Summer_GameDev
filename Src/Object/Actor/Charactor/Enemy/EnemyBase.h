@@ -27,7 +27,7 @@ public:
 	};
 
 	// コンストラクタ
-	EnemyBase(const EnemyBase::EnemyData& data, Player& player);
+	EnemyBase(const EnemyBase::EnemyData& data, std::shared_ptr<Player> player);
 	// デストラクタ
 	virtual ~EnemyBase(void) override;
 
@@ -42,7 +42,7 @@ public:
 protected:
 
 	// プレイヤー
-	Player& player_;
+	std::shared_ptr<Player> player_;
 
 	// 種別
 	TYPE type_;

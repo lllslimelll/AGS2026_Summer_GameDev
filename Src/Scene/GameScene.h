@@ -33,15 +33,15 @@ public:
 private:
 
 	// スカイドーム
-	SkyDome* skyDome_;
+	std::unique_ptr<SkyDome> skyDome_;
 	// ステージ
-	std::unique_ptr<StageManager> stageMng_;
+	std::shared_ptr<StageManager> stageMng_;
 	// アイテム
-	ItemManager* itemMng_;
+	std::shared_ptr<ItemManager> itemMng_;
 	// プレイヤー
-	std::unique_ptr<Player> player_;
+	std::shared_ptr<Player> player_;
 	// 敵
-	EnemyManager* enemyManager_;
+	std::unique_ptr<EnemyManager> enemyMng_;
 	// ゲームUI
 	std::vector<std::unique_ptr<GameUI>> gameUIs_;
 

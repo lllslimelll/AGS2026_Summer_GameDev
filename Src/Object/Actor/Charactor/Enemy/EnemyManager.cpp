@@ -6,7 +6,7 @@
 #include "EnemyGiant.h"
 #include "EnemyManager.h"
 
-EnemyManager::EnemyManager(Player& player)
+EnemyManager::EnemyManager(std::shared_ptr<Player> player)
 	:
 	player_(player)
 {

@@ -12,7 +12,7 @@
 #include "../Player.h"
 #include "EnemyGiant.h"
 
-EnemyGiant::EnemyGiant(const EnemyBase::EnemyData& data, Player& player)
+EnemyGiant::EnemyGiant(const EnemyBase::EnemyData& data, std::shared_ptr<Player> player)
     :
     EnemyBase(data, player),
     state_(STATE::NONE),

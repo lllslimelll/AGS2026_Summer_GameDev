@@ -193,9 +193,7 @@ void CharactorBase::CollisionCapsule(void)
 {
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
-
-	// カプセルコライダがなければ処理を抜ける
-	if (ownColliders_.count(capsuleType) == 0) return;
+	if (ownColliders_.count(capsuleType) == 0) { return; }
 
 	// カプセルコライダ情報
 	ColliderCapsule* colliderCapsule =
