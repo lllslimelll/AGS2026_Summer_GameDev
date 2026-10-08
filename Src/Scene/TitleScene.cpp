@@ -52,6 +52,10 @@ TitleScene::~TitleScene(void)
 	skyDome_->Release();
 }
 
+void TitleScene::Load(void)
+{
+}
+
 void TitleScene::Init(void)
 {
 	// BGMÄ¶

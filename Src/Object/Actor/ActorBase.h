@@ -20,6 +20,9 @@ public:
 	// デストラクタ
 	virtual ~ActorBase(void);
 
+	// ロード
+	virtual void Load(void) {};
+
 	// 初期化
 	void Init(void);
 
@@ -67,9 +70,6 @@ protected:
 
 	// 月の中央座標
 	static constexpr VECTOR MOON_CENTER_POS = { 0.0f, 0.0f, 0.0f };
-
-	// リソースロード
-	virtual void InitLoad(void) = 0;
 
 	// 大きさ、回転、座標の初期化
 	virtual void InitTransform(void) = 0;

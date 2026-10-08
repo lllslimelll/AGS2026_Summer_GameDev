@@ -10,6 +10,12 @@ Planet::~Planet(void)
 {
 }
 
+void Planet::Load(void)
+{
+    transform_.SetModel(resMng_.Load(
+        ResourceManager::SRC::MAIN_STAGE).handleId_);
+}
+
 void Planet::Update(void)
 {
     transform_.Update();
@@ -20,12 +26,6 @@ void Planet::Update(void)
 void Planet::Draw(void)
 {
     ActorBase::Draw();
-}
-
-void Planet::InitLoad(void)
-{
-    transform_.SetModel(resMng_.Load(
-        ResourceManager::SRC::MAIN_STAGE).handleId_);
 }
 
 void Planet::InitTransform(void)

@@ -37,14 +37,15 @@ EnemyGiant::EnemyGiant(const EnemyBase::EnemyData& data, std::shared_ptr<Player>
 
 EnemyGiant::~EnemyGiant(void) {}
 
-// ---------------------------------------------------------------
-// ‰Šú‰»
-// ---------------------------------------------------------------
-void EnemyGiant::InitLoad(void)
+void EnemyGiant::Load(void)
 {
     transform_.SetModel(
         resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_GIANT));
 }
+
+// ---------------------------------------------------------------
+// ‰Šú‰»
+// ---------------------------------------------------------------
 
 void EnemyGiant::InitTransform(void)
 {

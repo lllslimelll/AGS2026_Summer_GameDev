@@ -16,12 +16,12 @@ public:
 
     ~Planet(void) override;
 
+	void Load(void) override;
     void Update(void) override;
     void Draw(void)   override;
 
 protected:
 
-    virtual void InitLoad(void)      override;
     virtual void InitTransform(void) override;
     virtual void InitCollider(void)  override;
     virtual void InitAnimation(void) override;

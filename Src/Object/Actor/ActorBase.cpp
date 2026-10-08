@@ -20,9 +20,6 @@ ActorBase::~ActorBase(void)
 void ActorBase::Init(void)
 {
 
-	// リソースロード
-	InitLoad();
-
 	// Transform初期化
 	InitTransform();
 

@@ -30,6 +30,8 @@ public:
 		ENEMY_RAT,
 		ENEMY_ROBOT,
 		ENEMY_GIANT,
+		CRYSTAL_1,
+		CRYSTAL_2,
 		VIEW_RANGE
 	};
 

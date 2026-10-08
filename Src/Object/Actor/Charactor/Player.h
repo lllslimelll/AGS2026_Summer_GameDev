@@ -49,6 +49,9 @@ public:
 
 	~Player(void) override;
 
+	// リソースのロード
+	void Load(void) override;
+
 	// 描画
 	void Draw(void) override;
 
@@ -73,9 +76,6 @@ public:
 
 
 protected:
-	
-	// リソースロード
-	virtual void InitLoad(void) override;
 	
 	// 大きさ、回転、座標の初期化
 	virtual void InitTransform(void) override;

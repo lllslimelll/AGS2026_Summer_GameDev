@@ -64,9 +64,6 @@ private:
 	// CSVからアイテムデータを読み込んで生成
 	void LoadCsvData(void);
 
-	// 投擲中リストを毎フレーム更新
-	void UpdateThrowingList(void);
-
 	// 納品済みアイテムを削除
 	void RemoveDeliveredItems(void);
 };

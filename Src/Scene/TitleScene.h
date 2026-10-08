@@ -17,6 +17,9 @@ public:
 	// デストラクタ
 	~TitleScene(void) override;
 
+	// ロード
+	void Load(void) override;
+
 	// 初期化
 	void Init(void) override;
 

@@ -34,6 +34,13 @@ Player::~Player(void)
 {
 }
 
+void Player::Load(void)
+{
+	// ƒ‚ƒfƒ‹“Ç‚İ‚İ
+	transform_.SetModel(resMng_.Load(			// 1ŒÂ = Load()  •¡” = Depulicate()
+		ResourceManager::SRC::PLAYER).handleId_);
+}
+
 void Player::ChangeState(STATE state)
 {
 	state_ = state;
@@ -569,13 +576,6 @@ void Player::OnDamagedByEnemy(int damage)
 		hp_ = 0;
 		ChangeState(STATE::DEAD);
 	}
-}
-
-void Player::InitLoad(void)
-{
-	// ƒ‚ƒfƒ‹“Ç‚İ‚İ
-	transform_.SetModel(resMng_.Load(			// 1ŒÂ = Load()  •¡” = Depulicate()
-		ResourceManager::SRC::PLAYER).handleId_);
 }
 
 void Player::InitTransform(void)

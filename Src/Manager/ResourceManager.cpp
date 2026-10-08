@@ -88,6 +88,9 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Giant/Giant.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_GIANT, res);
 
+	res = new RES(RES_T::MODEL, PATH_MDL + "Crystal/Crystal1.mv1");
+	resourcesMap_.emplace(SRC::CRYSTAL_1, res);
+
 	// éãñÏÅiâ~êçÅj
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");
 	resourcesMap_.emplace(SRC::VIEW_RANGE, res);

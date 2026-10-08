@@ -32,9 +32,11 @@ public:
     EnemyGiant(const EnemyBase::EnemyData& data, std::shared_ptr<Player> player);
     ~EnemyGiant(void) override;
 
+	void Load(void) override
+        ;
+
 protected:
 
-    void InitLoad(void)      override;
     void InitTransform(void) override;
     void InitCollider(void)  override;
     void InitAnimation(void) override;

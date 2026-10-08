@@ -53,8 +53,6 @@ protected:
 	// 移動可能範囲
 	float movableRange_;
 
-	// リソースロード
-	void InitLoad(void) override {}
 
 	// 大きさ、回転、座標の初期化
 	void InitTransform(void) override {}

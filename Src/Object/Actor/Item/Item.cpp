@@ -31,6 +31,19 @@ Item::~Item()
 {
 }
 
+void Item::Load(void)
+{
+    switch (type_)
+    {
+    case TYPE::type1:
+        transform_.SetModel(resMng_.Load(ResourceManager::SRC::CRYSTAL_1).handleId_);
+        break;
+    case TYPE::type2:
+        transform_.SetModel(resMng_.Load(ResourceManager::SRC::CRYSTAL_2).handleId_);
+        break;
+    }
+}
+
 void Item::Update(void)
 {
 	// 移動前座標を更新
@@ -186,26 +199,6 @@ void Item::OnDrop(const VECTOR& pos)
 
     transform_.Update();
     ChangeState(STATE::DROPPED);
-}
-
-void Item::InitLoad(void)
-{
-    //// モデル読み込み
-    //transform_.SetModel(resMng_.Dupulicate(			// 1個 = Load()  複数 = Depulicate()
-    //    ResourceManager::SRC::MAIN_STAGE).handleId_);
-
-    switch (type_)
-    {
-    case TYPE::type1:
-        transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal3.mv1"));
-        break;
-    case TYPE::type2:
-        transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal2.mv1"));
-        break;
-    //case TYPE::type3:
-    //    transform_.SetModel(MV1LoadModel("Data/Model/Item/crystal3.mv1"));
-    //    break;
-    }
 }
 
 void Item::InitTransform(void)

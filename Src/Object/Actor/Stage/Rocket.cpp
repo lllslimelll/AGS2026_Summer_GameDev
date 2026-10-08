@@ -8,6 +8,12 @@ Rocket::~Rocket(void)
 {
 }
 
+void Rocket::Load()
+{
+    transform_.SetModel(resMng_.Load(
+        ResourceManager::SRC::ROKET).handleId_);
+}
+
 void Rocket::Update(void)
 {
     transform_.Update();
@@ -39,12 +45,6 @@ bool Rocket::IsQuotaCleared(void) const
 const VECTOR& Rocket::GetPos(void) const
 {
     return transform_.pos;
-}
-
-void Rocket::InitLoad(void)
-{
-    transform_.SetModel(resMng_.Load(
-        ResourceManager::SRC::ROKET).handleId_);
 }
 
 void Rocket::InitTransform(void)

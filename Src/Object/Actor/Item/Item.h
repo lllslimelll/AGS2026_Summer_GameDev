@@ -65,6 +65,8 @@ public:
 	Item(const ItemData& data);
 	~Item() override; // デストラクタ
 
+	// リソースのロード
+	void Load(void) override;
 	// 更新
 	void Update(void) override;
 	// 描画
@@ -104,8 +106,6 @@ public:
 
 protected:
 
-	// リソースロード
-	void InitLoad(void) override;
 	// 大きさ、回転、座標の初期化
 	void InitTransform(void) override;
 	// 衝突判定の初期化

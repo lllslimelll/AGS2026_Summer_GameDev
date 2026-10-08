@@ -17,6 +17,13 @@ SkyDome::~SkyDome()
 {
 }
 
+void SkyDome::Load(void)
+{
+	// ƒ‚ƒfƒ‹“Ç‚İ‚İ
+	transform_.SetModel(resMng_.Load(			// 1ŒÂ = Load()  •¡” = Depulicate()
+		ResourceManager::SRC::SPACE_DOME).handleId_);
+}
+
 void SkyDome::Update(void)
 {
 	switch (state_)
@@ -46,13 +53,6 @@ void SkyDome::Draw(void)
 	SetUseLighting(FALSE);
 	MV1DrawModel(transform_.modelId);
 	SetUseLighting(TRUE);
-}
-
-void SkyDome::InitLoad(void)
-{
-	// ƒ‚ƒfƒ‹“Ç‚İ‚İ
-	transform_.SetModel(resMng_.Load(			// 1ŒÂ = Load()  •¡” = Depulicate()
-		ResourceManager::SRC::SPACE_DOME).handleId_);
 }
 
 void SkyDome::InitTransform(void)

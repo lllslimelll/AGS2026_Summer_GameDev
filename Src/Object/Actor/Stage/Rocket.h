@@ -15,6 +15,7 @@ public:
     static constexpr int QUOTA = 5000;
     ~Rocket(void) override;
 
+	void Load() override;
     void Update(void) override;
     void Draw(void)   override;
 
@@ -32,7 +33,6 @@ public:
 
 protected:
 
-    virtual void InitLoad(void)      override;
     virtual void InitTransform(void) override;
     virtual void InitCollider(void)  override;
     virtual void InitAnimation(void) override;
