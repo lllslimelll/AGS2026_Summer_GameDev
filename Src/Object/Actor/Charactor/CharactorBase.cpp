@@ -12,12 +12,14 @@ CharactorBase::CharactorBase(void)
 	:
 	ActorBase(),
 	faceDir_(AsoUtility::DIR_F),
-	moveDir_(AsoUtility::VECTOR_ZERO),
+	moveDir_(VECTOR()),
 	moveSpeed_(),
-	movePow_(AsoUtility::VECTOR_ZERO),
+	movePow_(VECTOR()),
+	jumpPow_(VECTOR()),
 	isJump_(false),
 	stateBase_(-1),
 	stateUpdate_(nullptr),
+	imgShadow_(-1),
 	animCtrl_()
 {
 }
